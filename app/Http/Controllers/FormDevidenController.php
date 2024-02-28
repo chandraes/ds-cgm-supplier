@@ -20,12 +20,10 @@ class FormDevidenController extends Controller
     {
         $transaksi = new Transaksi();
         $db = new KasBesar();
-        $kasSupplier = new KasSupplier();
 
         $kasBesar = $db->lastKasBesar()->saldo ?? 0;
         $modalInvestor = ($db->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
         $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
 
         $ppn = InvoicePpn::where('bayar', false)->sum('total_ppn');
 
@@ -39,7 +37,6 @@ class FormDevidenController extends Controller
         return view('billing.deviden.index', [
             'data' => $investors,
             'totalTagihan' => $totalTagihan,
-            'totalTitipan' => $totalTitipan,
             'kasBesar' => $kasBesar,
             'modalInvestor' => $modalInvestor,
             'ppn' => $ppn,
@@ -77,7 +74,6 @@ class FormDevidenController extends Controller
             $ppn = new InvoicePpn;
             $db = new KasBesar;
             $transaksi = new Transaksi;
-            $kasSupplier = new KasSupplier;
 
 
                 $k['tanggal'] = date('Y-m-d');
@@ -97,9 +93,8 @@ class FormDevidenController extends Controller
             $last = $db->lastKasBesar()->saldo ?? 0;
             $modalInvestor = ($db->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
             $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-            $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
 
-            $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+            $total_profit_bulan = ($totalTagihan+$last)-($modalInvestor+$totalPpn);
 
             $pesan = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Form Deviden ".$month."*\n".

@@ -29,7 +29,7 @@
             </a>
         </div>
         @endif
-        @if (auth()->user()->role == 'admin')
+        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-md-3 text-center mb-5 mt-3">
             <a href="{{route('histori-pesan')}}" class="text-decoration-none">
                 <img src="{{asset('images/histori.svg')}}" alt="" width="100">

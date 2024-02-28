@@ -24,7 +24,7 @@ Auth::routes([
 Route::group(['middleware' => ['auth']], function() {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-    Route::group(['middleware' => ['role:admin']], function() {
+    Route::group(['middleware' => ['role:su,admin']], function() {
         // ROUTE PENGATURAN
         Route::view('pengaturan', 'pengaturan.index')->name('pengaturan');
         Route::prefix('pengaturan')->group(function () {
@@ -46,16 +46,24 @@ Route::group(['middleware' => ['auth']], function() {
 
 
         // ROUTE DB
-    Route::view('db', 'db.index')->name('db')->middleware('role:admin,user');
+    Route::view('db', 'db.index')->name('db')->middleware('role:su,admin,user');
     Route::prefix('db')->group(function () {
-        Route::group(['middleware' => ['role:admin,user']], function() {
+
+        Route::group(['middleware' => ['role:su,admin,user']], function() {
             Route::get('/customer', [App\Http\Controllers\CustomerController::class, 'index'])->name('db.customer');
             Route::patch('/customer/{customer}/update-harga', [App\Http\Controllers\CustomerController::class, 'update_harga'])->name('db.customer.update-harga');
         });
-        Route::group(['middleware' => ['role:admin']], function() {
+
+        Route::group(['middleware' => ['role:su,admin']], function() {
             Route::post('/customer/store', [App\Http\Controllers\CustomerController::class, 'store'])->name('db.customer.store');
             Route::patch('/customer/{customer}/update', [App\Http\Controllers\CustomerController::class, 'update'])->name('db.customer.update');
             Route::delete('/customer/{customer}/delete', [App\Http\Controllers\CustomerController::class, 'destroy'])->name('db.customer.delete');
+
+            Route::prefix('project')->group(function(){
+                Route::get('/', [App\Http\Controllers\ProjectController::class, 'index'])->name('db.project');
+                Route::post('/store', [App\Http\Controllers\ProjectController::class, 'store'])->name('db.project.store');
+                Route::patch('/{project}/update', [App\Http\Controllers\ProjectController::class, 'update'])->name('db.project.update');
+            });
 
             Route::get('/investor', [App\Http\Controllers\InvestorController::class, 'index'])->name('db.investor');
             Route::post('/investor/store', [App\Http\Controllers\InvestorController::class, 'store'])->name('db.investor.store');
@@ -74,7 +82,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 
 
-    Route::group(['middleware' => ['role:admin,user,investor']], function() {
+    Route::group(['middleware' => ['role:su,admin,user,investor']], function() {
         Route::get('rekap', [App\Http\Controllers\RekapController::class, 'index'])->name('rekap');
         Route::prefix('rekap')->group(function() {
             Route::get('/kas-besar', [App\Http\Controllers\RekapController::class, 'kas_besar'])->name('rekap.kas-besar');
@@ -95,7 +103,7 @@ Route::group(['middleware' => ['auth']], function() {
     });
 
     // END ROUTE REKAP
-    Route::group(['middleware' => ['role:admin,user']], function() {
+    Route::group(['middleware' => ['role:su,admin,user']], function() {
         Route::get('/billing', [App\Http\Controllers\BillingController::class, 'index'])->name('billing');
         Route::prefix('billing')->group(function() {
 

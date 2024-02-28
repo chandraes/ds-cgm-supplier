@@ -42,18 +42,6 @@
                             <textarea class="form-control" name="alamat" id="alamat" rows="3" required></textarea>
                           </div>
                     </div>
-                    <hr>
-                    <div class="row mt-3">
-                        <div class="col-md-12 mb-3">
-                            <label for="harga" class="form-label">Harga</label>
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1">Rp</span>
-                                <input type="text" class="form-control @if ($errors->has('harga'))
-                            is-invalid
-                        @endif" name="harga" id="harga" required>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

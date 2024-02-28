@@ -17,10 +17,8 @@ class PengaturanController extends Controller
     {
 
         $users = User::all();
-        $suppliers = Supplier::all();
         return view('pengaturan.pengguna.index', [
             'data' => $users,
-            'suppliers' => $suppliers,
         ]);
     }
 
@@ -70,12 +68,11 @@ class PengaturanController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->validate([
-            'username' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $id,
             'name' => 'required|string|max:255',
             'email' => 'nullable',
             'password' => 'nullable',
             'role' => 'required',
-            'supplier_id' => 'nullable',
         ]);
 
         $user = User::findOrFail($id);
@@ -93,7 +90,7 @@ class PengaturanController extends Controller
         try {
             $user->update($data);
         } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Username sudah digunakan!');
+            return redirect()->back()->with('error', $th->getMessage());
         }
 
         return redirect()->route('pengaturan.akun')->with('success', 'Data berhasil diubah!');

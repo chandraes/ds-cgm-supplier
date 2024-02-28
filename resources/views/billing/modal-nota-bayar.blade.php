@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalNotaBayar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+{{-- <div class="modal fade" id="modalNotaBayar" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
     role="dialog" aria-labelledby="notaBayarTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -25,4 +25,4 @@
             </form>
         </div>
     </div>
-</div>
+</div> --}}

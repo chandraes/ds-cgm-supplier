@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('no_wa');
             $table->string('npwp');
             $table->text('alamat');
-            $table->integer('harga');
             $table->timestamps();
         });
     }

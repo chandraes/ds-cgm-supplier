@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'user', 'investor', 'supplier'])->change();
+        Schema::create('project_statuses', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_status');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('role', ['admin', 'user', 'investor'])->change();
-        });
+        Schema::dropIfExists('project_statuses');
     }
 };

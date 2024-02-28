@@ -27,7 +27,7 @@
 
 	</head>
 
-	<body class="bg-warning bg-gradient">
+	<body class="bg-secondary bg-gradient">
 
 		<div>
 

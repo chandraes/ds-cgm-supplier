@@ -74,7 +74,7 @@
                     <td class="text-center align-middle">{{$d->nf_profit}}</td>
                     <td class="text-center align-middle">{{number_format($d->total_tagihan,0,',','.')}}</td>
                     <td class="text-center align-middle">
-                        @if (auth()->user()->role == 'admin')
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
                         <button class="btn m-2 btn-warning" data-bs-toggle="modal" data-bs-target="#editTransaksi" onclick="editTransaksi({{$d}}, {{$d->id}})"><i class="fa fa-edit"></i></button>
                         <form action="{{route('form-transaksi.delete', ['transaksi' => $d->id])}}" method="post" style="display: inline-block;"
                             id="delete-{{$d->id}}">

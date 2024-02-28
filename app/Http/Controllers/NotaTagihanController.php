@@ -9,7 +9,6 @@ use App\Models\InvoicePpn;
 use App\Models\InvoiceTagihan;
 use App\Models\InvoiceTagihanDetail;
 use App\Models\KasBesar;
-use App\Models\KasSupplier;
 use App\Models\GroupWa;
 use App\Models\PesanWa;
 use App\Services\StarSender;
@@ -28,7 +27,6 @@ class NotaTagihanController extends Controller
         $totalProfit = $transaksi->notaTagihanTotalProfit($customer->id);
         $totalPPH = $transaksi->notaTagihanTotalPPH($customer->id);
         $data = $transaksi->notaTagihan($customer->id);
-        $supplier = Supplier::select('id', 'nama', 'nickname')->get();
 
         return view('billing.nota-tagihan.index', [
             'data' => $data,
@@ -38,45 +36,12 @@ class NotaTagihanController extends Controller
             'totalTagihan' => $totalTagihan,
             'totalProfit' => $totalProfit,
             'totalPPH' => $totalPPH,
-            'supplier' => $supplier,
         ]);
     }
 
     public function edit_store(Transaksi $transaksi, Request $request)
     {
-        $data = $request->validate([
-            'supplier_id' => 'required|exists:suppliers,id',
-            'tanggal' => 'required',
-            'nota_timbangan' => 'required|min:9|max:9',
-            'berat' => 'required',
-        ]);
 
-        $supplier = Supplier::findOrFail($data['supplier_id']);
-
-        if ($supplier->persen_profit == null || $supplier->persen_profit == 0) {
-            return redirect()->back()->with('error', 'Supplier belum memiliki persen profit! Harap hubungi admin untuk mengisi persen profit supplier!');
-        }
-
-        $persen_profit = $supplier->persen_profit / 100;
-
-        $data['berat'] = str_replace('.', '', $data['berat']);
-        $data['tanggal'] = date('Y-m-d', strtotime($data['tanggal']));
-        $data['total'] = $data['berat'] * $transaksi->harga;
-        $data['pph'] = $data['total'] * 0.0025;
-        $data['profit'] = $data['total'] * $persen_profit;
-        $data['total_ppn'] = $data['total'] * 0.11;
-        $data['total_tagihan'] = $data['total'] - $data['pph'];
-        $data['total_bayar'] = $data['total_tagihan'] - $data['profit'];
-
-        try {
-
-            $transaksi->update($data);
-
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Terdapat Nota Timbang yang sama!');
-        }
-
-        return redirect()->back()->with('success', 'Data Berhasil Diubah');
     }
 
     public function cutoff(Request $request)
@@ -115,8 +80,6 @@ class NotaTagihanController extends Controller
         $monthName = Carbon::parse($tanggal)->locale('id')->monthName;
         $year = date('Y', strtotime($tanggal));
 
-        // total profit bersih
-        $kasSupplier = new KasSupplier();
 
         //
 
@@ -147,9 +110,8 @@ class NotaTagihanController extends Controller
         $last = $kasBesar->lastKasBesar()->saldo ?? 0;
         $modalInvestor = ($kasBesar->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
         $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
 
-        $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $total_profit_bulan = ($totalTagihan+$last)-($modalInvestor+$totalPpn);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 

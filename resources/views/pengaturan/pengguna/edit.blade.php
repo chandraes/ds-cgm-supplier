@@ -63,18 +63,6 @@
                                 <option value="admin" @if($d->role == 'admin') selected @endif>Admin</option>
                                 <option value="user" @if($d->role == 'user') selected @endif>User</option>
                                 <option value="investor" @if($d->role == 'investor') selected @endif>Investor</option>
-                                <option value="supplier" @if($d->role == 'supplier') selected @endif>Supplier</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-4" @if ($d->role != 'supplier') hidden @endif>
-                        <label for="" class="col-md-3 form-label">Supplier</label>
-                        <div class="col-md-9">
-                            <select class="form-select" name="supplier_id" id="edit_supplier_id">
-                                <option value="">-- Pilih Supplier --</option>
-                                @foreach ($suppliers as $supplier)
-                                <option value="{{$supplier->id}}" {{$d->supplier_id == $supplier->id ? "selected" : ""}}>{{$supplier->nama}}</option>
-                                @endforeach
                             </select>
                         </div>
                     </div>

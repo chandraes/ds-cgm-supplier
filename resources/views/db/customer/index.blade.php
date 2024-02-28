@@ -14,7 +14,7 @@
                                 width="30"> Dashboard</a></td>
                     <td><a href="{{route('db')}}"><img src="{{asset('images/database.svg')}}" alt="dokumen" width="30">
                             Database</a></td>
-                    @if (auth()->user()->role == 'admin')
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
                     <td><a href="#" data-bs-toggle="modal" data-bs-target="#createCustomer"><img
                                 src="{{asset('images/customer.svg')}}" width="30"> Tambah Customer</a>
                     </td>
@@ -33,7 +33,6 @@
                 <th class="text-center align-middle">Nama</th>
                 <th class="text-center align-middle">Contact Person</th>
                 <th class="text-center align-middle">No Wa</th>
-                <th class="text-center align-middle">Harga</th>
                 <th class="text-center align-middle">Action</th>
             </tr>
         </thead>
@@ -45,14 +44,7 @@
                 <td class="text-center align-middle">{{$d->cp}}</td>
                 <td class="text-center align-middle">{{$d->no_wa}}</td>
                 <td class="text-center align-middle">
-                    <button href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editHargaCustomer"
-                        onclick="editHargaCustomer({{$d}}, {{$d->id}})">
-                        Rp. {{$d->harga}}
-                    </button>
-
-                </td>
-                <td class="text-center align-middle">
-                    @if (auth()->user()->role == 'admin')
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#editCustomer"
                             onclick="editCustomer({{$d}}, {{$d->id}})">Edit</button>
@@ -87,7 +79,6 @@
         </tbody>
     </table>
 </div>
-@include('db.customer.edit-harga')
 @include('db.customer.edit')
 @endsection
 @push('css')
@@ -105,16 +96,9 @@
         document.getElementById('editCp').value = data.cp;
         document.getElementById('editNo_wa').value = data.no_wa;
         document.getElementById('editAlamat').value = data.alamat;
-        document.getElementById('editHarga').value = data.harga;
         document.getElementById('edit_npwp').value = data.npwp;
         // Populate other fields...
         document.getElementById('editForm').action = '/db/customer/' + id + '/update';
-    }
-
-    function editHargaCustomer(data, id) {
-        document.getElementById('editHarga2').value = data.harga;
-        document.getElementById('edit_harga_nama').value = data.nama;
-        document.getElementById('editHargaForm').action = '/db/customer/'+id + '/update-harga';
     }
 
     $('#data').DataTable({
