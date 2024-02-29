@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('invoice_bayars', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('supplier_id')->constrained('suppliers');
+            $table->foreignId('project_id')->constrained();
             $table->date('tanggal');
             $table->bigInteger('no_invoice');
             $table->bigInteger('total_bayar');

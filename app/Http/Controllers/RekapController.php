@@ -18,11 +18,9 @@ class RekapController extends Controller
     public function index()
     {
         $customer = Customer::all();
-        $supplier = Supplier::select('id', 'nama', 'nickname')->get();
 
         return view('rekap.index', [
             'customer' => $customer,
-            'supplier' => $supplier
         ]);
     }
 
@@ -203,74 +201,74 @@ class RekapController extends Controller
 
     }
 
-    public function kas_supplier(Request $request)
-    {
+    // public function kas_supplier(Request $request)
+    // {
 
-        $supplier = Supplier::findOrFail($request->supplier);
+    //     $supplier = Supplier::findOrFail($request->supplier);
 
-        $kas = new KasSupplier;
+    //     $kas = new KasSupplier;
 
-        $bulan = $request->bulan ?? date('m');
-        $tahun = $request->tahun ?? date('Y');
+    //     $bulan = $request->bulan ?? date('m');
+    //     $tahun = $request->tahun ?? date('Y');
 
-        $dataTahun = $kas->dataTahun();
+    //     $dataTahun = $kas->dataTahun();
 
-        $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
+    //     $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
 
-        $bulanSebelumnya = $bulan - 1;
-        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+    //     $bulanSebelumnya = $bulan - 1;
+    //     $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
+    //     $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
+    //     $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
+    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
 
-        $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
+    //     $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
 
-        return view('rekap.kas-supplier.index', [
-            'supplier' => $supplier,
-            'data' => $data,
-            'dataTahun' => $dataTahun,
-            'dataSebelumnya' => $dataSebelumnya,
-            'stringBulan' => $stringBulan,
-            'tahun' => $tahun,
-            'tahunSebelumnya' => $tahunSebelumnya,
-            'bulan' => $bulan,
-            'stringBulanNow' => $stringBulanNow,
-        ]);
-    }
+    //     return view('rekap.kas-supplier.index', [
+    //         'supplier' => $supplier,
+    //         'data' => $data,
+    //         'dataTahun' => $dataTahun,
+    //         'dataSebelumnya' => $dataSebelumnya,
+    //         'stringBulan' => $stringBulan,
+    //         'tahun' => $tahun,
+    //         'tahunSebelumnya' => $tahunSebelumnya,
+    //         'bulan' => $bulan,
+    //         'stringBulanNow' => $stringBulanNow,
+    //     ]);
+    // }
 
-    public function kas_supplier_print(Request $request)
-    {
+    // public function kas_supplier_print(Request $request)
+    // {
 
-        $supplier = Supplier::findOrFail($request->supplier);
+    //     $supplier = Supplier::findOrFail($request->supplier);
 
-        $kas = new KasSupplier;
+    //     $kas = new KasSupplier;
 
-        $bulan = $request->bulan ?? date('m');
-        $tahun = $request->tahun ?? date('Y');
+    //     $bulan = $request->bulan ?? date('m');
+    //     $tahun = $request->tahun ?? date('Y');
 
-        $dataTahun = $kas->dataTahun();
+    //     $dataTahun = $kas->dataTahun();
 
-        $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
+    //     $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
 
-        $bulanSebelumnya = $bulan - 1;
-        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+    //     $bulanSebelumnya = $bulan - 1;
+    //     $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
+    //     $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
+    //     $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
+    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
 
-        $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
+    //     $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
 
-        $pdf = PDF::loadview('rekap.kas-supplier.pdf', [
-            'supplier' => $supplier,
-            'data' => $data,
-            'dataSebelumnya' => $dataSebelumnya,
-            'stringBulan' => $stringBulan,
-            'tahun' => $tahun,
-            'tahunSebelumnya' => $tahunSebelumnya,
-            'bulan' => $bulan,
-            'stringBulanNow' => $stringBulanNow,
-        ])->setPaper('a4', 'portrait');
+    //     $pdf = PDF::loadview('rekap.kas-supplier.pdf', [
+    //         'supplier' => $supplier,
+    //         'data' => $data,
+    //         'dataSebelumnya' => $dataSebelumnya,
+    //         'stringBulan' => $stringBulan,
+    //         'tahun' => $tahun,
+    //         'tahunSebelumnya' => $tahunSebelumnya,
+    //         'bulan' => $bulan,
+    //         'stringBulanNow' => $stringBulanNow,
+    //     ])->setPaper('a4', 'portrait');
 
-        return $pdf->stream('Rekap Kas Supplier '.$stringBulanNow.' '.$tahun.'.pdf');
-    }
+    //     return $pdf->stream('Rekap Kas Supplier '.$stringBulanNow.' '.$tahun.'.pdf');
+    // }
 }

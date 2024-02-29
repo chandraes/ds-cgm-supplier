@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
@@ -24,12 +25,16 @@ class CustomerController extends Controller
             'cp' => 'required',
             'no_wa' => 'required',
             'alamat' => 'required',
-            'harga' => 'required',
         ]);
 
-        $data['harga'] = str_replace('.', '', $data['harga']);
-
-        Customer::create($data);
+        DB::beginTransaction();
+        try {
+            Customer::create($data);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return redirect()->back()->with('error', $th->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Data berhasil ditambahkan!');
 

@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::table('kas_besars', function (Blueprint $table) {
             $table->foreignId('invoice_bayar_id')->nullable()->after('invoice_tagihan_id')->constrained('invoice_bayars');
         });
-        Schema::table('kas_suppliers', function (Blueprint $table) {
-            $table->foreignId('invoice_bayar_id')->nullable()->after('saldo')->constrained('invoice_bayars');
-        });
+
     }
 
     /**
@@ -28,9 +26,6 @@ return new class extends Migration
             $table->dropForeign(['invoice_bayar_id']);
             $table->dropColumn('invoice_bayar_id');
         });
-        Schema::table('kas_suppliers', function (Blueprint $table) {
-            $table->dropForeign(['invoice_bayar_id']);
-            $table->dropColumn('invoice_bayar_id');
-        });
+
     }
 };

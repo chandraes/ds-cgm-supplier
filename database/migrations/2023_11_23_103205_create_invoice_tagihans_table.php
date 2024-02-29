@@ -18,6 +18,7 @@ return new class extends Migration
         Schema::create('invoice_tagihans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers');
+            $table->foreignId('project_id')->constrained('projects');
             $table->integer('no_invoice');
             $table->date('tanggal');
             $table->bigInteger('total_tagihan');

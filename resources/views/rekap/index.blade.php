@@ -12,7 +12,7 @@
                 <h2>KAS BESAR</h2>
             </a>
         </div>
-        <div class="col-md-3 mt-3 text-center">
+        {{-- <div class="col-md-3 mt-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
                 <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="100">
                 <h2>KAS SUPPLIER</h2>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-md-3 mt-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalInvoiceRekap">
                 <img src="{{asset('images/rekap-invoice.svg')}}" alt="" width="100">

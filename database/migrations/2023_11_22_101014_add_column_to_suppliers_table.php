@@ -11,10 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('suppliers', function (Blueprint $table) {
-            $table->float('persen_profit')->after('id')->nullable();
-        });
-
         Schema::table('transaksis', function (Blueprint $table) {
             $table->bigInteger('total_ppn')->after('total_bayar');
         });
@@ -25,10 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('suppliers', function (Blueprint $table) {
-            $table->dropColumn('persen_profit');
-        });
-
         Schema::table('transaksis', function (Blueprint $table) {
             $table->dropColumn('total_ppn');
         });

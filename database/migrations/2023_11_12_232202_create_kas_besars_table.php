@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('kas_besars', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->constrained();
             $table->date('tanggal');
             $table->string('uraian')->nullable();
             $table->boolean('jenis');

@@ -10,6 +10,15 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="customer_id" class="form-label text-capitalize">Nama Customer</label>
+                            <select class="form-select" name="customer_id" id="customer_id" required>
+                                <option value="" selected>Pilih Customer</option>
+                                @foreach ($customers as $customer)
+                                <option value="{{$customer->id}}">{{$customer->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="col-md-6 mb-3">
                             <label for="nama" class="form-label">Nama Project</label>
                             <input type="text" class="form-control" name="nama" id="nama" aria-describedby="helpId"

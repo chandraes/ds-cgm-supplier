@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\KasBesar;
 use App\Models\Rekening;
-use App\Models\KasSupplier;
 use App\Models\Transaksi;
 use App\Models\InvoicePpn;
 use App\Services\StarSender;
@@ -41,7 +40,6 @@ class FormDepositController extends Controller
         $data['modal_investor'] = -$data['nominal_transaksi'];
 
         $kasBesar = new KasBesar();
-        $kasSupplier = new KasSupplier;
         $transaksi = new Transaksi;
         $ppn = new InvoicePpn;
         $lastKasBesar = $kasBesar->lastKasBesar();
@@ -64,9 +62,8 @@ class FormDepositController extends Controller
         $last = $kasBesar->lastKasBesar()->saldo ?? 0;
         $modalInvestor = ($kasBesar->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
         $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
 
-        $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $total_profit_bulan = ($totalTagihan+$last)-($modalInvestor+$totalPpn);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
@@ -134,7 +131,6 @@ class FormDepositController extends Controller
         $data['bank'] = $rekening->bank;
 
         $kasBesar = new KasBesar;
-        $kasSupplier = new KasSupplier;
         $transaksi = new Transaksi;
         $ppn = new InvoicePpn;
         $last = $kasBesar->lastKasBesar();
@@ -155,9 +151,8 @@ class FormDepositController extends Controller
         $last = $kasBesar->lastKasBesar()->saldo ?? 0;
         $modalInvestor = ($kasBesar->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
         $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
 
-        $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $total_profit_bulan = ($totalTagihan+$last)-($modalInvestor+$totalPpn);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 

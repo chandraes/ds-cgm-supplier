@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->boolean('status')->default(false);
             $table->foreignId('customer_id')->constrained('customers');
-            $table->foreignId('supplier_id')->constrained('suppliers');
+            $table->foreignId('project_id')->constrained('projects');
             $table->index('status');
             $table->date('tanggal');
             $table->string('nota_timbangan')->unique();

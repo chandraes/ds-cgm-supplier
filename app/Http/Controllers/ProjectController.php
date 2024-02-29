@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,8 +11,12 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-
-        return view('db.project.index');
+        $data = Customer::all();
+        return view('db.project.index',
+            [
+                'customers' => $data
+            ]
+        );
     }
 
     public function store(Request $request)

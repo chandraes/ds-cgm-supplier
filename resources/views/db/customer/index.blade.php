@@ -164,13 +164,6 @@
             })
         });
 
-    var harga = new Cleave('#harga', {
-        numeral: true,
-        numeralThousandsGroupStyle: 'thousand',
-        numeralDecimalMark: ',',
-        delimiter: '.'
-    });
-
     var editWa = new Cleave('#editNo_wa', {
         delimiter: '-',
         blocks: [4, 4, 8]
@@ -184,20 +177,6 @@
     var edit_npwp = new Cleave('#edit_npwp', {
         delimiters: ['.', '.', '.', '-','.','.'],
         blocks: [2, 3, 3, 1, 3, 3],
-    });
-
-    var editHarga = new Cleave('#editHarga', {
-        numeral: true,
-        numeralThousandsGroupStyle: 'thousand',
-        numeralDecimalMark: ',',
-        delimiter: '.'
-    });
-
-    var editHarga2 = new Cleave('#editHarga2', {
-        numeral: true,
-        numeralThousandsGroupStyle: 'thousand',
-        numeralDecimalMark: ',',
-        delimiter: '.'
     });
 
     var wa = new Cleave('#no_wa', {
