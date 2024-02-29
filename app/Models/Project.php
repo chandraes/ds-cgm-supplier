@@ -12,14 +12,29 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo'];
+    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai'];
+
+    public function getNfNilaiAttribute()
+    {
+        return number_format($this->nilai, 0, ',', '.');
+    }
+
+    public function getIdTanggalMulaiAttribute()
+    {
+        return Carbon::parse($this->tanggal_mulai)->format('d-m-Y');
+    }
+
+    public function getIdJatuhTempoAttribute()
+    {
+        return Carbon::parse($this->jatuh_tempo)->format('d-m-Y');
+    }
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function status()
+    public function project_status()
     {
         return $this->belongsTo(ProjectStatus::class);
     }
@@ -44,5 +59,16 @@ class Project extends Model
         $data['project_status_id'] = 1;
 
         return Project::create($data);
+    }
+
+    public static function updateProject($id, $data)
+    {
+        $data['nilai'] = str_replace('.', '', $data['nilai']);
+        $date = Carbon::createFromFormat('d-m-Y', $data['tanggal_mulai']);
+        $data['tanggal_mulai'] = $date->format('Y-m-d');
+        $jatuhTempo = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo']);
+        $data['jatuh_tempo'] = $jatuhTempo->format('Y-m-d');
+
+        return Project::where('id', $id)->update($data);
     }
 }

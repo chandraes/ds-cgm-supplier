@@ -40,48 +40,33 @@
             </tr>
         </thead>
         <tbody>
-            {{-- @foreach ($data as $d)
-            <tr>
-                <td class="text-center align-middle">{{$loop->iteration}}</td>
-                <td class="text-center align-middle">{{$d->nama}}</td>
-                <td class="text-center align-middle">{{$d->nickname}}</td>
-                <td class="text-center align-middle">{{$d->no_wa}}</td>
-                <td class="text-center align-middle">{{$d->no_rek}}</td>
-                <td class="text-center align-middle">{{$d->nama_rek}}</td>
-                <td class="text-center align-middle">{{$d->bank}}</td>
-                <td class="text-center align-middle">
-                    <div class="d-flex justify-content-center">
-                        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal"
-                            data-bs-target="#editSupplier" onclick="editSupplier({{$d}}, {{$d->id}})"><i
-                                class="fa fa-edit"></i></button>
-                        <form action="{{route('db.supplier.delete', $d)}}" method="post" id="deleteForm-{{$d->id}}">
-                            @csrf
-                            @method('delete')
-                            <button type="submit" class="btn btn-danger m-2"><i class="fa fa-trash"></i></button>
-                        </form>
-                    </div>
-
-                </td>
-            </tr>
-            <script>
-                $('#deleteForm-{{$d->id}}').submit(function(e){
-                       e.preventDefault();
-                       Swal.fire({
-                           title: 'Apakah data yakin untuk menghapus data ini?',
-                           icon: 'warning',
-                           showCancelButton: true,
-                           confirmButtonColor: '#3085d6',
-                           cancelButtonColor: '#6c757d',
-                           confirmButtonText: 'Ya, hapus!'
-                           }).then((result) => {
-                           if (result.isConfirmed) {
-                            $('#spinner').show();
-                               this.submit();
-                           }
-                       })
-                   });
-            </script>
-            @endforeach --}}
+            @foreach ($data as $d)
+                <tr>
+                    <td class="text-center align-middle">{{$loop->iteration}}</td>
+                    <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
+                    <td class="text-center align-middle">{{$d->nama}}</td>
+                    <td class="text-end align-middle">{{$d->nf_nilai}}</td>
+                    <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
+                    <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
+                    <td class="text-center align-middle">
+                        <button class="btn {{ $d->project_status_id == 1 ? 'btn-warning' : ($d->project_status_id == 3 ? 'btn-success' : 'btn-danger') }}">
+                            {{$d->project_status->nama_status}}
+                        </button>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal"
+                                data-bs-target="#editProject" onclick="editProject({{$d}}, {{$d->id}})"><i
+                                    class="fa fa-edit"></i></button>
+                            <form action="{{route('db.project.delete', $d)}}" method="post" id="deleteForm-{{$d->id}}">
+                                @csrf
+                                @method('delete')
+                                <button type="submit" class="btn btn-danger m-2"><i class="fa fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 </div>
@@ -90,11 +75,13 @@
 @push('css')
 <link href="{{asset('assets/css/dt.min.css')}}" rel="stylesheet">
 <link rel="stylesheet" href="{{asset('assets/js/flatpickr/flatpickr.min.css')}}">
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.bootstrap5.css')}}">
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
 @endpush
 @push('js')
 <script src="{{asset('assets/js/flatpickr/flatpickr.js')}}"></script>
 <script src="{{asset('assets/js/cleave.min.js')}}"></script>
-
+<script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
 
@@ -118,11 +105,18 @@
 
     function editProject(data, id) {
         document.getElementById('edit_nama').value = data.nama;
-        document.getElementById('edit_nilai').value = data.nilai;
+        document.getElementById('edit_customer_id').value = data.customer_id;
+        document.getElementById('edit_nilai').value = data.nf_nilai;
         document.getElementById('edit_tanggal_mulai').value = data.id_tanggal_mulai;
         document.getElementById('edit_jatuh_tempo').value = data.id_jatuh_tempo;
         document.getElementById('editForm').action = '/db/project/' + id + '/update';
     };
+
+    $('#customer_id').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        dropdownParent: $('#createCustomer')
+    });
 
     $('#data').DataTable({
         paging: false,
@@ -138,6 +132,13 @@
         delimiter: '.'
     });
 
+    var editNilai = new Cleave('#edit_nilai', {
+        numeral: true,
+        numeralThousandsGroupStyle: 'thousand',
+        numeralDecimalMark: ',',
+        delimiter: '.'
+    });
+
     flatpickr("#tanggal_mulai", {
             dateFormat: "d-m-Y",
         });
@@ -146,19 +147,12 @@
         dateFormat: "d-m-Y",
     });
 
-    var edit_npwp = new Cleave('#edit_npwp', {
-        delimiters: ['.', '.', '.', '-','.','.'],
-        blocks: [2, 3, 3, 1, 3, 3],
-    });
+    flatpickr("#edit_tanggal_mulai", {
+            dateFormat: "d-m-Y",
+        });
 
-    var edit_no_wa = new Cleave('#edit_no_wa', {
-        delimiter: '-',
-        blocks: [4, 4, 8]
-    });
-
-    var edit_no_rek = new Cleave('#edit_no_rek', {
-        delimiter: '-',
-        blocks: [4, 4, 8]
+    flatpickr("#edit_jatuh_tempo", {
+        dateFormat: "d-m-Y",
     });
 
 

@@ -11,10 +11,13 @@ class ProjectController extends Controller
 {
     public function index(Request $request)
     {
-        $data = Customer::all();
+        $customer = Customer::all();
+        $data = Project::with(['customer', 'project_status'])->whereNot('project_status_id', 3)->get();
+
         return view('db.project.index',
             [
-                'customers' => $data
+                'customers' => $customer,
+                'data' => $data
             ]
         );
     }
@@ -22,13 +25,15 @@ class ProjectController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'customer_id' => 'required|exists:customer,id',
+            'customer_id' => 'required|exists:customers,id',
             'nama' => 'required',
             'nilai' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
-            'project_status_id' => 'required|exists:project_statuses,id',
+            // 'project_status_id' => 'required|exists:project_statuses,id',
         ]);
+
+        $data['project_status_id'] = 1; // status project default [1 = On Progress
 
         DB::beginTransaction();
 
@@ -37,11 +42,41 @@ class ProjectController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('projects.index')
+            return redirect()->route('db.project')
                 ->with('error', $e->getMessage());
         }
 
-        return redirect()->route('projects.index')
+        return redirect()->route('db.project')
             ->with('success', 'Project berhasil dibuat!');
+    }
+
+    public function update(Project $project, Request $request)
+    {
+        // dd($request->all()); // check if the project is exist or not (debugging purpose
+        $data = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'nama' => 'required',
+            'nilai' => 'required',
+            'tanggal_mulai' => 'required',
+            'jatuh_tempo' => 'required',
+        ]);
+
+        $data['project_status_id'] = 1;
+        DB::beginTransaction();
+
+        try {
+            Project::updateProject($project->id, $data);
+            DB::commit();
+
+        return redirect()->route('db.project')
+            ->with('success', 'Project berhasil diupdate!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('db.project')
+                ->with('error', $e->getMessage());
+        }
+
+
     }
 }

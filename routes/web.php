@@ -63,6 +63,7 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('/', [App\Http\Controllers\ProjectController::class, 'index'])->name('db.project');
                 Route::post('/store', [App\Http\Controllers\ProjectController::class, 'store'])->name('db.project.store');
                 Route::patch('/{project}/update', [App\Http\Controllers\ProjectController::class, 'update'])->name('db.project.update');
+                Route::delete('/{project}/delete', [App\Http\Controllers\ProjectController::class, 'destroy'])->name('db.project.delete');
             });
 
             Route::get('/investor', [App\Http\Controllers\InvestorController::class, 'index'])->name('db.investor');
