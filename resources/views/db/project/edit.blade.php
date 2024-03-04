@@ -11,7 +11,7 @@
                 @method('patch')
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-6 col-md-12 mb-3">
+                        <div class="col-lg-4 col-md-12 mb-3">
                             <label for="customer_id" class="form-label text-capitalize">Nama Customer</label>
                             <select class="form-select" name="customer_id" id="edit_customer_id" required>
                                 <option value="" selected>Pilih Customer</option>
@@ -20,9 +20,14 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-lg-6 col-md-12 mb-3">
+                        <div class="col-lg-4 col-md-12 mb-3">
                             <label for="nama" class="form-label">Nama Project</label>
                             <input type="text" class="form-control" name="nama" id="edit_nama" aria-describedby="helpId"
+                                placeholder="" required>
+                        </div>
+                        <div class="col-lg-4 col-md-12 mb-3">
+                            <label for="nomor_kontrak" class="form-label">No. Kontrak</label>
+                            <input type="text" class="form-control" name="nomor_kontrak" id="edit_nomor_kontrak" aria-describedby="helpId"
                                 placeholder="" required>
                         </div>
                     </div>

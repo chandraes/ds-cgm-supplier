@@ -32,6 +32,7 @@
                 <th class="text-center align-middle" style="width: 5%">NO</th>
                 <th class="text-center align-middle">CUSTOMER</th>
                 <th class="text-center align-middle">NAMA PROJECT</th>
+                <th class="text-center align-middle">NO KONTRAK</th>
                 <th class="text-center align-middle">NILAI PROJECT</th>
                 <th class="text-center align-middle">TGL MULAI</th>
                 <th class="text-center align-middle">TGL JATUH TEMPO</th>
@@ -45,6 +46,7 @@
                     <td class="text-center align-middle">{{$loop->iteration}}</td>
                     <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
                     <td class="text-center align-middle">{{$d->nama}}</td>
+                    <td class="text-center align-middle">{{$d->nomor_kontrak}}</td>
                     <td class="text-end align-middle">{{$d->nf_nilai}}</td>
                     <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
                     <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
@@ -107,6 +109,7 @@
         document.getElementById('edit_nama').value = data.nama;
         document.getElementById('edit_customer_id').value = data.customer_id;
         document.getElementById('edit_nilai').value = data.nf_nilai;
+        document.getElementById('edit_nomor_kontrak').value = data.nomor_kontrak;
         document.getElementById('edit_tanggal_mulai').value = data.id_tanggal_mulai;
         document.getElementById('edit_jatuh_tempo').value = data.id_jatuh_tempo;
         document.getElementById('editForm').action = '/db/project/' + id + '/update';

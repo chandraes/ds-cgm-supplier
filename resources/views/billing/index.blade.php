@@ -65,7 +65,7 @@
             @include('billing.modal-form-transaksi')
 
         </div>
-        <div class="col-md-3 text-center mt-5">
+        {{-- <div class="col-md-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#notaTagihan">
                 <img src="{{asset('images/nota-tagihan.svg')}}" alt="" width="100">
                 <h2>NOTA TAGIHAN @if($nt != 0) <span class="text-danger">({{$nt}})</span> @endif</h2>
@@ -114,7 +114,7 @@
                 <img src="{{asset('images/form-ppn.svg')}}" alt="" width="100">
                 <h2>FORM PPN @if($ppn != 0) <span class="text-danger">({{$ppn}})</span> @endif</h2>
             </a>
-        </div>
+        </div> --}}
         <div class="col-md-3 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="100">

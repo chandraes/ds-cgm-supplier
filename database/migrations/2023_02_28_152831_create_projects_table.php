@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained();
             $table->string('nama');
+            $table->string('nomor_kontrak');
             $table->bigInteger('nilai');
             $table->date('tanggal_mulai');
             $table->date('jatuh_tempo');

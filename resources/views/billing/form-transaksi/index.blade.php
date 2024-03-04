@@ -21,7 +21,7 @@
                     <label for="supplier_id" class="form-label">Supplier</label>
                     <select class="form-select" name="supplier_id" id="supplier_id" required>
                         <option value="">-- Pilih Supplier --</option>
-                        @foreach ($supplier as $s)
+                        @foreach ($project as $s)
                         <option value="{{$s->id}}" {{session('supplier') == $s->id ? 'selected' : ''}}>{{$s->nama}}</option>
                         @endforeach
                     </select>

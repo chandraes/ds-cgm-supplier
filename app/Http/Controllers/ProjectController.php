@@ -27,6 +27,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'nama' => 'required',
+            'nomor_kontrak' => 'required',
             'nilai' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
@@ -38,7 +39,9 @@ class ProjectController extends Controller
         DB::beginTransaction();
 
         try {
-            Project::createProject($data);
+            $store = Project::createProject($data);
+
+            
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -57,11 +60,12 @@ class ProjectController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'nama' => 'required',
             'nilai' => 'required',
+            'nomor_kontrak' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
         ]);
 
-        $data['project_status_id'] = 1;
+
         DB::beginTransaction();
 
         try {

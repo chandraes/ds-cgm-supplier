@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksis', function (Blueprint $table) {
-            $table->boolean('ppn')->after('bayar')->default(false);
-        });
-
         Schema::create('invoice_tagihans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained('customers');
             $table->foreignId('project_id')->constrained('projects');
-            $table->integer('no_invoice');
-            $table->date('tanggal');
-            $table->bigInteger('total_tagihan');
+            $table->date('tanggal_mulai');
+            $table->date('jatuh_tempo');
+            $table->bigInteger('nilai_tagihan');
+            $table->bigInteger('sisa_tagihan');
+            $table->bigInteger('dibayar');
             $table->timestamps();
         });
     }
@@ -31,10 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksis', function (Blueprint $table) {
-            $table->dropColumn('ppn');
-        });
-
-        Schema::dropIfExists('invoice_tagihans');
+          Schema::dropIfExists('invoice_tagihans');
     }
 };
