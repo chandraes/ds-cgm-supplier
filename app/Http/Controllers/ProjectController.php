@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\KasProject;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,23 +35,12 @@ class ProjectController extends Controller
             // 'project_status_id' => 'required|exists:project_statuses,id',
         ]);
 
-        $data['project_status_id'] = 1; // status project default [1 = On Progress
+        $data['project_status_id'] = 1;
 
-        DB::beginTransaction();
-
-        try {
-            $store = Project::createProject($data);
-
-            
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->route('db.project')
-                ->with('error', $e->getMessage());
-        }
+        $store = Project::createProject($data);
 
         return redirect()->route('db.project')
-            ->with('success', 'Project berhasil dibuat!');
+            ->with($store['status'], $store['message']);
     }
 
     public function update(Project $project, Request $request)
@@ -81,6 +71,31 @@ class ProjectController extends Controller
                 ->with('error', $e->getMessage());
         }
 
+    }
 
+    public function destroy(Project $project)
+    {
+        $kas = KasProject::where('project_id', $project->id)->first();
+
+        if($kas) {
+            return redirect()->route('db.project')
+                ->with('error', 'Project tidak bisa dihapus karena sudah ada transaksi!');
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $project->invoice_tagihan()->delete();
+            $project->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            return redirect()->route('db.project')
+                ->with('error', $e->getMessage());
+        }
+
+        return redirect()->route('db.project')
+            ->with('success', 'Project berhasil dihapus!');
     }
 }

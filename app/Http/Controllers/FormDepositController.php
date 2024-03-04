@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\KasBesar;
 use App\Models\Rekening;
 use App\Models\Transaksi;
 use App\Models\InvoicePpn;
 use App\Services\StarSender;
 use App\Models\PesanWa;
 use App\Models\GroupWa;
+use App\Models\KasProject;
 use Illuminate\Http\Request;
 
 class FormDepositController extends Controller
 {
     public function masuk()
     {
-        $db = new KasBesar();
-        $nomor = $db->nomorDeposit();
+        $db = new KasProject();
 
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
 
         return view('billing.form-deposit.masuk', [
             'rekening' => $rekening,
-            'nomor' => $nomor
         ]);
     }
 

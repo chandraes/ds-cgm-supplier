@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Project extends Model
 {
@@ -13,6 +14,11 @@ class Project extends Model
     protected $guarded = ['id'];
 
     protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai'];
+
+    public function invoice_tagihan()
+    {
+        return $this->hasOne(InvoiceTagihan::class);
+    }
 
     public function getNfNilaiAttribute()
     {
@@ -58,7 +64,40 @@ class Project extends Model
         $data['jatuh_tempo'] = $jatuhTempo->format('Y-m-d');
         $data['project_status_id'] = 1;
 
-        return Project::create($data);
+        DB::beginTransaction();
+
+        try {
+            $store = Project::create($data);
+
+            $invoice = InvoiceTagihan::create([
+                'customer_id' => $data['customer_id'],
+                'project_id' => $store->id,
+                'nilai_tagihan' => $data['nilai'],
+                'sisa_tagihan' => $data['nilai'],
+                'dibayar' => 0,
+            ]);
+
+            DB::commit();
+
+            $response = [
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan!!',
+                'data' => $store,
+            ];
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            $response = [
+                'status' => 'error',
+                'message' => 'Data gagal disimpan!!',
+                'data' => $th->getMessage(),
+            ];
+
+        }
+
+        return $response;
+
     }
 
     public static function updateProject($id, $data)

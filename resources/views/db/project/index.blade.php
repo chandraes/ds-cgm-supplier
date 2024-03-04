@@ -42,32 +42,51 @@
         </thead>
         <tbody>
             @foreach ($data as $d)
-                <tr>
-                    <td class="text-center align-middle">{{$loop->iteration}}</td>
-                    <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
-                    <td class="text-center align-middle">{{$d->nama}}</td>
-                    <td class="text-center align-middle">{{$d->nomor_kontrak}}</td>
-                    <td class="text-end align-middle">{{$d->nf_nilai}}</td>
-                    <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
-                    <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
-                    <td class="text-center align-middle">
-                        <button class="btn {{ $d->project_status_id == 1 ? 'btn-warning' : ($d->project_status_id == 3 ? 'btn-success' : 'btn-danger') }}">
-                            {{$d->project_status->nama_status}}
-                        </button>
-                    </td>
-                    <td class="text-center align-middle">
-                        <div class="d-flex justify-content-center">
-                            <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal"
-                                data-bs-target="#editProject" onclick="editProject({{$d}}, {{$d->id}})"><i
-                                    class="fa fa-edit"></i></button>
-                            <form action="{{route('db.project.delete', $d)}}" method="post" id="deleteForm-{{$d->id}}">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger m-2"><i class="fa fa-trash"></i></button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
+            <tr>
+                <td class="text-center align-middle">{{$loop->iteration}}</td>
+                <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
+                <td class="text-center align-middle">{{$d->nama}}</td>
+                <td class="text-center align-middle">{{$d->nomor_kontrak}}</td>
+                <td class="text-end align-middle">{{$d->nf_nilai}}</td>
+                <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
+                <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
+                <td class="text-center align-middle">
+                    <button
+                        class="btn {{ $d->project_status_id == 1 ? 'btn-warning' : ($d->project_status_id == 3 ? 'btn-success' : 'btn-danger') }}">
+                        {{$d->project_status->nama_status}}
+                    </button>
+                </td>
+                <td class="text-center align-middle">
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-primary m-2" data-bs-toggle="modal"
+                            data-bs-target="#editProject" onclick="editProject({{$d}}, {{$d->id}})"><i
+                                class="fa fa-edit"></i></button>
+                        <form action="{{route('db.project.delete', $d)}}" method="post" id="deleteForm-{{$d->id}}">
+                            @csrf
+                            @method('delete')
+                            <button type="submit" class="btn btn-danger m-2"><i class="fa fa-trash"></i></button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <script>
+                 $('#deleteForm-{{$d->id}}').submit(function(e){
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Apakah anda yakin?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, hapus!'
+                        }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#spinner').show();
+                            this.submit();
+                        }
+                    })
+            });
+            </script>
             @endforeach
         </tbody>
     </table>
@@ -86,7 +105,6 @@
 <script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
-
     $('#createForm').submit(function(e){
                 e.preventDefault();
                 Swal.fire({
@@ -158,24 +176,63 @@
         dateFormat: "d-m-Y",
     });
 
-
     $('#editForm').submit(function(e){
             e.preventDefault();
+            var form = this; // Store a reference to the form
+
+            // Close the Bootstrap modal
+            $('#editProject').modal('hide');
             Swal.fire({
-                title: 'Apakah data sudah benar?',
-                text: "Pastikan data sudah benar sebelum disimpan!",
-                icon: 'warning',
+                title: 'Enter Password',
+                input: 'password',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, simpan!'
-                }).then((result) => {
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (password) => {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '{{route('pengaturan.password-konfirmasi-cek')}}',
+                            type: 'POST',
+                            data: JSON.stringify({ password: password }),
+                            contentType: 'application/json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('#editForm').data('csrf-token')
+                            },
+                            success: function(data) {
+                                if (data.status === 'success') {
+                                    resolve();
+                                } else {
+                                    // swal show error message\
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: data.message
+                                    });
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: textStatus
+                                    });
+                            }
+                        });
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
                 if (result.isConfirmed) {
                     $('#spinner').show();
                     this.submit();
                 }
-            })
+                $('#editProject').modal('show');
+            });
         });
+
 
 </script>
 @endpush

@@ -6,7 +6,7 @@
                 <h5 class="modal-title" id="editProjectTitle">Edit Project</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="post" id="editForm">
+            <form method="post" id="editForm" data-csrf-token="{{ csrf_token() }}">
                 @csrf
                 @method('patch')
                 <div class="modal-body">

@@ -3,13 +3,58 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 Use App\Http\Controllers\Hash;
+use App\Models\PasswordKonfirmasi;
 use Illuminate\Http\Request;
 
 class PengaturanController extends Controller
 {
+
+    public function index_view()
+    {
+        $password = PasswordKonfirmasi::first();
+        return view('pengaturan.index',
+            [
+                'password' => $password
+            ]
+        );
+    }
+
+    public function password_konfirmasi(Request $request)
+    {
+        $data = $request->validate([
+            'password' => 'required'
+        ]);
+
+        $response = PasswordKonfirmasi::updatePassword($data);
+
+        return redirect()->route('pengaturan')->with($response['status'], $response['message']);
+    }
+
+    public function password_konfirmasi_cek(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'password' => 'required'
+            ]);
+
+            $password = PasswordKonfirmasi::first();
+
+            if (!$password) {
+                return response()->json(['status' => 'error', 'message' => 'Password belum diatur']);
+            }
+
+            if ($data['password'] == $password->password) {
+                return response()->json(['status' => 'success', 'message' => 'Password benar']);
+            } else {
+                return response()->json(['status' => 'error', 'message' => 'Password salah']);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
     /**
      * Display a listing of the resource.
      */

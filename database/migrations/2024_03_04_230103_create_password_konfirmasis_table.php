@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoice_tagihans', function (Blueprint $table) {
+        Schema::create('password_konfirmasis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers');
-            $table->foreignId('project_id')->constrained('projects');
-            $table->bigInteger('nilai_tagihan');
-            $table->bigInteger('sisa_tagihan');
-            $table->bigInteger('dibayar');
+            $table->string('password');
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-          Schema::dropIfExists('invoice_tagihans');
+        Schema::dropIfExists('password_konfirmasis');
     }
 };

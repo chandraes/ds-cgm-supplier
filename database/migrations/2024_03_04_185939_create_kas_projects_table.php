@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invoice_tagihans', function (Blueprint $table) {
+        Schema::create('kas_projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customers');
             $table->foreignId('project_id')->constrained('projects');
-            $table->bigInteger('nilai_tagihan');
-            $table->bigInteger('sisa_tagihan');
-            $table->bigInteger('dibayar');
+            $table->string('uraian');
+            $table->boolean('jenis_transaksi');
+            $table->bigInteger('nominal');
+            $table->bigInteger('saldo');
+            $table->bigInteger('modal_investor');
+            $table->bigInteger('modal_investor_terakhir');
+            $table->bigInteger('total_tagihan');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-          Schema::dropIfExists('invoice_tagihans');
+        Schema::dropIfExists('kas_projects');
     }
 };

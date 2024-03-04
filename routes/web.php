@@ -26,8 +26,9 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::group(['middleware' => ['role:su,admin']], function() {
         // ROUTE PENGATURAN
-        Route::view('pengaturan', 'pengaturan.index')->name('pengaturan');
+        // Route::view('pengaturan', 'pengaturan.index')->name('pengaturan');
         Route::prefix('pengaturan')->group(function () {
+            Route::get('/', [App\Http\Controllers\PengaturanController::class, 'index_view'])->name('pengaturan');
             Route::get('/wa', [App\Http\Controllers\WaController::class, 'index'])->name('pengaturan.wa');
             Route::get('/wa/get-wa-group', [App\Http\Controllers\WaController::class, 'get_group_wa'])->name('pengaturan.wa.get-group-wa');
             Route::patch('/wa/{group_wa}/update', [App\Http\Controllers\WaController::class, 'update'])->name('pengaturan.wa.update');
@@ -36,6 +37,9 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/akun/store', [App\Http\Controllers\PengaturanController::class, 'store'])->name('pengaturan.akun.store');
             Route::patch('/akun/{akun}/update', [App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.akun.update');
             Route::delete('/akun/{akun}/delete', [App\Http\Controllers\PengaturanController::class, 'destroy'])->name('pengaturan.akun.delete');
+
+            Route::post('/password-konfirmasi', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi'])->name('pengaturan.password-konfirmasi');
+            Route::post('/password-konfirmasi/cek', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi_cek'])->name('pengaturan.password-konfirmasi-cek');
         });
 
         Route::get('/histori-pesan', [App\Http\Controllers\HistoriController::class, 'index'])->name('histori-pesan');
