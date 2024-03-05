@@ -75,11 +75,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/investor/{investor}/update', [App\Http\Controllers\InvestorController::class, 'update'])->name('db.investor.update');
             Route::delete('/investor/{investor}/delete', [App\Http\Controllers\InvestorController::class, 'destroy'])->name('db.investor.delete');
 
-            Route::get('/supplier', [App\Http\Controllers\SupplierController::class, 'index'])->name('db.supplier');
-            Route::post('/supplier/store', [App\Http\Controllers\SupplierController::class, 'store'])->name('db.supplier.store');
-            Route::patch('/supplier/{supplier}/update', [App\Http\Controllers\SupplierController::class, 'update'])->name('db.supplier.update');
-            Route::delete('/supplier/{supplier}/delete', [App\Http\Controllers\SupplierController::class, 'destroy'])->name('db.supplier.delete');
-
             Route::get('/rekening', [App\Http\Controllers\RekeningController::class, 'index'])->name('db.rekening');
             Route::patch('/rekening/{rekening}/update', [App\Http\Controllers\RekeningController::class, 'update'])->name('db.rekening.update');
         });
@@ -132,11 +127,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/form-lain/keluar', [App\Http\Controllers\FormLainController::class, 'keluar'])->name('form-lain.keluar');
             Route::post('/form-lain/keluar/store', [App\Http\Controllers\FormLainController::class, 'keluar_store'])->name('form-lain.keluar.store');
 
-            // Route::get('/form-supplier/titipan', [App\Http\Controllers\FormSupplierController::class, 'titipan'])->name('form-supplier.titipan');
-            // Route::post('/form-supplier/titipan/store', [App\Http\Controllers\FormSupplierController::class, 'titipan_store'])->name('form-supplier.titipan-store');
-            // Route::get('/form-supplier/get-rek-supplier/{id}', [App\Http\Controllers\FormSupplierController::class, 'getRekSupplier'])->name('form-supplier.get-rek-supplier');
-            // Route::get('/form-supplier/pengembalian', [App\Http\Controllers\FormSupplierController::class, 'pengembalian'])->name('form-supplier.pengembalian');
-            // Route::post('/fomr-supplier/pengembalian/store', [App\Http\Controllers\FormSupplierController::class, 'pengembalian_store'])->name('form-supplier.pengembalian-store');
             Route::get('/form-transaksi', [App\Http\Controllers\FormTransaksiController::class, 'index'])->name('form-transaksi.index');
             Route::get('/form-transaksi/tambah/{customer}', [App\Http\Controllers\FormTransaksiController::class, 'tambah'])->name('form-transaksi.tambah');
             Route::post('/form-transaksi/tambah-store', [App\Http\Controllers\FormTransaksiController::class, 'tambah_store'])->name('form-transaksi.tambah-store');
@@ -145,8 +135,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/form-transaksi/lanjutkan/{customer}', [App\Http\Controllers\FormTransaksiController::class, 'lanjutkan'])->name('form-transaksi.lanjutkan');
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
-            Route::patch('/nota-tagihan/edit/{transaksi}', [App\Http\Controllers\NotaTagihanController::class, 'edit_store'])->name('nota-tagihan.edit_store');
-            Route::post('/nota-tagihan/{customer}/cut-off', [App\Http\Controllers\NotaTagihanController::class, 'cutoff'])->name('nota-tagihan.cutoff');
+            Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan_tagihan'])->name('nota-tagihan.cicilan');
 
             Route::get('/nota-bayar', [App\Http\Controllers\NotaBayarController::class, 'index'])->name('nota-bayar.index');
             Route::post('/nota-bayar/{supplier}/cutoff', [App\Http\Controllers\NotaBayarController::class, 'cutoff'])->name('nota-bayar.cutoff');

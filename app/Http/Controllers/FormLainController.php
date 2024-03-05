@@ -9,6 +9,7 @@ use App\Models\Transaksi;
 use App\Models\InvoicePpn;
 use App\Models\GroupWa;
 use App\Models\PesanWa;
+use App\Models\Project;
 use App\Services\StarSender;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +19,11 @@ class FormLainController extends Controller
     public function masuk()
     {
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
+        $project = Project::where('project_status_id', 1)->get();
 
         return view('billing.lain-lain.masuk', [
-            'rekening' => $rekening
+            'rekening' => $rekening,
+            'project' => $project,
         ]);
     }
 
@@ -110,7 +113,10 @@ class FormLainController extends Controller
 
     public function keluar()
     {
-        return view('billing.lain-lain.keluar');
+        $project = Project::where('project_status_id', 1)->get();
+        return view('billing.lain-lain.keluar', [
+            'project' => $project,
+        ]);
     }
 
     public function keluar_store(Request $request)

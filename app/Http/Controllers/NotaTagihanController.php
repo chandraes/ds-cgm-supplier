@@ -27,9 +27,16 @@ class NotaTagihanController extends Controller
         ]);
     }
 
-    public function edit_store(Transaksi $transaksi, Request $request)
+    public function edit_store( Request $request)
     {
 
+    }
+
+    public function cicilan_tagihan(InvoiceTagihan $invoice, Request $request)
+    {
+        $data = $request->validate([
+            'nominal' => 'required',
+        ]);
     }
 
     public function cutoff(Request $request)
@@ -54,52 +61,11 @@ class NotaTagihanController extends Controller
         $k['nominal_transaksi'] = $d['total_tagihan'];
         $k['nomor_tagihan'] = $d['no_invoice'];
 
-        $kasBesar = new KasBesar;
 
-        $transaksi = new Transaksi;
-
-        $ppn = new InvoicePpn;
-
-        $totalPpn = $ppn->where('bayar', 0)->sum('total_ppn');
-
-        $tanggal = $transaksi->where('id', $selectedData[0])->first()->tanggal;
-        $month = date('m', strtotime($tanggal));
-        // create monthName in indonesian using carbon from $tanggal
-        $monthName = Carbon::parse($tanggal)->locale('id')->monthName;
-        $year = date('Y', strtotime($tanggal));
-
-
-        //
 
         DB::beginTransaction();
 
-        $invoice = $db->create($d);
-
-        $k['invoice_tagihan_id'] = $invoice->id;
-        $store = $kasBesar->insertTagihan($k);
-
-        $update = Transaksi::whereIn('id', $selectedData)->update(['tagihan' => 1]);
-
-        $results = $transaksi->totalTagihan();
-        $pesan2 = "";
-
-        foreach ($results as $result) {
-            $total_tagihan = number_format($result->total_tagihan, 0, ',', '.');
-            $pesan2 .= "Customer : {$result->customer->singkatan}\nTotal Tagihan: Rp. {$total_tagihan}\n\n";
-        }
-
-        foreach ($selectedData as $k => $v) {
-
-            $detail['invoice_tagihan_id'] = $invoice->id;
-            $detail['transaksi_id'] = $v;
-            InvoiceTagihanDetail::create($detail);
-        }
-
-        $last = $kasBesar->lastKasBesar()->saldo ?? 0;
-        $modalInvestor = ($kasBesar->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
-        $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-
-        $total_profit_bulan = ($totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $store = $db->create($d);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 

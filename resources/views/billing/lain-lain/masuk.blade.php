@@ -6,7 +6,6 @@
             <h1><u>Form Lain-lain Masuk</u></h1>
         </div>
     </div>
- @include('swal')
     <form action="{{route('form-lain.masuk.store')}}" method="post" id="masukForm">
         @csrf
         <div class="row">

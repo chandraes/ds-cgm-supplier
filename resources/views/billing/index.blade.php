@@ -19,7 +19,7 @@
                 <h2>FORM DEVIDEN</h2>
             </a>
         </div>
-        {{-- @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
+        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-md-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLain">
                 <img src="{{asset('images/form-lain.svg')}}" alt="" width="100">
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        @endif --}}
+        @endif
         {{-- <div class="col-md-3 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none" data-bs-toggle="modal"
                 data-bs-target="#formSupplier">

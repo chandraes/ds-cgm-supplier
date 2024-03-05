@@ -59,13 +59,13 @@
                     <td class="text-center align-middle">{{$d->customer->nama}}</td>
                     <td class="text-start align-middle">{{$d->project->nama}}</td>
 
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                         {{number_format($d->nilai_tagihan, 0, ',', '.')}}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                         {{number_format($d->dibayar, 0, ',', '.')}}
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                         {{number_format($d->sisa_tagihan, 0, ',', '.')}}
                     </td>
                     <td class="text-center align-middle">
@@ -152,6 +152,15 @@
                 </script>
                 @endforeach
             </tbody>
+            <tfoot>
+                <tr>
+                    <th class="text-center align-middle" colspan="3"> Total</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
+                    <th colspan="2"></th>
+                </tr>
+            </tfoot>
         </table>
     </div>
 

@@ -14,26 +14,26 @@ class InvoiceTagihan extends Model
     {
         return $this->belongsTo(Project::class);
     }
-    
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function transaksi()
+    public function cicilan($data)
     {
-        return $this->hasManyThrough(
-            Transaksi::class,
-            InvoiceTagihanDetail::class,
-            'invoice_tagihan_id',
-            'id',
-            'id',
-            'transaksi_id'
-        );
+        $db = new KasProject();
+        $invoice = InvoiceTagihan::find($data['id']);
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
+
+        $data['nominal'] = str_replace('.', '', $data['nominal']);
+        // $data[]
+
+        $invoice->update([
+                            'dibayar' => $data['nominal'],
+                            'sisa_tagihan' => $invoice->nilai_tagihan - $data['nominal']
+                        ]);
+
     }
 
-    public function noInvoice()
-    {
-        return $this->max('no_invoice') + 1 ?? 1;
-    }
 }

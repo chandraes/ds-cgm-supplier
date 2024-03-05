@@ -10,13 +10,13 @@
     <form action="{{route('form-lain.keluar.store')}}" method="post" id="masukForm">
         @csrf
         <div class="row">
-            <div class="col-3 mb-3">
+            <div class="col-md-3 mb-3">
                 <label for="uraian" class="form-label">Tanggal</label>
                 <input type="text" class="form-control @if ($errors->has('uraian'))
                     is-invalid
                 @endif" name="tanggal" id="tanggal" value="{{date('d M Y')}}" required>
             </div>
-            <div class="col-9 mb-3">
+            <div class="col-md-9 mb-3">
                 <label for="uraian" class="form-label">Uraian</label>
                 <input type="text" class="form-control @if ($errors->has('uraian'))
                     is-invalid
