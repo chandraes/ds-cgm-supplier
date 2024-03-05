@@ -12,26 +12,26 @@
                 <h2>KAS BESAR</h2>
             </a>
         </div>
-        {{-- <div class="col-md-3 mt-3 text-center">
+        <div class="col-md-3 mt-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
                 <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="100">
-                <h2>KAS SUPPLIER</h2>
+                <h2>KAS PROJECT</h2>
             </a>
             <div class="modal fade" id="kasSupplier" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
                 role="dialog" aria-labelledby="kasSupplierTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="kasSupplierTitle">Kas Supplier</h5>
+                            <h5 class="modal-title" id="kasSupplierTitle">Kas Project</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form action="{{route('rekap.kas-supplier')}}" method="get">
+                        <form action="{{route('rekap.kas-project')}}" method="get">
                             <div class="modal-body">
                                 <div class="mb-3">
-                                    <select class="form-select" name="supplier" id="" required>
-                                        <option value="">-- Pilih Supplier --</option>
-                                        @foreach ($supplier as $i)
-                                        <option value="{{$i->id}}">{{$i->nama}} ({{$i->nickname}})</option>
+                                    <select class="form-select" name="project" id="project" required>
+                                        <option value="">-- Pilih Project --</option>
+                                        @foreach ($project as $i)
+                                        <option value="{{$i->id}}">{{$i->nama}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
         <div class="col-md-3 mt-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalInvoiceRekap">
                 <img src="{{asset('images/rekap-invoice.svg')}}" alt="" width="100">
@@ -115,3 +115,17 @@
     </div>
 </div>
 @endsection
+@push('css')
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.bootstrap5.css')}}">
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
+@endpush
+@push('js')
+<script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script>
+      $('#project').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            dropdownParent: $('#kasSupplier')
+        });
+</script>
+@endpush
