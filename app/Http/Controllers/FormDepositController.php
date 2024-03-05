@@ -63,16 +63,28 @@ class FormDepositController extends Controller
 
     public function keluar()
     {
+        $project = Project::where('project_status_id', 1)->get();
         $rekening = Rekening::where('untuk', 'withdraw')->first();
 
         return view('billing.form-deposit.keluar', [
-            'rekening' => $rekening
+            'rekening' => $rekening,
+            'projects' => $project
         ]);
+    }
+
+    public function getModalInvestorProject(Request $request)
+    {
+        $db = new KasProject;
+        $result = $db->modal_investor_project_terakhir($request->project_id) * -1;
+        $result = number_format($result, 0, ',', '.');
+
+        return response()->json($result);
     }
 
     public function keluar_store(Request $request)
     {
         $data = $request->validate([
+            'project_id' => 'required|exists:projects,id',
             'nominal_transaksi' => 'required',
         ]);
 

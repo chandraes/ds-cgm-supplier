@@ -28,6 +28,7 @@
 <div class="container-fluid mt-5">
     <form action="{{route('rekap.kas-project')}}" method="get">
         <div class="row">
+            <input type="hidden" name="project" value="{{$project->id}}">
             <div class="col-md-3 mb-3">
                 <label for="bulan" class="form-label">Bulan</label>
                 <select class="form-select" name="bulan" id="bulan">

@@ -18,29 +18,46 @@
     <form action="{{route('form-deposit.keluar.store')}}" method="post" id="masukForm">
         @csrf
         <div class="row">
-            <div class="col-md-4 mb-3">
+            <div class="col-md-6 mb-3">
                 <label for="uraian" class="form-label">Tanggal</label>
                 <input type="text" class="form-control @if ($errors->has('uraian'))
                     is-invalid
                 @endif" name="uraian" id="uraian" required value="{{date('d M Y')}}" disabled>
             </div>
-            <div class="col-md-4 mb-3">
+            <div class="col-md-6 mb-3">
                 <label for="uraian" class="form-label">Uraian</label>
                 <input type="text" class="form-control @if ($errors->has('uraian'))
                     is-invalid
                 @endif" name="uraian" id="uraian" required value="Withdraw" disabled>
             </div>
-            <div class="col-md-4 mb-3">
-                <label for="nominal_transaksi" class="form-label">Nominal</label>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="project_id" class="form-label">Project</label>
+                    <select
+                        class="form-select @if ($errors->has('project_id'))
+                            is-invalid @endif"
+                        name="project_id"
+                        id="project_id" onchange="getModal($(this).val())"
+                    >
+                        <option value="">-- Pilih Project --</option>
+                        @foreach ($projects as $project)
+                        <option value="{{$project->id}}">{{$project->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="nominal" class="form-label">Nominal</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
-                    <input type="text" class="form-control @if ($errors->has('nominal_transaksi'))
+                    <input type="text" class="form-control @if ($errors->has('nominal'))
                     is-invalid
-                @endif" name="nominal_transaksi" id="nominal_transaksi" required data-thousands="." value="{{old('nominal_transaksi')}}">
+                @endif" name="nominal" id="nominal" required data-thousands="." value="{{old('nominal')}}">
                   </div>
-                @if ($errors->has('nominal_transaksi'))
+                @if ($errors->has('nominal'))
                 <div class="invalid-feedback">
-                    {{$errors->first('nominal_transaksi')}}
+                    {{$errors->first('nominal')}}
                 </div>
                 @endif
             </div>
@@ -91,10 +108,46 @@
     </form>
 </div>
 @endsection
+@push('css')
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.bootstrap5.css')}}">
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
+@endpush
 @push('js')
+<script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <script src="{{asset('assets/js/cleave.min.js')}}"></script>
     <script>
-        var nominal = new Cleave('#nominal_transaksi', {
+
+        $('#project_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: 'Pilih Project'
+        });
+
+        function getModal(id){
+            $.ajax({
+                url: "{{route('form-deposit.get-modal-investor')}}",
+                type: "GET",
+                data: {project_id: id},
+                success: function(data){
+                    if(data == 0){
+                        $('#nominal').val('');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Project ini belum memiliki modal investor!',
+                        });
+                        $('#nominal').attr('disabled', true);
+                    } else
+                    {
+                        $('#nominal').attr('disabled', false);
+                        $('#nominal').val(data);
+                    }
+
+                }
+            });
+        }
+
+        var nominal = new Cleave('#nominal', {
             numeral: true,
             numeralThousandsGroupStyle: 'thousand',
             numeralDecimalMark: ',',

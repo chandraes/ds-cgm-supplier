@@ -122,6 +122,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/form-deposit/keluar', [App\Http\Controllers\FormDepositController::class, 'keluar'])->name('form-deposit.keluar');
             Route::post('/form-deposit/keluar/store', [App\Http\Controllers\FormDepositController::class, 'keluar_store'])->name('form-deposit.keluar.store');
 
+            Route::get('/form-deposit/get-modal-investor', [App\Http\Controllers\FormDepositController::class, 'getModalInvestorProject'])->name('form-deposit.get-modal-investor');
+
             Route::get('billing/deviden', [App\Http\Controllers\FormDevidenController::class, 'index'])->name('billing.deviden.index');
             Route::post('billing/deviden/store', [App\Http\Controllers\FormDevidenController::class, 'store'])->name('billing.deviden.store');
 
