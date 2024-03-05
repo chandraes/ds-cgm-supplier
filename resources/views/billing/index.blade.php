@@ -58,11 +58,11 @@
 
         </div> --}}
         <div class="col-md-3 text-center mt-5">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalTransaksi">
+            <a href="{{route('form-transaksi.index')}}" class="text-decoration-none">
                 <img src="{{asset('images/transaksi.svg')}}" alt="" width="100">
                 <h2>FORM TRANSAKSI</h2>
             </a>
-            @include('billing.modal-form-transaksi')
+            {{-- @include('billing.modal-form-transaksi') --}}
 
         </div>
         <div class="col-md-3 text-center mt-5">
@@ -141,15 +141,6 @@
             window.location.href = "{{route('form-lain.masuk')}}";
         }else if(selectLain == 'keluar'){
             window.location.href = "{{route('form-lain.keluar')}}";
-        }
-    }
-
-    function funSupplier(){
-        var selectFormSupplier = document.getElementById('selectFormSupplier').value;
-        if(selectFormSupplier == 'masuk'){
-            window.location.href = "{{route('form-supplier.titipan')}}";
-        } else if(selectFormSupplier == 'keluar'){
-            window.location.href = "{{route('form-supplier.pengembalian')}}";
         }
     }
 </script>

@@ -125,9 +125,9 @@ class KasProject extends Model
         $data['nominal'] = str_replace('.', '', $data['nominal']);
         $data['saldo'] = $db->saldo_terakhir() + $data['nominal'];
         $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) + $data['nominal'];
-        $data['modal_investor'] = $data['nominal'];
+        $data['modal_investor'] = -$data['nominal'];
         $data['modal_investor_terakhir'] = $db->modal_investor_terakhir() - $data['nominal'];
-        $data['modal_investor_project'] = $data['nominal'];
+        $data['modal_investor_project'] = -$data['nominal'];
         $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']) - $data['nominal'];
 
         $store = $this->create($data);
@@ -140,5 +140,41 @@ class KasProject extends Model
     {
         $db = new KasProject();
         $rekening = Rekening::where('untuk', 'withdraw')->first();
+
+        $data['uraian'] = "Withdraw ". substr(Project::find($data['project_id'])->nama, 0, 20);
+        $data['no_rek'] = $rekening->no_rek;
+        $data['nama_rek'] = $rekening->nama_rek;
+        $data['bank'] = $rekening->bank;
+        $data['jenis_transaksi'] = 0;
+        $data['saldo'] = $db->saldo_terakhir() - $data['nominal'];
+        $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) - $data['nominal'];
+        $data['modal_investor'] = $data['nominal'];
+        $data['modal_investor_terakhir'] = $db->modal_investor_terakhir() + $data['nominal'];
+        $data['modal_investor_project'] = $data['nominal'];
+        $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']) + $data['nominal'];
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    public function tambahTransaksi($data)
+    {
+        $db = new KasProject();
+
+        $data['uraian'] = substr($data['uraian'], 0, 255);
+        $data['jenis_transaksi'] = 0;
+        $data['saldo'] = $db->saldo_terakhir() - $data['nominal'];
+        $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) - $data['nominal'];
+        $data['modal_investor'] = 0;
+        $data['modal_investor_terakhir'] = $db->modal_investor_terakhir();
+        $data['modal_investor_project'] = 0;
+        $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']);
+
+
+        $store = $this->create($data);
+
+        return $store;
+
     }
 }

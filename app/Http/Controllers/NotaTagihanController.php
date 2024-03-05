@@ -18,24 +18,12 @@ use Carbon\Carbon;
 
 class NotaTagihanController extends Controller
 {
-    public function index(Customer $customer)
+    public function index()
     {
-        $transaksi = new Transaksi;
-        $totalBerat = $transaksi->notaTransaksiBerat($customer->id);
-        $total = $transaksi->notaTransaksiTotal($customer->id);
-        $totalTagihan = $transaksi->notaTransaksiTotalTagihan($customer->id);
-        $totalProfit = $transaksi->notaTagihanTotalProfit($customer->id);
-        $totalPPH = $transaksi->notaTagihanTotalPPH($customer->id);
-        $data = $transaksi->notaTagihan($customer->id);
+        $data = InvoiceTagihan::where('finished', 0)->get();
 
         return view('billing.nota-tagihan.index', [
             'data' => $data,
-            'customer' => $customer,
-            'totalBerat' => $totalBerat,
-            'total' => $total,
-            'totalTagihan' => $totalTagihan,
-            'totalProfit' => $totalProfit,
-            'totalPPH' => $totalPPH,
         ]);
     }
 
