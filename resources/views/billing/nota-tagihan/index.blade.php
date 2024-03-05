@@ -1,10 +1,9 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
             <h1><u>NOTA TAGIHAN</u></h1>
-            <h1>{{$customer->nama}}</h1>
         </div>
     </div>
     {{-- if has any error --}}
@@ -23,120 +22,139 @@
         </div>
     </div>
     @endif
-    {{-- end if --}}
-    <div class="row">
+    <div class="flex-row justify-content-between mt-3">
         <div class="col-md-6">
-            <label for="berat" class="form-label">Total Tagihan di Pilih</label>
-            <div class="input-group">
-                <span class="input-group-text" id="basic-addon1">Rp.</span>
-                <input type="text" class="form-control" id="total_tagih_display" disabled >
-            </div>
+            <table class="table">
+                <tr class="text-center">
+                    <td><a href="{{route('home')}}"><img src="{{asset('images/dashboard.svg')}}" alt="dashboard"
+                                width="30"> Dashboard</a></td>
+                    <td><a href="{{route('billing')}}"><img src="{{asset('images/billing.svg')}}" alt="dokumen"
+                                width="30"> Billing</a></td>
+
+                </tr>
+            </table>
         </div>
     </div>
     <div class="row mt-3">
-        <table class="table table-bordered table-hover" id="tableTransaksi">
+        <table class="table table-bordered table-hover" id="data-table">
             <thead class="table-success">
                 <tr>
-                    <th class="text-center align-middle" style="width:3%">
-                        Select
-                        <input type="checkbox" onclick="checkAll(this)" id="checkAll">
-                    </th>
                     <th class="text-center align-middle">No</th>
-                    <th class="text-center align-middle">Tanggal</th>
-                    <th class="text-center align-middle">Supplier</th>
-                    <th class="text-center align-middle">Nota Timbangan</th>
-                    <th class="text-center align-middle">Berat</th>
-                    <th class="text-center align-middle" style="width: 3%">Sat</th>
-                    <th class="text-center align-middle">Harga Satuan</th>
-                    <th class="text-center align-middle">Total Harga</th>
-                    <th class="text-center align-middle">PPH 0,25%</th>
-                    <th class="text-center align-middle">Profit</th>
+                    <th class="text-center align-middle">Customer</th>
+                    <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">Total Tagihan</th>
-                    <th class="text-center align-middle">Act</th>
+                    <th class="text-center align-middle">Balance</th>
+                    <th class="text-center align-middle">Sisa Tagihan</th>
+                    <th class="text-center align-middle">Lunas</th>
+                    <th class="text-center align-middle">Cicil</th>
+                    @if (auth()->user()->role === 'su')
+                    <th class="text-center align-middle">Action</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 @foreach ($data as $d)
                 <tr>
-                    <td class="text-center align-middle">
-                        {{-- checklist on check push $d->id to $selectedData --}}
-                        <input type="checkbox" value="{{$d->id}}" data-tagihan="{{$d->total_tagihan}}" onclick="check(this, {{$d->id}})" id="idSelect-{{$d->id}}">
-                    </td>
                     <td class="text-center align-middle"></td>
-                    <td class="text-center align-middle">{{$d->id_tanggal}}</td>
-                    <td class="text-center align-middle">{{$d->supplier->nickname}}</td>
-                    <td class="text-center align-middle">{{$d->nota_timbangan}}</td>
-                    <td class="text-center align-middle">{{$d->nf_berat}}</td>
-                    <td class="text-center align-middle">Kg</td>
-                    <td class="text-center align-middle">{{$d->nf_harga}}</td>
-                    <td class="text-center align-middle">{{$d->nf_total}}</td>
-                    <td class="text-center align-middle">{{$d->nf_pph}}</td>
-                    <td class="text-center align-middle">{{$d->nf_profit}}</td>
-                    <td class="text-center align-middle">{{number_format($d->total_tagihan,0,',','.')}}</td>
+                    <td class="text-center align-middle">{{$d->customer->nama}}</td>
+                    <td class="text-start align-middle">{{$d->project->nama}}</td>
+
                     <td class="text-center align-middle">
-                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
-                        <button class="btn m-2 btn-warning" data-bs-toggle="modal" data-bs-target="#editTransaksi" onclick="editTransaksi({{$d}}, {{$d->id}})"><i class="fa fa-edit"></i></button>
-                        <form action="{{route('form-transaksi.delete', ['transaksi' => $d->id])}}" method="post" style="display: inline-block;"
-                            id="delete-{{$d->id}}">
-                            @csrf
-                            @method('delete')
-                            <button type="submit" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                        </form>
-                        @endif
+                        {{number_format($d->nilai_tagihan, 0, ',', '.')}}
                     </td>
+                    <td class="text-center align-middle">
+                        {{number_format($d->dibayar, 0, ',', '.')}}
+                    </td>
+                    <td class="text-center align-middle">
+                        {{number_format($d->sisa_tagihan, 0, ',', '.')}}
+                    </td>
+                    <td class="text-center align-middle">
+                        <form action="" method="post" id="lunasForm-{{$d->id}}">
+                        @csrf
+                            <button type="submit" class="btn btn-success">Pelunasan </button>
+                        </form>
+                    </td>
+                    <td class="text-center align-middle">
+                        <!-- Modal trigger button -->
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cicil-{{$d->id}}">
+                          Cicilan
+                        </button>
+
+                        <!-- Modal Body -->
+                        <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+                        <div class="modal fade" id="cicil-{{$d->id}}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modalTitleId">Jumlah Cicilan</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="" method="post" id="cicilForm-{{$d->id}}">
+                                        @csrf
+                                    <div class="modal-body">
+                                        <div class="input-group mb-3">
+                                            <span class="input-group-text" id="basic-addon1">Rp</span>
+                                            <input type="text" class="form-control @if ($errors->has('nominal_transaksi'))
+                                            is-invalid
+                                        @endif" name="cicilan" id="cicilanInput-{{$d->id}}" required data-thousands="." >
+                                          </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </td>
+                    @if (auth()->user()->role === 'su')
+                    <td class="text-center align-middle">
+                        <a class="btn btn-danger" href="">Kembalikan</a>
+                    </td>
+                    @endif
                 </tr>
+                {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
-                    $(document).ready(function(){
-                        $('#delete-{{$d->id}}').submit(function(e){
-                            e.preventDefault();
-                            Swal.fire({
-                                title: 'Apakah anda yakin?',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#6c757d',
-                                confirmButtonText: 'Ya, hapus!'
-                                }).then((result) => {
-                                if (result.isConfirmed) {
-                                    $('#spinner').show();
-                                    this.submit();
-                                }
-                            })
-                        });
+                     $('#lunasForm-{{$d->id}}').submit(function(e){
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'Apakah anda yakin?',
+                            text: "Pelunasan Tagihan sebesar Rp. {{number_format($d->sisa_tagihan, 0, ',', '.')}}",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, simpan!'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.submit();
+                            }
+                        })
+                    });
+
+                    $('#cicilForm-{{$d->id}}').submit(function(e){
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'Apakah anda yakin?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, simpan!'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.submit();
+                            }
+                        })
                     });
                 </script>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="5" class="text-center align-middle">Grand Total</th>
-                    <th class="text-center align-middle">{{$totalBerat}}</th>
-                    <th class="text-center align-middle">Kg</th>
-                    <th class="text-center align-middle"></th>
-                    <th class="text-center align-middle">{{$total}}</th>
-                    <th class="text-center align-middle">{{$totalPPH}}</th>
-                    <th class="text-center align-middle">{{$totalProfit}}</th>
-                    <th class="text-center align-middle">{{number_format($totalTagihan, 0, ',','.')}}</th>
-                    <th class="text-center align-middle"></th>
-                </tr>
-            </tfoot>
         </table>
     </div>
-    @include('billing.nota-tagihan.edit')
-    <div class="row mt-5">
-        <form action="{{route('nota-tagihan.cutoff', ['customer' => $customer->id])}}" method="post" id="lanjutkanForm">
-        @csrf
-            <input type="hidden" name="customer_id" value="{{$customer->id}}">
-            <input type="hidden" name="selectedData" required>
-            <input type="hidden" class="form-control" id="total_tagih" name="total_tagih" required value="0">
-            <div class="col-md-12">
-                <button type="submit" class="btn btn-primary form-control">LANJUTKAN</button>
-            </div>
-        </form>
-        <div class="col-md-12">
-            <a href="{{route('billing')}}" class="btn btn-secondary form-control mt-3">Kembali</a>
-        </div>
-    </div>
+
 </div>
 @endsection
 @push('css')
@@ -150,123 +168,19 @@
 <script src="{{asset('assets/js/cleave.min.js')}}"></script>
 <script>
 
-        function editTransaksi(data, id) {
-            let date = new Date(data.tanggal);
-            let day = ("0" + date.getDate()).slice(-2);
-            let month = ("0" + (date.getMonth() + 1)).slice(-2);
-            let year = date.getFullYear();
 
-            document.getElementById('edit_tanggal').value = `${day}-${month}-${year}`;
-            document.getElementById('edit_supplier_id').value = data.supplier_id;
-            document.getElementById('edit_nota_timbangan').value = data.nota_timbangan;
-            document.getElementById('edit_berat').value = data.berat.toLocaleString('id');
-
-            document.getElementById('editForm').action = '/billing/nota-tagihan/edit/' + id;
-        }
-
-       function check(checkbox, id) {
-            var totalTagihan = parseFloat($('#total_tagih').val()) || 0;
-            var tagihan = parseFloat($(checkbox).data('tagihan'));
-
-            if (checkbox.checked) {
-                totalTagihan += tagihan;
-
-                $('input[name="selectedData"]').val(function(i, v) {
-                    return v + id + ',';
-                });
-            } else {
-                totalTagihan -= tagihan;
-
-                $('input[name="selectedData"]').val(function(i, v) {
-                    return v.replace(id + ',', '');
-                });
-            }
-
-            $('#total_tagih').val(totalTagihan);
-            $('#total_tagih_display').val(totalTagihan.toLocaleString('id-ID'));
-
-            var value = $('input[name="selectedData"]').val();
-
-            if(value.slice(-1) == ','){
-                value = value.slice(0, -1);
-            }
-
-            console.log(value);
-        }
-
-        $( function() {
-
-            $( "#edit_tanggal" ).datepicker({
-                dateFormat: "dd-mm-yy"
-            });
-        });
-
-            // check all checkbox and push all id to $selectedData and check all checkbox
-        function checkAll(checkbox) {
-            // empty total tagih dan total tagih display
-            $('#total_tagih').val(0);
-            $('#total_tagih_display').val(0);
-            $('input[name="selectedData"]').val('');
-            var totalTagihan = parseFloat($('#total_tagih').val()) || 0;
-
-            if (checkbox.checked) {
-                $('input[name="selectedData"]').val(function(i, v) {
-                    @foreach ($data as $d)
-                        var tagihan = parseFloat($('#idSelect-{{$d->id}}').data('tagihan'));
-                        totalTagihan += tagihan;
-
-                        v = v + {{$d->id}} + ',';
-                        $('#idSelect-{{$d->id}}').prop('checked', true);
-                    @endforeach
-                    return v;
-                });
-            } else {
-                $('input[name="selectedData"]').val(function(i, v) {
-                    @foreach ($data as $d)
-
-                        v = v.replace({{$d->id}} + ',', '');
-                        $('#idSelect-{{$d->id}}').prop('checked', false);
-                    @endforeach
-                    return v;
-                });
-                totalTagihan = 0;
-            }
-
-            $('#total_tagih').val(totalTagihan);
-            $('#total_tagih_display').val(totalTagihan.toLocaleString('id-ID'));
-
-            var value = $('input[name="selectedData"]').val();
-
-            if(value.slice(-1) == ','){
-                value = value.slice(0, -1);
-            }
-
-            console.log(value);
-        }
-
-        var edit_nota = new Cleave('#edit_nota_timbangan', {
-            delimiter: '-',
-            blocks: [4, 4]
-        });
-
-        var editBerat = new Cleave('#edit_berat', {
-            numeral: true,
-            numeralThousandsGroupStyle: 'thousand',
-            numeralDecimalMark: ',',
-            delimiter: '.'
-        });
 
         $(document).ready(function() {
-            var table = $('#tableTransaksi').DataTable({
+            var table = $('#data-table').DataTable({
                 "paging": false,
-                "searching": false,
+                "searching": true,
                 "scrollCollapse": true,
                 "scrollY": "500px",
 
             });
 
             table.on( 'order.dt search.dt', function () {
-                table.column(1, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                     cell.innerHTML = i+1;
                 } );
             } ).draw();

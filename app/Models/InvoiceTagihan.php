@@ -10,11 +10,11 @@ class InvoiceTagihan extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function invoiceTagihanDetail()
+    public function project()
     {
-        return $this->hasMany(InvoiceTagihanDetail::class);
+        return $this->belongsTo(Project::class);
     }
-
+    
     public function customer()
     {
         return $this->belongsTo(Customer::class);

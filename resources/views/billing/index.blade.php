@@ -66,7 +66,7 @@
 
         </div>
         <div class="col-md-3 text-center mt-5">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#notaTagihan">
+            <a href="{{route('nota-tagihan.index')}}" class="text-decoration-none">
                 <img src="{{asset('images/nota-tagihan.svg')}}" alt="" width="100">
                 <h2>NOTA TAGIHAN @if($nt != 0) <span class="text-danger">({{$nt}})</span> @endif</h2>
             </a>
