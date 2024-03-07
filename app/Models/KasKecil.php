@@ -12,7 +12,22 @@ class KasKecil extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    protected $appends = ['nf_nominal', 'tanggal'];
+    protected $appends = ['nf_nominal', 'tanggal', 'kode', 'nf_saldo'];
+
+    public function dataTahun()
+    {
+        return $this->selectRaw('YEAR(created_at) as tahun')->groupBy('tahun')->get();
+    }
+
+    public function getKodeAttribute()
+    {
+        return $this->nomor_kode_kas_kecil != null ? 'KK'.str_pad($this->nomor_kode_kas_kecil, 2, '0', STR_PAD_LEFT) : '';
+    }
+
+    public function getNfSaldoAttribute()
+    {
+        return number_format($this->saldo, 0, ',', '.');
+    }
 
     public function getNfNominalAttribute()
     {
@@ -50,7 +65,7 @@ class KasKecil extends Model
         return $data;
     }
 
-    public function masukKasKecil($data)
+    public function masukKasKecil()
     {
         $db = new KasBesar();
 
@@ -72,6 +87,15 @@ class KasKecil extends Model
 
         return $store;
 
+    }
 
+    public function keluarKasKecil($data)
+    {
+        $data['saldo'] = $this->saldoTerakhir() - $data['nominal'];
+        $data['jenis'] = 0;
+
+        $store = $this->create($data);
+
+        return $store;
     }
 }

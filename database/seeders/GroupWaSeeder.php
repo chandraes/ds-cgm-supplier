@@ -16,6 +16,7 @@ class GroupWaSeeder extends Seeder
         $data = [
             ['untuk' => 'kas-besar', 'nama_group' => 'Testing Group'],
             ['untuk' => 'kas-kecil', 'nama_group' => 'Testing Group'],
+            ['untuk' => 'team', 'nama_group' => 'Testing Group'],
         ];
 
         foreach ($data as $d) {

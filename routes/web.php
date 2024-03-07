@@ -90,10 +90,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/kas-besar/detail-tagihan/{invoice}', [App\Http\Controllers\RekapController::class, 'detail_tagihan'])->name('rekap.kas-besar.detail-tagihan');
             Route::get('/kas-besar/detail-bayar/{invoice}', [App\Http\Controllers\RekapController::class, 'detail_bayar'])->name('rekap.kas-besar.detail-bayar');
 
-            Route::get('/kas-supplier', [App\Http\Controllers\RekapController::class, 'kas_supplier'])->name('rekap.kas-supplier');
-            Route::get('/kas-supplier/print/{bulan}/{tahun}/{supplier}', [App\Http\Controllers\RekapController::class, 'kas_supplier_print'])->name('rekap.kas-supplier.print');
-            Route::get('/kas-supplier/detail-bayar/{invoice}', [App\Http\Controllers\RekapController::class, 'detail_bayar_supplier'])->name('rekap.kas-supplier.detail-bayar');
-            Route::get('/kas-supplier/detail-bayar/print/{invoice}', [App\Http\Controllers\RekapController::class, 'detail_bayar_supplier_pdf'])->name('rekap.kas-supplier.detail-bayar.print');
+            Route::get('/kas-kecil', [App\Http\Controllers\RekapController::class, 'kas_kecil'])->name('rekap.kas-kecil');
+            Route::get('/kas-kecil/print/{bulan}/{tahun}', [App\Http\Controllers\RekapController::class, 'kas_kecil_print'])->name('rekap.kas-kecil.print');
 
             Route::get('/invoice/{customer}', [App\Http\Controllers\RekapController::class, 'rekap_invoice'])->name('rekap.invoice');
 
@@ -117,7 +115,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/form-deposit/keluar', [App\Http\Controllers\FormDepositController::class, 'keluar'])->name('form-deposit.keluar');
             Route::post('/form-deposit/keluar/store', [App\Http\Controllers\FormDepositController::class, 'keluar_store'])->name('form-deposit.keluar.store');
 
-            Route::get('/form-deposit/get-modal-investor', [App\Http\Controllers\FormDepositController::class, 'getModalInvestorProject'])->name('form-deposit.get-modal-investor');
+            Route::get('/form-kas-kecil/masuk', [App\Http\Controllers\FormKasKecilController::class, 'masuk'])->name('form-kas-kecil.masuk');
+            Route::post('/form-kas-kecil/masuk/store', [App\Http\Controllers\FormKasKecilController::class, 'masuk_store'])->name('form-kas-kecil.masuk.store');
+            Route::get('/form-kas-kecil/keluar', [App\Http\Controllers\FormKasKecilController::class, 'keluar'])->name('form-kas-kecil.keluar');
+            Route::post('/form-kas-kecil/keluar/store', [App\Http\Controllers\FormKasKecilController::class, 'keluar_store'])->name('form-kas-kecil.keluar.store');
 
             Route::get('billing/deviden', [App\Http\Controllers\FormDevidenController::class, 'index'])->name('billing.deviden.index');
             Route::post('billing/deviden/store', [App\Http\Controllers\FormDevidenController::class, 'store'])->name('billing.deviden.store');

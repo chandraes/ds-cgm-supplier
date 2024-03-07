@@ -14,11 +14,18 @@
             @include('billing.modal-form-deposit')
         </div>
         <div class="col-md-3 text-center mt-5">
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#formKecil">
+                <img src="{{asset('images/form-kas-kecil.svg')}}" alt="" width="100">
+                <h2>FORM KAS KECIL</h2>
+            </a>
+            @include('billing.modal-form-kas-kecil')
+        </div>
+        {{-- <div class="col-md-3 text-center mt-5">
             <a href="{{route('billing.deviden.index')}}" class="text-decoration-none">
                 <img src="{{asset('images/form-deviden.svg')}}" alt="" width="100">
                 <h2>FORM DEVIDEN</h2>
             </a>
-        </div>
+        </div> --}}
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-md-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLain">
@@ -141,6 +148,15 @@
             window.location.href = "{{route('form-lain.masuk')}}";
         }else if(selectLain == 'keluar'){
             window.location.href = "{{route('form-lain.keluar')}}";
+        }
+    }
+
+    function funKecil(){
+        var selectKecil = document.getElementById('selectKecil').value;
+        if(selectKecil == 'masuk'){
+            window.location.href = "{{route('form-kas-kecil.masuk')}}";
+        }else if(selectKecil == 'keluar'){
+            window.location.href = "{{route('form-kas-kecil.keluar')}}";
         }
     }
 </script>

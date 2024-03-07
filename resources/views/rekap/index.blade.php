@@ -13,6 +13,12 @@
             </a>
         </div>
         <div class="col-md-3 mt-3 text-center">
+            <a href="{{route('rekap.kas-kecil')}}" class="text-decoration-none">
+                <img src="{{asset('images/kas-kecil.svg')}}" alt="" width="100">
+                <h2>KAS KECIL</h2>
+            </a>
+        </div>
+        <div class="col-md-3 mt-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
                 <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="100">
                 <h2>KAS PROJECT</h2>
