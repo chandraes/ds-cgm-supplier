@@ -57,14 +57,14 @@ class RekapController extends Controller
 
     public function kas_besar_print(Request $request)
     {
-        $kas = new KasProject();
+        $kas = new KasBesar();
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
         $dataTahun = $kas->dataTahun();
 
-        $data = $kas->kasTotal($bulan, $tahun);
+        $data = $kas->kasBesar($bulan, $tahun);
 
         $bulanSebelumnya = $bulan - 1;
         $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
@@ -72,7 +72,7 @@ class RekapController extends Controller
         $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
         $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
 
-        $dataSebelumnya = $kas->kasTotalByMonth($bulanSebelumnya, $tahunSebelumnya);
+        $dataSebelumnya = $kas->kasBesarByMonth($bulanSebelumnya, $tahunSebelumnya);
 
         $pdf = PDF::loadview('rekap.kas-besar.pdf', [
             'data' => $data,
