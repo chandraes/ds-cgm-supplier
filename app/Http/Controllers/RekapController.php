@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\InvoiceTagihan;
+use App\Models\KasBesar;
 use App\Models\KasProject;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -25,14 +26,14 @@ class RekapController extends Controller
 
     public function kas_besar(Request $request)
     {
-        $kas = new KasProject();
+        $kas = new KasBesar();
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
         $dataTahun = $kas->dataTahun();
 
-        $data = $kas->kasTotal($bulan, $tahun);
+        $data = $kas->kasBesar($bulan, $tahun);
 
         $bulanSebelumnya = $bulan - 1;
         $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
@@ -40,7 +41,7 @@ class RekapController extends Controller
         $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
         $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
 
-        $dataSebelumnya = $kas->kasTotalByMonth($bulanSebelumnya, $tahunSebelumnya);
+        $dataSebelumnya = $kas->kasBesarByMonth($bulanSebelumnya, $tahunSebelumnya);
 
         return view('rekap.kas-besar.index', [
             'data' => $data,
@@ -140,45 +141,45 @@ class RekapController extends Controller
 
 
 
-    public function rekap_invoice(Customer $customer, Request $request)
-    {
+    // public function rekap_invoice(Customer $customer, Request $request)
+    // {
 
-        $transaksi = new Transaksi;
+    //     $transaksi = new Transaksi;
 
-        $bulan = $request->bulan ?? date('m');
-        $tahun = $request->tahun ?? date('Y');
+    //     $bulan = $request->bulan ?? date('m');
+    //     $tahun = $request->tahun ?? date('Y');
 
-        $dataTahun = $transaksi->dataTahun();
+    //     $dataTahun = $transaksi->dataTahun();
 
-        $data = $transaksi->rekapInvoice($customer->id, $bulan, $tahun);
-        $totalBerat = $data->sum('berat');
-        $total = $data->sum('total');
-        $totalPPN = $data->sum('total_ppn');
-        $totalTagihan = $data->sum('total_tagihan');
-        $totalProfit = $data->sum('profit');
-        $totalPPH = $data->sum('pph');
-        $totalBayar = $data->sum('total_bayar');
+    //     $data = $transaksi->rekapInvoice($customer->id, $bulan, $tahun);
+    //     $totalBerat = $data->sum('berat');
+    //     $total = $data->sum('total');
+    //     $totalPPN = $data->sum('total_ppn');
+    //     $totalTagihan = $data->sum('total_tagihan');
+    //     $totalProfit = $data->sum('profit');
+    //     $totalPPH = $data->sum('pph');
+    //     $totalBayar = $data->sum('total_bayar');
 
-        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
 
 
-        return view('rekap.invoice.index', [
-            'customer' => $customer,
-            'data' => $data,
-            'dataTahun' => $dataTahun,
-            'tahun' => $tahun,
-            'bulan' => $bulan,
-            'stringBulanNow' => $stringBulanNow,
-            'totalBerat' => $totalBerat,
-            'total' => $total,
-            'totalPPN' => $totalPPN,
-            'totalTagihan' => $totalTagihan,
-            'totalProfit' => $totalProfit,
-            'totalPPH' => $totalPPH,
-            'totalBayar' => $totalBayar,
-        ]);
+    //     return view('rekap.invoice.index', [
+    //         'customer' => $customer,
+    //         'data' => $data,
+    //         'dataTahun' => $dataTahun,
+    //         'tahun' => $tahun,
+    //         'bulan' => $bulan,
+    //         'stringBulanNow' => $stringBulanNow,
+    //         'totalBerat' => $totalBerat,
+    //         'total' => $total,
+    //         'totalPPN' => $totalPPN,
+    //         'totalTagihan' => $totalTagihan,
+    //         'totalProfit' => $totalProfit,
+    //         'totalPPH' => $totalPPH,
+    //         'totalBayar' => $totalBayar,
+    //     ]);
 
-    }
+    // }
 
     // public function kas_supplier(Request $request)
     // {

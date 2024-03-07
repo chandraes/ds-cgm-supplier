@@ -14,9 +14,7 @@ class ProjectStatusSeeder extends Seeder
     {
         $data = [
             ['nama_status' => 'On Progress'],
-            ['nama_status' => 'Dibatalkan'],
             ['nama_status' => 'Selesai'],
-            ['nama_status' => 'Ditunda'],
         ];
 
         \App\Models\ProjectStatus::insert($data);

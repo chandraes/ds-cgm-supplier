@@ -18,6 +18,7 @@ return new class extends Migration
             $table->bigInteger('nilai_tagihan');
             $table->bigInteger('sisa_tagihan');
             $table->bigInteger('dibayar');
+            $table->boolean('finished')->default(false);
             $table->timestamps();
         });
     }

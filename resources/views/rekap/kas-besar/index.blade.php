@@ -71,7 +71,8 @@
             <tr>
                 <th class="text-center align-middle">Tanggal</th>
                 <th class="text-center align-middle">Uraian</th>
-
+                <th class="text-center align-middle">Deposit</th>
+                <th class="text-center align-middle">Kas Kecil</th>
                 <th class="text-center align-middle">Masuk</th>
                 <th class="text-center align-middle">Keluar</th>
                 <th class="text-center align-middle">Saldo</th>
@@ -80,7 +81,7 @@
                 <th class="text-center align-middle">Modal Investor</th>
             </tr>
             <tr class="table-warning">
-                <td colspan="3" class="text-center align-middle">Saldo Bulan
+                <td colspan="5" class="text-center align-middle">Saldo Bulan
                     {{$stringBulan}} {{$tahunSebelumnya}}</td>
                 <td></td>
                 <td class="text-end align-middle">Rp. {{$dataSebelumnya ? number_format($dataSebelumnya->saldo,
@@ -105,10 +106,12 @@
                         @endif
 
                     </td>
-                    <td class="text-end align-middle">{{$d->jenis_transaksi === 1 ?
+                    <td class="text-center align-middle">{{$d->kode_deposit}}</td>
+                    <td class="text-center align-middle">{{$d->kode_kas_kecil}}</td>
+                    <td class="text-end align-middle">{{$d->jenis === 1 ?
                        $d->nf_nominal : ''}}
                     </td>
-                    <td class="text-end align-middle text-danger">{{$d->jenis_transaksi === 0 ?
+                    <td class="text-end align-middle text-danger">{{$d->jenis === 0 ?
                         $d->nf_nominal : ''}}
                     </td>
                     <td class="text-end align-middle">{{$d->nf_saldo}}</td>
@@ -117,23 +120,14 @@
                     <td class="text-end align-middle">{{number_format($d->modal_investor, 0, ',', '.')}}</td>
                 </tr>
                 @endforeach
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+
             </tbody>
             <tfoot>
                 <tr>
-                    <td class="text-center align-middle" colspan="2"><strong>GRAND TOTAL</strong></td>
-                    <td class="text-end align-middle"><strong>{{number_format($data->where('jenis_transaksi',
+                    <td class="text-center align-middle" colspan="4"><strong>GRAND TOTAL</strong></td>
+                    <td class="text-end align-middle"><strong>{{number_format($data->where('jenis',
                             1)->sum('nominal'), 0, ',', '.')}}</strong></td>
-                    <td class="text-end align-middle text-danger"><strong>{{number_format($data->where('jenis_transaksi',
+                    <td class="text-end align-middle text-danger"><strong>{{number_format($data->where('jenis',
                             0)->sum('nominal'), 0, ',', '.')}}</strong></td>
                     {{-- latest saldo --}}
                     <td class="text-end align-middle">

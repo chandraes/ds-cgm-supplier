@@ -30,23 +30,7 @@
                     is-invalid
                 @endif" name="uraian" id="uraian" required value="Withdraw" disabled>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="project_id" class="form-label">Project</label>
-                    <select
-                        class="form-select @if ($errors->has('project_id'))
-                            is-invalid @endif"
-                        name="project_id"
-                        id="project_id" onchange="getModal($(this).val())"
-                    >
-                        <option value="">-- Pilih Project --</option>
-                        @foreach ($projects as $project)
-                        <option value="{{$project->id}}">{{$project->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
 
-            </div>
             <div class="col-md-6 mb-3">
                 <label for="nominal" class="form-label">Nominal</label>
                 <div class="input-group mb-3">

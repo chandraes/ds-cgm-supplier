@@ -6,6 +6,7 @@ use App\Models\Rekening;
 use App\Services\StarSender;
 use App\Models\PesanWa;
 use App\Models\GroupWa;
+use App\Models\KasBesar;
 use App\Models\KasProject;
 use App\Models\Project;
 use Illuminate\Http\Request;
@@ -14,38 +15,42 @@ class FormDepositController extends Controller
 {
     public function masuk()
     {
-        $project = Project::where('project_status_id', 1)->get();
 
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
+        $kode = str_pad((KasBesar::max('nomor_deposit') + 1), 2, '0', STR_PAD_LEFT);
 
         return view('billing.form-deposit.masuk', [
             'rekening' => $rekening,
-            'projects' => $project
+            'kode' => $kode
         ]);
     }
 
     public function masuk_store(Request $request)
     {
         $data = $request->validate([
-            'project_id' => 'required|exists:projects,id',
             'nominal' => 'required',
         ]);
 
-        $db = new KasProject;
+        $db = new KasBesar();
 
-        $store = $db->masukDeposit($data);
+        $store = $db->deposit($data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
+
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Form Permintaan Deposit*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "*".$store->project->nama."*\n\n".
+                    "*".$store->kode_deposit."*\n\n".
                     "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
                     "Nama    : ".$store->nama_rek."\n".
                     "No. Rek : ".$store->no_rek."\n\n".
                     "==========================\n".
+                    "Sisa Saldo Kas Besar : \n".
+                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    "Total Modal Investor : \n".
+                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
         $send = new StarSender($group->nama_group, $pesan);
         $res = $send->sendGroup();
@@ -63,12 +68,10 @@ class FormDepositController extends Controller
 
     public function keluar()
     {
-        $project = Project::where('project_status_id', 1)->get();
         $rekening = Rekening::where('untuk', 'withdraw')->first();
 
         return view('billing.form-deposit.keluar', [
             'rekening' => $rekening,
-            'projects' => $project
         ]);
     }
 
@@ -84,33 +87,36 @@ class FormDepositController extends Controller
     public function keluar_store(Request $request)
     {
         $data = $request->validate([
-            'project_id' => 'required|exists:projects,id',
             'nominal' => 'required',
         ]);
 
-        $db = new KasProject;
-        $modal = $db->modal_investor_project_terakhir($request->project_id) * -1;
+        $db = new KasBesar();
+        $modal = $db->modalInvestorTerakhir() * -1;
+        $saldo = $db->saldoTerakhir();
 
         $data['nominal'] = str_replace('.', '', $data['nominal']);
 
-        if($modal < $data['nominal']){
-            return redirect()->back()->with('error', 'Nominal Melebihi Modal Investor Project!!');
+        if($modal < $data['nominal'] || $saldo < $data['nominal']){
+            return redirect()->back()->with('error', 'Nominal Melebihi Modal Investor/Saldo !!');
         }
 
-        $store = $db->keluarDeposit($data);
+        $store = $db->withdraw($data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Form Pengembalian Deposit*\n".
                     "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                    "*".$store->project->nama."*\n\n".
                     "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
                     "Nama    : ".$store->nama_rek."\n".
                     "No. Rek : ".$store->no_rek."\n\n".
                     "==========================\n".
+                    "Sisa Saldo Kas Besar : \n".
+                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    "Total Modal Investor : \n".
+                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         $send = new StarSender($group->nama_group, $pesan);
