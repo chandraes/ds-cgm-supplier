@@ -110,5 +110,51 @@ class KasBesar extends Model
         return $store;
     }
 
+    public function keluarKasKecil()
+    {
+        $rekening = Rekening::where('untuk', 'kas-kecil')->first();
+        $data['nominal'] = 1000000;
+        $data['nomor_kode_kas_kecil'] = $this->max('nomor_kode_kas_kecil') + 1;
+        $data['saldo'] = $this->saldoTerakhir() - $data['nominal'];
+        $data['modal_investor_terakhir'] = $this->modalInvestorTerakhir();
+        $data['jenis'] = 0;
+        $data['no_rek'] = $rekening->no_rek;
+        $data['bank'] = $rekening->bank;
+        $data['nama_rek'] = $rekening->nama_rek;
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    public function lainMasuk($data)
+    {
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
+
+        $data['nominal'] = str_replace('.', '', $data['nominal']);
+        $data['saldo'] = $this->saldoTerakhir() + $data['nominal'];
+        $data['jenis'] = 1;
+        $data['no_rek'] = $rekening->no_rek;
+        $data['bank'] = $rekening->bank;
+        $data['nama_rek'] = $rekening->nama_rek;
+        $data['modal_investor_terakhir'] = $this->modalInvestorTerakhir();
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
+    public function lainKeluar($data)
+    {
+
+        $data['saldo'] = $this->saldoTerakhir() - $data['nominal'];
+        $data['modal_investor_terakhir'] = $this->modalInvestorTerakhir();
+        $data['jenis'] = 0;
+
+        $store = $this->create($data);
+
+        return $store;
+    }
+
 
 }

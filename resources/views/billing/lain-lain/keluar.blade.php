@@ -14,7 +14,7 @@
                 <label for="uraian" class="form-label">Tanggal</label>
                 <input type="text" class="form-control @if ($errors->has('uraian'))
                     is-invalid
-                @endif" name="tanggal" id="tanggal" value="{{date('d M Y')}}" required>
+                @endif" name="tanggal" id="tanggal" value="{{date('d M Y')}}" disabled>
             </div>
             <div class="col-md-9 mb-3">
                 <label for="uraian" class="form-label">Uraian</label>
@@ -23,16 +23,16 @@
                 @endif" name="uraian" id="uraian" required maxlength="20">
             </div>
             <div class="col-md-12 mb-3">
-                <label for="nominal_transaksi" class="form-label">Nominal</label>
+                <label for="nominal" class="form-label">Nominal</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
-                    <input type="text" class="form-control @if ($errors->has('nominal_transaksi'))
+                    <input type="text" class="form-control @if ($errors->has('nominal'))
                     is-invalid
-                @endif" name="nominal_transaksi" id="nominal_transaksi" data-thousands=".">
+                @endif" name="nominal" id="nominal" data-thousands=".">
                   </div>
-                @if ($errors->has('nominal_transaksi'))
+                @if ($errors->has('nominal'))
                 <div class="invalid-feedback">
-                    {{$errors->first('nominal_transaksi')}}
+                    {{$errors->first('nominal')}}
                 </div>
                 @endif
             </div>
@@ -87,7 +87,7 @@
 @push('js')
     <script src="{{asset('assets/js/cleave.min.js')}}"></script>
     <script>
-        var nominal = new Cleave('#nominal_transaksi', {
+        var nominal = new Cleave('#nominal', {
             numeral: true,
             numeralThousandsGroupStyle: 'thousand',
             numeralDecimalMark: ',',

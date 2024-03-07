@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KasKecil extends Model
 {
@@ -47,5 +48,30 @@ class KasKecil extends Model
         }
 
         return $data;
+    }
+
+    public function masukKasKecil($data)
+    {
+        $db = new KasBesar();
+
+        DB::beginTransaction();
+
+        $kb = $db->keluarKasKecil();
+
+        $data['nominal'] = 1000000;
+        $data['saldo'] = $this->saldoTerakhir() + $data['nominal'];
+        $data['jenis'] = 1;
+        $data['nomor_kode_kas_kecil'] = $kb->nomor_kode_kas_kecil;
+        $data['nama_rek'] = $kb->nama_rek;
+        $data['bank'] = $kb->bank;
+        $data['no_rek'] = $kb->no_rek;
+
+        $store = $this->create($data);
+
+        DB::commit();
+
+        return $store;
+
+
     }
 }

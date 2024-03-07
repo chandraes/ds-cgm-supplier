@@ -19,11 +19,9 @@ class FormLainController extends Controller
     public function masuk()
     {
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
-        $project = Project::where('project_status_id', 1)->get();
 
         return view('billing.lain-lain.masuk', [
             'rekening' => $rekening,
-            'project' => $project,
         ]);
     }
 
@@ -31,79 +29,44 @@ class FormLainController extends Controller
     {
         $data = $request->validate([
             'uraian' => 'required',
-            'nominal_transaksi' => 'required',
+            'nominal' => 'required',
         ]);
 
-        $data['tanggal'] = date('Y-m-d');
-        $data['nominal_transaksi'] = str_replace('.', '', $data['nominal_transaksi']);
-
-        $kas = new KasBesar;
-        $ppn = new InvoicePpn;
-        $transaksi = new Transaksi;
-        $kasSupplier = new KasSupplier;
-        $totalPpn = $ppn->where('bayar', 0)->sum('total_ppn');
-
-        $rekening = Rekening::where('untuk', 'kas-besar')->first();
-        $lastKasBesar = $kas->lastKasBesar();
-
-
-        if ($lastKasBesar == null || $lastKasBesar->saldo < $data['nominal_transaksi']) {
-            return redirect()->back()->with('error', 'Saldo Kas Besar Tidak Cukup!!');
-        }
-        $data['modal_investor_terakhir'] = $lastKasBesar->modal_investor_terakhir;
-        $data['saldo'] = $lastKasBesar->saldo + $data['nominal_transaksi'];
-        $data['jenis'] = 1;
-        $data['no_rek'] = $rekening->no_rek;
-        $data['nama_rek'] = $rekening->nama_rek;
-        $data['bank'] = $rekening->bank;
+        $db = new KasBesar;
 
         DB::beginTransaction();
 
-        $store = KasBesar::create($data);
-
-        $last = $kas->lastKasBesar()->saldo ?? 0;
-        $modalInvestor = ($kas->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
-        $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
-
-        $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $store = $db->lainMasuk($data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
+
         $pesan ="🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                 "*Form Lain2 (Dana Masuk)*\n".
                 "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                "Uraian :  ".$data['uraian']."\n".
-                "Nilai :  *Rp. ".number_format($data['nominal_transaksi'], 0, ',', '.')."*\n\n".
+                "Uraian :  ".$store->uraian."\n".
+                "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                 "Ditransfer ke rek:\n\n".
-                "Bank      : ".$data['bank']."\n".
-                "Nama    : ".$data['nama_rek']."\n".
-                "No. Rek : ".$data['no_rek']."\n\n".
+                "Bank      : ".$store->bank."\n".
+                "Nama    : ".$store->nama_rek."\n".
+                "No. Rek : ".$store->no_rek."\n\n".
                 "==========================\n".
                 "Sisa Saldo Kas Besar : \n".
                 "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                "Total Profit Saat Ini :" ."\n".
-                "Rp. ".number_format($total_profit_bulan, 0,',','.')."\n\n".
-                "Total PPN Belum Disetor : \n".
-                "Rp. ".number_format($totalPpn, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
                 "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
+
         $send = new StarSender($group->nama_group, $pesan);
         $res = $send->sendGroup();
 
-        if ($res == 'true') {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 1,
-            ]);
-        } else {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 0,
-            ]);
-        }
+
+        $status = ($res == 'true') ? 1 : 0;
+
+        PesanWa::create([
+            'pesan' => $pesan,
+            'tujuan' => $group->nama_group,
+            'status' => $status,
+        ]);
 
         DB::commit();
 
@@ -113,83 +76,60 @@ class FormLainController extends Controller
 
     public function keluar()
     {
-        $project = Project::where('project_status_id', 1)->get();
-        return view('billing.lain-lain.keluar', [
-            'project' => $project,
-        ]);
+        return view('billing.lain-lain.keluar');
     }
 
     public function keluar_store(Request $request)
     {
         $data = $request->validate([
             'uraian' => 'required',
-            'nominal_transaksi' => 'required',
+            'nominal' => 'required',
             'nama_rek' => 'required',
             'no_rek' => 'required',
             'bank' => 'required',
         ]);
 
-        $data['nominal_transaksi'] = str_replace('.', '', $data['nominal_transaksi']);
-        $kas = new KasBesar;
-        $ppn = new InvoicePpn;
-        $transaksi = new Transaksi;
-        $kasSupplier = new KasSupplier;
+        $data['nominal'] = str_replace('.', '', $data['nominal']);
+        $db = new KasBesar;
+        $saldo = $db->saldoTerakhir();
 
-        $totalPpn = $ppn->where('bayar', 0)->sum('total_ppn');
-
-        $lastKasBesar = $kas->lastKasBesar();
-
-        if ($lastKasBesar == null || $lastKasBesar->saldo < $data['nominal_transaksi']) {
-            return redirect()->back()->with('error', 'Saldo Kas Besar Tidak Cukup!!');
+        if ($saldo < $data['nominal']) {
+            return redirect()->back()->with('error', 'Saldo Tidak Mencukupi');
         }
 
         DB::beginTransaction();
 
-        $store = $kas->lainKeluar($data);
-
-        $last = $kas->lastKasBesar()->saldo ?? 0;
-        $modalInvestor = ($kas->lastKasBesar()->modal_investor_terakhir ?? 0) * -1;
-        $totalTagihan = $transaksi->totalTagihan()->sum('total_tagihan');
-        $totalTitipan = $kasSupplier->saldoTitipan() ?? 0;
-
-        $total_profit_bulan = ($totalTitipan+$totalTagihan+$last)-($modalInvestor+$totalPpn);
+        $store = $db->lainKeluar($data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
+        
         $pesan ="🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                 "*Form Lain2 (Dana Keluar)*\n".
                  "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
                  "Uraian :  ".$data['uraian']."\n".
-                 "Nilai :  *Rp. ".number_format($data['nominal_transaksi'], 0, ',', '.')."*\n\n".
+                 "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                  "Ditransfer ke rek:\n\n".
-                "Bank      : ".$data['bank']."\n".
-                "Nama    : ".$data['nama_rek']."\n".
-                "No. Rek : ".$data['no_rek']."\n\n".
+                "Bank      : ".$store->bank."\n".
+                "Nama    : ".$store->nama_rek."\n".
+                "No. Rek : ".$store->no_rek."\n\n".
                 "==========================\n".
                 "Sisa Saldo Kas Besar : \n".
                 "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                "Total Profit Saat Ini :" ."\n".
-                "Rp. ".number_format($total_profit_bulan, 0,',','.')."\n\n".
-                "Total PPN Belum Disetor : \n".
-                "Rp. ".number_format($totalPpn, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
                 "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
+
         $send = new StarSender($group->nama_group, $pesan);
         $res = $send->sendGroup();
 
-        if ($res == 'true') {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 1,
-            ]);
-        } else {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 0,
-            ]);
-        }
+
+        $status = ($res == 'true') ? 1 : 0;
+
+        PesanWa::create([
+            'pesan' => $pesan,
+            'tujuan' => $group->nama_group,
+            'status' => $status,
+        ]);
 
         DB::commit();
 

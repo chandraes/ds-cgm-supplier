@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('nomor_kode_kas_kecil')->nullable();
             $table->string('uraian')->nullable();
             $table->boolean('jenis');
-            $table->bigInteger('nominal_transaksi');
+            $table->bigInteger('nominal');
             $table->bigInteger('saldo');
             $table->string('nama_rek')->nullable();
             $table->string('bank')->nullable();
