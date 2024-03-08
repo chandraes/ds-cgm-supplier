@@ -11,6 +11,51 @@ class InvoiceTagihan extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit'];
+
+    public function kasProjects()
+    {
+        return $this->hasManyThrough(KasProject::class, Project::class, 'id', 'project_id', 'project_id', 'id');
+    }
+
+    public function getPengeluaranAttribute()
+    {
+        $latestKasProject = $this->kasProjects->last();
+        $pengeluaran = $latestKasProject ? $latestKasProject->sisa : 0;
+        return $pengeluaran;
+    }
+
+    public function getProfitAttribute()
+    {
+        $profit = $this->nilai_tagihan + $this->pengeluaran;
+        return $profit;
+    }
+
+    public function getNfPengeluaranAttribute()
+    {
+        return number_format($this->pengeluaran, 0, ',', '.');
+    }
+
+    public function getNfProfitAttribute()
+    {
+        return number_format($this->profit, 0, ',', '.');
+    }
+
+    public function getNfNilaiTagihanAttribute()
+    {
+        return number_format($this->nilai_tagihan, 0, ',', '.');
+    }
+
+    public function getNfDibayarAttribute()
+    {
+        return number_format($this->dibayar, 0, ',', '.');
+    }
+
+    public function getNfSisaTagihanAttribute()
+    {
+        return number_format($this->sisa_tagihan, 0, ',', '.');
+    }
+
     public function project()
     {
         return $this->belongsTo(Project::class);

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
             <h1><u>NOTA TAGIHAN</u></h1>
@@ -45,6 +45,8 @@
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
+                    <th class="text-center align-middle">Total Pengeluaran</th>
+                    <th class="text-center align-middle">Profit</th>
                     <th class="text-center align-middle">Lunas</th>
                     <th class="text-center align-middle">Cicil</th>
                 </tr>
@@ -57,13 +59,19 @@
                     <td class="text-start align-middle">{{$d->project->nama}}</td>
 
                     <td class="text-end align-middle">
-                        {{number_format($d->nilai_tagihan, 0, ',', '.')}}
+                        {{$d->nf_nilai_tagihan}}
                     </td>
                     <td class="text-end align-middle">
-                        {{number_format($d->dibayar, 0, ',', '.')}}
+                        {{$d->nf_dibayar}}
                     </td>
                     <td class="text-end align-middle">
-                        {{number_format($d->sisa_tagihan, 0, ',', '.')}}
+                        {{$d->nf_sisa_tagihan}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_pengeluaran}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_profit}}
                     </td>
                     <td class="text-center align-middle">
                         <form action="" method="post" id="lunasForm-{{$d->id}}">
@@ -121,6 +129,7 @@
                             confirmButtonText: 'Ya, simpan!'
                             }).then((result) => {
                             if (result.isConfirmed) {
+                                $('#spinner').show();
                                 this.submit();
                             }
                         })
@@ -144,6 +153,7 @@
                             confirmButtonText: 'Ya, simpan!'
                             }).then((result) => {
                             if (result.isConfirmed) {
+                                $('#spinner').show();
                                 this.submit();
                             }
                         })
@@ -153,10 +163,12 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th class="text-center align-middle" colspan="3"> Total</th>
+                    <th class="text-center align-middle" colspan="3">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('profit'), 0, ',', '.')}}</th>
                     <th colspan="2"></th>
                 </tr>
             </tfoot>
