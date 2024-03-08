@@ -13,6 +13,7 @@
             <tr>
                 <th class="text-center align-middle table-pdf text-pdf">Tanggal</th>
                 <th class="text-center align-middle table-pdf text-pdf">Uraian</th>
+                <th class="text-center align-middle table-pdf text-pdf">Project</th>
                 <th class="text-center align-middle table-pdf text-pdf">Deposit</th>
                 <th class="text-center align-middle table-pdf text-pdf">Kas Kecil</th>
                 <th class="text-center align-middle table-pdf text-pdf">Masuk</th>
@@ -23,7 +24,7 @@
                 <th class="text-center align-middle table-pdf text-pdf">Modal Investor</th>
             </tr>
             <tr class="table-warning">
-                <td colspan="5" class="text-center align-middle table-pdf text-pdf">Saldo Bulan
+                <td colspan="6" class="text-center align-middle table-pdf text-pdf">Saldo Bulan
                     {{$stringBulan}} {{$tahunSebelumnya}}</td>
                 <td class="table-pdf text-pdf"></td>
                 <td class="text-end align-middle table-pdf text-pdf table-pdf text-pdf">Rp. {{$dataSebelumnya ? number_format($dataSebelumnya->saldo,
@@ -48,6 +49,7 @@
                         @endif
 
                     </td>
+                    <td class="text-center align-middle table-pdf text-pdf">{{$d->project ? 'P'.str_pad($d->project->kode, 2, '0', STR_PAD_LEFT) : ''}}</td>
                     <td class="text-center align-middle table-pdf text-pdf">{{$d->kode_deposit}}</td>
                     <td class="text-center align-middle table-pdf text-pdf">{{$d->kode_kas_kecil}}</td>
                     <td class="text-end align-middle table-pdf text-pdf">{{$d->jenis === 1 ?
@@ -67,7 +69,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td class="text-center align-middle table-pdf text-pdf" colspan="4"><strong>GRAND TOTAL</strong></td>
+                    <td class="text-center align-middle table-pdf text-pdf" colspan="5"><strong>GRAND TOTAL</strong></td>
                     <td class="text-end align-middle table-pdf text-pdf"><strong>{{number_format($data->where('jenis',
                             1)->sum('nominal'), 0, ',', '.')}}</strong></td>
                     <td class="text-end align-middle table-pdf text-pdf text-danger" ><strong >{{number_format($data->where('jenis',
