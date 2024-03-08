@@ -11,7 +11,7 @@ class KasBesar extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    protected $appends = ['nf_nominal', 'tanggal', 'kode_deposit', 'kode_kas_kecil', 'nf_saldo'];
+    protected $appends = ['nf_nominal', 'tanggal', 'kode_deposit', 'kode_kas_kecil', 'nf_saldo', 'nf_modal_investor'];
 
     public function project()
     {
@@ -26,6 +26,11 @@ class KasBesar extends Model
     public function getKodeDepositAttribute()
     {
         return $this->nomor_deposit != null ? 'D'.str_pad($this->nomor_deposit, 2, '0', STR_PAD_LEFT) : '';
+    }
+
+    public function getNfModalInvestorAttribute()
+    {
+        return $this->modal_investor != null ?  number_format($this->modal_investor, 0, ',', '.') : 0;
     }
 
     public function getNfSaldoAttribute()

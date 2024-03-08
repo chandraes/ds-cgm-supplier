@@ -84,8 +84,7 @@
                 <td colspan="5" class="text-center align-middle">Saldo Bulan
                     {{$stringBulan}} {{$tahunSebelumnya}}</td>
                 <td></td>
-                <td class="text-end align-middle">Rp. {{$dataSebelumnya ? number_format($dataSebelumnya->saldo,
-                    0, ',','.') : ''}}</td>
+                <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_saldo : ''}}</td>
                 <td></td>
                 <td></td>
                 <td class="text-end align-middle">Rp. {{$dataSebelumnya ?
@@ -117,7 +116,7 @@
                     <td class="text-end align-middle">{{$d->nf_saldo}}</td>
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
-                    <td class="text-end align-middle">{{number_format($d->modal_investor, 0, ',', '.')}}</td>
+                    <td class="text-end align-middle">{{$d->nf_modal_investor}}</td>
                 </tr>
                 @endforeach
 
@@ -132,7 +131,7 @@
                     {{-- latest saldo --}}
                     <td class="text-end align-middle">
                         <strong>
-                            {{$data->last() ? number_format($data->last()->saldo, 0, ',', '.') : ''}}
+                            {{$data->last() ? $data->last()->nf_saldo : ''}}
                         </strong>
                     </td>
                     <td></td>
