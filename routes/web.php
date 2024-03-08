@@ -136,7 +136,7 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/form-transaksi/masuk/store', [App\Http\Controllers\FormTransaksiController::class, 'masuk_store'])->name('form-transaksi.masuk.store');
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
-            Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan_tagihan'])->name('nota-tagihan.cicilan');
+            Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan'])->name('nota-tagihan.cicilan');
 
             Route::get('/nota-bayar', [App\Http\Controllers\NotaBayarController::class, 'index'])->name('nota-bayar.index');
             Route::post('/nota-bayar/{supplier}/cutoff', [App\Http\Controllers\NotaBayarController::class, 'cutoff'])->name('nota-bayar.cutoff');

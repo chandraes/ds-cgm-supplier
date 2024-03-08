@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceTagihan extends Model
 {
@@ -20,19 +21,55 @@ class InvoiceTagihan extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function cicilan($data)
+    public function cicilan($invoice_id, $data)
     {
-        $db = new KasProject();
-        $invoice = InvoiceTagihan::find($data['id']);
-        $rekening = Rekening::where('untuk', 'kas-besar')->first();
 
+        $db = new KasProject();
+        $kb = new KasBesar();
+        $invoice = InvoiceTagihan::find($invoice_id);
+
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
+        $data['uraian'] = 'Cicilan '.$invoice->project->nama;
         $data['nominal'] = str_replace('.', '', $data['nominal']);
-        // $data[]
+        $data['bank'] = $rekening->bank;
+        $data['no_rek'] = $rekening->no_rek;
+        $data['nama_rek'] = $rekening->nama_rek;
+        $data['jenis'] = 1;
+        $sisa = $db->sisaTerakhir($invoice->project_id) + $data['nominal'];
+
+        DB::beginTransaction();
 
         $invoice->update([
-                            'dibayar' => $data['nominal'],
-                            'sisa_tagihan' => $invoice->nilai_tagihan - $data['nominal']
+                            'dibayar' => $invoice->dibayar + $data['nominal'],
+                            'sisa_tagihan' => $invoice->sisa_tagihan - $data['nominal']
                         ]);
+
+        $db->create([
+            'project_id' => $invoice->project_id,
+            'nominal' => $data['nominal'],
+            'jenis' => $data['jenis'],
+            'sisa' => $sisa,
+            'uraian' => $data['uraian'],
+            'no_rek' => $data['no_rek'],
+            'nama_rek' => $data['nama_rek'],
+            'bank' => $data['bank'],
+        ]);
+
+        $store = $kb->create([
+            'project_id' => $invoice->project_id,
+            'nominal' => $data['nominal'],
+            'jenis' => $data['jenis'],
+            'uraian' => $data['uraian'],
+            'no_rek' => $data['no_rek'],
+            'nama_rek' => $data['nama_rek'],
+            'bank' => $data['bank'],
+            'saldo' => $kb->saldoTerakhir() + $data['nominal'],
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+        ]);
+
+        DB::commit();
+
+        return $store;
 
     }
 

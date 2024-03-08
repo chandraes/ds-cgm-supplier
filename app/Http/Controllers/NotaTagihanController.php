@@ -27,91 +27,47 @@ class NotaTagihanController extends Controller
         ]);
     }
 
-    public function edit_store( Request $request)
-    {
-
-    }
-
-    public function cicilan_tagihan(InvoiceTagihan $invoice, Request $request)
+    public function cicilan(InvoiceTagihan $invoice, Request $request)
     {
         $data = $request->validate([
             'nominal' => 'required',
         ]);
-    }
 
-    public function cutoff(Request $request)
-    {
-        $data = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'total_tagih' => 'required|integer',
-            'selectedData' => 'required',
-        ]);
+        $db = new InvoiceTagihan();
 
-        // convert selectedData to array and remove empty value
-        $selectedData = array_filter(explode(',', $data['selectedData']));
-
-        $db = new InvoiceTagihan;
-
-        $d['tanggal'] = date('Y-m-d');
-        $d['customer_id'] = $data['customer_id'];
-        $d['total_tagihan'] = $data['total_tagih'];
-        $d['no_invoice'] = $db->noInvoice();
-
-        $k['uraian'] = 'Tagihan '. Customer::find($data['customer_id'])->singkatan;
-        $k['nominal_transaksi'] = $d['total_tagihan'];
-        $k['nomor_tagihan'] = $d['no_invoice'];
-
-
-
-        DB::beginTransaction();
-
-        $store = $db->create($d);
+        $store = $db->cicilan($invoice->id, $data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form Tagihan Customer*\n".
+                    "*Form Cicilan Tagihan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "*TC".$store->nomor_tagihan."*\n\n".
-                    "Customer : ".$invoice->customer->nama."\n\n".
-                    "Nilai :  *Rp. ".number_format($store->nominal_transaksi, 0, ',', '.')."*\n\n".
+                    "*".$store->project->nama."*\n\n".
+                    "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
                     "Nama    : ".$store->nama_rek."\n".
                     "No. Rek : ".$store->no_rek."\n\n".
                     "==========================\n".
-                    $pesan2.
                     "Sisa Saldo Kas Besar : \n".
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                    "Total Profit Saat Ini :" ."\n".
-                    "Rp. ".number_format($total_profit_bulan, 0,',','.')."\n\n".
-                    "Total PPN Belum Disetor : \n".
-                    "Rp. ".number_format($totalPpn, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
+                    
         $send = new StarSender($group->nama_group, $pesan);
         $res = $send->sendGroup();
 
-        // dd($res);
+        $status = ($res == 'true') ? 1 : 0;
 
-        if ($res == 'true') {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 1,
-            ]);
-        } else {
-            PesanWa::create([
-                'pesan' => $pesan,
-                'tujuan' => $group->nama_group,
-                'status' => 0,
-            ]);
-        }
+        PesanWa::create([
+            'pesan' => $pesan,
+            'tujuan' => $group->nama_group,
+            'status' => $status,
+        ]);
 
-        DB::commit();
+        return redirect()->back()->with('success', 'Cicilan berhasil ditambahkan');
 
-        return redirect()->route('billing')->with('success', 'Berhasil menyimpan data tagihan.');
 
     }
 }

@@ -86,14 +86,14 @@
                                         <h5 class="modal-title" id="modalTitleId">Jumlah Cicilan</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <form action="" method="post" id="cicilForm-{{$d->id}}">
+                                    <form action="{{route('nota-tagihan.cicilan', ['invoice' => $d->id])}}" method="post" id="cicilForm-{{$d->id}}">
                                         @csrf
                                     <div class="modal-body">
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" id="basic-addon1">Rp</span>
-                                            <input type="text" class="form-control @if ($errors->has('nominal_transaksi'))
+                                            <input type="text" class="form-control @if ($errors->has('nominal'))
                                             is-invalid
-                                        @endif" name="cicilan" id="cicilanInput-{{$d->id}}" required data-thousands="." >
+                                        @endif" name="nominal" id="cicilanInput-{{$d->id}}" required data-thousands="." >
                                           </div>
                                     </div>
                                     <div class="modal-footer">
@@ -124,6 +124,13 @@
                                 this.submit();
                             }
                         })
+                    });
+
+                    var cicilan{{$d->id}} = new Cleave('#cicilanInput-{{$d->id}}', {
+                        numeral: true,
+                        numeralThousandsGroupStyle: 'thousand',
+                        numeralDecimalMark: ',',
+                        delimiter: '.'
                     });
 
                     $('#cicilForm-{{$d->id}}').submit(function(e){
@@ -159,14 +166,11 @@
 </div>
 @endsection
 @push('css')
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link href="{{asset('assets/css/dt.min.css')}}" rel="stylesheet">
+<script src="{{asset('assets/js/cleave.min.js')}}"></script>
 @endpush
 @push('js')
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
-<script src="{{asset('assets/js/cleave.min.js')}}"></script>
 <script>
 
 
