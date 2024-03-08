@@ -17,7 +17,7 @@
                     <td><a href="{{route('rekap')}}"><img src="{{asset('images/rekap.svg')}}" alt="dokumen"
                                 width="30"> REKAP</a></td>
                     <td>
-                        <a href="{{route('rekap.kas-besar.print', ['bulan' => $bulan, 'tahun' => $tahun])}}" target="_blank"><img src="{{asset('images/print.svg')}}" alt="dokumen"
+                        <a href="{{route('rekap.kas-project.print', ['project' => $project->id,'bulan' => $bulan, 'tahun' => $tahun])}}" target="_blank"><img src="{{asset('images/print.svg')}}" alt="dokumen"
                             width="30"> PRINT PDF</a>
                     </td>
                 </tr>
