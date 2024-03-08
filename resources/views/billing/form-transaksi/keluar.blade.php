@@ -21,7 +21,7 @@
                     <select class="form-select" name="project_id" id="project_id" required>
                         <option value="">-- Pilih Project --</option>
                         @foreach ($project as $s)
-                        <option value="{{$s->id}}" {{session('project_id') == $s->id ? 'selected' : ''}}>Project : {{$s->nama}}</option>
+                        <option value="{{$s->id}}" {{session('project_id') == $s->id ? 'selected' : ''}}>{{$s->nama}}</option>
                         @endforeach
                     </select>
                 </div>

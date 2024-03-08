@@ -65,7 +65,7 @@ class FormTransaksiController extends Controller
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Form Transaksi (Dana Keluar)*\n".
                     "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                    "*".$store->project->nama."*\n\n".
+                    "Project :"."*".$store->project->nama."*\n\n".
                     "Uraian :  *".$store->uraian."*\n".
                     "Nilai   :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
