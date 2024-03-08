@@ -42,8 +42,8 @@ class NotaTagihanController extends Controller
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Form Cicilan Tagihan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "*".$store->project->nama."*\n\n".
-                    "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                    "Project : *".$store->project->nama."*\n\n".
+                    "Nilai   :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
                     "Nama    : ".$store->nama_rek."\n".
@@ -54,7 +54,7 @@ class NotaTagihanController extends Controller
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
-                    
+
         $send = new StarSender($group->nama_group, $pesan);
         $res = $send->sendGroup();
 
