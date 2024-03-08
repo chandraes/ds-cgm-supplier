@@ -83,7 +83,7 @@
                     {{-- latest saldo --}}
                     <td class="text-end align-middle table-pdf text-pdf">
                         <strong>
-                            {{$data->last() ? number_format($data->last()->saldo, 0, ',', '.') : ''}}
+                            {{$data->last() ? number_format($data->last()->sisa, 0, ',', '.') : ''}}
                         </strong>
                     </td>
                     <td class="table-pdf text-pdf"></td>
