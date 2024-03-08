@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KasProject extends Model
 {
@@ -12,7 +13,7 @@ class KasProject extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['nf_nominal', 'nf_saldo_project', 'tanggal', 'nf_saldo'];
+    protected $appends = ['nf_nominal', 'nf_sisa', 'tanggal'];
 
     public function getNfNominalAttribute()
     {
@@ -24,40 +25,22 @@ class KasProject extends Model
         return date('d-m-Y', strtotime($this->created_at));
     }
 
-    public function getNfSaldoAttribute()
+    public function getNfSisaAttribute()
     {
-        return number_format($this->saldo, 0, ',', '.');
+        return number_format($this->sisa, 0, ',', '.');
     }
 
-    public function getNfSaldoProjectAttribute()
-{
-    return number_format($this->saldo_project, 0, ',', '.');
-}
 
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    public function saldo_terakhir()
+    public function sisaTerakhir($project_id)
     {
-        return $this->orderBy('id', 'desc')->first()->saldo ?? 0;
+        return $this->where('project_id', $project_id)->orderBy('id', 'desc')->first()->sisa ?? 0;
     }
 
-    public function saldo_project_terakhir($project_id)
-    {
-        return $this->where('project_id', $project_id)->orderBy('id', 'desc')->first()->saldo_project ?? 0;
-    }
-
-    public function modal_investor_terakhir()
-    {
-        return $this->orderBy('id', 'desc')->first()->modal_investor_terakhir ?? 0;
-    }
-
-    public function modal_investor_project_terakhir($project_id)
-    {
-        return $this->where('project_id', $project_id)->orderBy('id', 'desc')->first()->modal_investor_project_terakhir ?? 0;
-    }
 
     public function dataTahun()
     {
@@ -90,91 +73,71 @@ class KasProject extends Model
         return $data;
     }
 
-    public function kasTotal($bulan, $tahun)
+    public function transaksiKeluar($data)
     {
-        return $this->whereMonth('created_at', $bulan)->whereYear('created_at', $tahun)->get();
+        $data['jenis'] = 0;
+
+        DB::beginTransaction();
+
+        $this->create([
+            'project_id' => $data['project_id'],
+            'nominal' => $data['nominal'],
+            'jenis' => $data['jenis'],
+            'sisa' => $this->sisaTerakhir($data['project_id']) - $data['nominal'],
+            'uraian' => $data['uraian'],
+            'no_rek' => $data['no_rek'],
+            'nama_rek' => $data['nama_rek'],
+            'bank' => $data['bank'],
+        ]);
+
+        $db = new KasBesar();
+
+        $data['saldo'] = $db->saldoTerakhir() - $data['nominal'];
+        $data['modal_investor_terakhir'] = $db->modalInvestorTerakhir();
+
+        $store = $db->create($data);
+
+        DB::commit();
+
+        return $store;
+
     }
 
-    public function kasTotalByMonth($bulan, $tahun)
+    public function transaksiMasuk($data)
     {
-        $data = $this->whereMonth('created_at', $bulan)
-                    ->whereYear('created_at', $tahun)
-                    ->orderBy('id', 'desc')
-                    ->first();
 
-        if (!$data) {
-        $data = $this->where('created_at', '<', Carbon::create($tahun, $bulan, 1))
-                    ->orderBy('id', 'desc')
-                    ->first();
-        }
-
-        return $data;
-    }
-
-    public function masukDeposit($data)
-    {
-        // dd($data);
-        $db = new KasProject();
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
 
-        $data['uraian'] = "Deposit ". substr(Project::find($data['project_id'])->nama, 0, 20);
-        $data['no_rek'] = $rekening->no_rek;
-        $data['nama_rek'] = $rekening->nama_rek;
-        $data['bank'] = $rekening->bank;
-        $data['jenis_transaksi'] = 1;
         $data['nominal'] = str_replace('.', '', $data['nominal']);
-        $data['saldo'] = $db->saldo_terakhir() + $data['nominal'];
-        $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) + $data['nominal'];
-        $data['modal_investor'] = -$data['nominal'];
-        $data['modal_investor_terakhir'] = $db->modal_investor_terakhir() - $data['nominal'];
-        $data['modal_investor_project'] = -$data['nominal'];
-        $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']) - $data['nominal'];
-
-        $store = $this->create($data);
-
-        return $store;
-
-    }
-
-    public function keluarDeposit($data)
-    {
-        $db = new KasProject();
-        $rekening = Rekening::where('untuk', 'withdraw')->first();
-
-        $data['uraian'] = "Withdraw ". substr(Project::find($data['project_id'])->nama, 0, 20);
+        $data['jenis'] = 1;
         $data['no_rek'] = $rekening->no_rek;
         $data['nama_rek'] = $rekening->nama_rek;
         $data['bank'] = $rekening->bank;
-        $data['jenis_transaksi'] = 0;
-        $data['saldo'] = $db->saldo_terakhir() - $data['nominal'];
-        $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) - $data['nominal'];
-        $data['modal_investor'] = $data['nominal'];
-        $data['modal_investor_terakhir'] = $db->modal_investor_terakhir() + $data['nominal'];
-        $data['modal_investor_project'] = $data['nominal'];
-        $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']) + $data['nominal'];
 
-        $store = $this->create($data);
+        DB::beginTransaction();
 
-        return $store;
-    }
+        $kas = $this->create([
+                    'project_id' => $data['project_id'],
+                    'nominal' => $data['nominal'],
+                    'jenis' => $data['jenis'],
+                    'sisa' => $this->sisaTerakhir($data['project_id']) + $data['nominal'],
+                    'uraian' => $data['uraian'],
+                    'no_rek' => $data['no_rek'],
+                    'nama_rek' => $data['nama_rek'],
+                    'bank' => $data['bank'],
+                ]);
 
-    public function tambahTransaksi($data)
-    {
-        $db = new KasProject();
+        $db = new KasBesar();
 
-        $data['uraian'] = substr($data['uraian'], 0, 255);
-        $data['jenis_transaksi'] = 0;
-        $data['saldo'] = $db->saldo_terakhir() - $data['nominal'];
-        $data['saldo_project'] = $db->saldo_project_terakhir($data['project_id']) - $data['nominal'];
-        $data['modal_investor'] = 0;
-        $data['modal_investor_terakhir'] = $db->modal_investor_terakhir();
-        $data['modal_investor_project'] = 0;
-        $data['modal_investor_project_terakhir'] = $db->modal_investor_project_terakhir($data['project_id']);
+        $data['saldo'] = $db->saldoTerakhir() + $data['nominal'];
+        $data['modal_investor_terakhir'] = $db->modalInvestorTerakhir();
 
+        $store = $db->create($data);
 
-        $store = $this->create($data);
+        DB::commit();
 
         return $store;
 
     }
+
 }

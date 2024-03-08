@@ -55,15 +55,6 @@
             </div>
         </div>
         @endif
-        {{-- <div class="col-md-3 text-center mt-5">
-            <a href="{{route('home')}}" class="text-decoration-none" data-bs-toggle="modal"
-                data-bs-target="#formSupplier">
-                <img src="{{asset('images/form-supplier.svg')}}" alt="" width="100">
-                <h2>FORM SUPPLIER</h2>
-            </a>
-            @include('billing.modal-form-supplier')
-
-        </div> --}}
         <div class="col-md-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalTransaksi">
                 <img src="{{asset('images/transaksi.svg')}}" alt="" width="100">

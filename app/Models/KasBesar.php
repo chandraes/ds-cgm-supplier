@@ -13,6 +13,11 @@ class KasBesar extends Model
 
     protected $appends = ['nf_nominal', 'tanggal', 'kode_deposit', 'kode_kas_kecil', 'nf_saldo'];
 
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
     public function dataTahun()
     {
         return $this->selectRaw('YEAR(created_at) as tahun')->groupBy('tahun')->get();

@@ -88,21 +88,17 @@
 
                 <th class="text-center align-middle">Masuk</th>
                 <th class="text-center align-middle">Keluar</th>
-                <th class="text-center align-middle">Saldo</th>
+                <th class="text-center align-middle">Sisa</th>
                 <th class="text-center align-middle">Transfer Ke Rekening</th>
                 <th class="text-center align-middle">Bank</th>
-                <th class="text-center align-middle">Modal Investor</th>
             </tr>
             <tr class="table-warning">
-                <td colspan="3" class="text-center align-middle">Saldo Bulan
+                <td colspan="3" class="text-center align-middle">Sisa
                     {{$stringBulan}} {{$tahunSebelumnya}}</td>
                 <td></td>
-                <td class="text-center align-middle">Rp. {{$dataSebelumnya ? number_format($dataSebelumnya->saldo_project,
-                    0, ',','.') : ''}}</td>
+                <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_sisa : ''}}</td>
                 <td></td>
                 <td></td>
-                <td class="text-center align-middle">Rp. {{$dataSebelumnya ?
-                    number_format($dataSebelumnya->modal_investor_project_terakhir, 0,',','.') : ''}}</td>
             </tr>
             </thead>
             <tbody>
@@ -110,58 +106,36 @@
                 <tr>
                     <td class="text-center align-middle">{{$d->tanggal}}</td>
                     <td class="text-start align-middle">
-                        @if ($d->invoice_tagihan_id)
-                        <a href="{{route('rekap.kas-besar.detail-tagihan', ['invoice' => $d->invoice_tagihan_id])}}">{{$d->uraian}}</a>
-                        @elseif($d->invoice_bayar_id)
-                        <a href="{{route('rekap.kas-besar.detail-bayar', ['invoice' => $d->invoice_bayar_id])}}">{{$d->uraian}}</a>
-                        @else
                         {{$d->uraian}}
-                        @endif
-
                     </td>
-                    <td class="text-center align-middle">{{$d->jenis_transaksi === 1 ?
+                    <td class="text-end align-middle">{{$d->jenis === 1 ?
                        $d->nf_nominal : ''}}
                     </td>
-                    <td class="text-center align-middle text-danger">{{$d->jenis_transaksi === 0 ?
+                    <td class="text-end align-middle text-danger">{{$d->jenis === 0 ?
                         $d->nf_nominal : ''}}
                     </td>
-                    <td class="text-center align-middle">{{$d->nf_saldo_project}}</td>
+                    <td class="text-end align-middle">{{$d->nf_sisa}}</td>
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
-                    <td class="text-center align-middle">{{number_format($d->modal_investor_project, 0, ',', '.')}}</td>
                 </tr>
                 @endforeach
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td class="text-center align-middle" colspan="2"><strong>GRAND TOTAL</strong></td>
-                    <td class="text-center align-middle"><strong>{{number_format($data->where('jenis_transaksi',
+                    <td class="text-end align-middle"><strong>{{number_format($data->where('jenis',
                             1)->sum('nominal'), 0, ',', '.')}}</strong></td>
-                    <td class="text-center align-middle text-danger"><strong>{{number_format($data->where('jenis_transaksi',
+                    <td class="text-end align-middle text-danger"><strong>{{number_format($data->where('jenis',
                             0)->sum('nominal'), 0, ',', '.')}}</strong></td>
                     {{-- latest saldo --}}
-                    <td class="text-center align-middle">
+                    <td class="text-end align-middle">
                         <strong>
-                            {{$data->last() ? number_format($data->last()->saldo_project, 0, ',', '.') : ''}}
+                            {{$data->last() ? number_format($data->last()->sisa, 0, ',', '.') : ''}}
                         </strong>
                     </td>
                     <td></td>
                     <td></td>
-                    <td class="text-center align-middle">
-                        <strong>
-                            {{$data->last() ? number_format($data->last()->modal_investor_project_terakhir, 0, ',', '.') : ''}}
-                        </strong>
-                    </td>
+
                 </tr>
             </tfoot>
         </table>

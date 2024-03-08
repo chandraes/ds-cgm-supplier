@@ -38,7 +38,7 @@
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('nominal'))
                     is-invalid
-                @endif" name="nominal" id="nominal" required data-thousands="." >
+                @endif" name="nominal" id="nominal" required >
                   </div>
                 @if ($errors->has('nominal'))
                 <div class="invalid-feedback">
@@ -55,7 +55,7 @@
                 <label for="nama_rek" class="form-label">Nama</label>
                 <input type="text" class="form-control @if ($errors->has('nama_rek'))
                     is-invalid
-                @endif" name="nama_rek" id="nama_rek" required value="{{session('nama_rek')}}">
+                @endif" name="nama_rek" id="nama_rek" disabled value="{{$rekening->nama_rek}}">
                 @if ($errors->has('nama_rek'))
                 <div class="invalid-feedback">
                     {{$errors->first('nama_rek')}}
@@ -66,7 +66,7 @@
                 <label for="bank" class="form-label">Bank</label>
                 <input type="text" class="form-control @if ($errors->has('bank'))
                     is-invalid
-                @endif" name="bank" id="bank" required value="{{session('bank')}}">
+                @endif" name="bank" id="bank" disabled value="{{$rekening->bank}}">
                 @if ($errors->has('bank'))
                 <div class="invalid-feedback">
                     {{$errors->first('bank')}}
@@ -77,7 +77,7 @@
                 <label for="no_rek" class="form-label">Nomor Rekening</label>
                 <input type="text" class="form-control @if ($errors->has('no_rek'))
                     is-invalid
-                @endif" name="no_rek" id="no_rek" required value="{{session('no_rek')}}">
+                @endif" name="no_rek" id="no_rek" disabled value="{{$rekening->no_rek}}">
                 @if ($errors->has('no_rek'))
                 <div class="invalid-feedback">
                     {{$errors->first('no_rek')}}
