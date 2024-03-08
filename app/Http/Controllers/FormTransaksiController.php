@@ -86,18 +86,17 @@ class FormTransaksiController extends Controller
 
     }
 
-    public function edit_store(Request $request)
+    public function masuk()
+    {
+        $project = Project::where('project_status_id', 1)->get();
+        return view('billing.form-transaksi.masuk', [
+            'project' => $project,
+        ]);
+    }
+
+    public function masuk_store(Request $request)
     {
 
     }
 
-    public function delete()
-    {
-
-    }
-
-    public function lanjutkan(Customer $customer)
-    {
-
-    }
 }

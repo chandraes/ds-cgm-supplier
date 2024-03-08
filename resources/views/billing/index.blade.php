@@ -65,11 +65,11 @@
 
         </div> --}}
         <div class="col-md-3 text-center mt-5">
-            <a href="{{route('form-transaksi.index')}}" class="text-decoration-none">
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalTransaksi">
                 <img src="{{asset('images/transaksi.svg')}}" alt="" width="100">
                 <h2>FORM TRANSAKSI</h2>
             </a>
-            {{-- @include('billing.modal-form-transaksi') --}}
+            @include('billing.modal-form-transaksi')
 
         </div>
         <div class="col-md-3 text-center mt-5">
@@ -79,49 +79,6 @@
             </a>
 
         </div>
-        {{--
-        <div class="col-md-3 text-center mt-5">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalNotaBayar">
-                <img src="{{asset('images/nota-bayar.svg')}}" alt="" width="100">
-                <h2>NOTA BAYAR  @if($nb != 0) <span class="text-danger">({{$nb}})</span> @endif</h2>
-            </a>
-            @include('billing.modal-nota-bayar')
-
-        </div>
-        <div class="col-md-3 text-center mt-5">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalInvoicePpn">
-                <img src="{{asset('images/invoice-ppn.svg')}}" alt="" width="100">
-                <h2>INVOICE PPN  @if($ip != 0) <span class="text-danger">({{$ip}})</span> @endif</h2>
-            </a>
-            <div class="modal fade" id="modalInvoicePpn" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalTitleId">Invoice PPn</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                @foreach ($customer as $c)
-                                <div class="col-md-3 m-2">
-                                    <a href="{{route('invoice-ppn.index', ['customer' => $c->id])}}" class="text-decoration-none">
-                                        <img src="{{asset('images/palm.svg')}}" alt="" width="100">
-                                        <h3 class="mt-2">{{$c->singkatan}} @if($t->where('customer_id', $c->id)->where('tagihan', 1)->where('ppn', 0)->count() != 0) <span class="text-danger">({{$t->where('customer_id', $c->id)->where('tagihan', 1)->where('ppn', 0)->count()}})</span> @endif</h3>
-                                    </a>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 text-center mt-5">
-            <a href="{{route('form-ppn')}}" class="text-decoration-none">
-                <img src="{{asset('images/form-ppn.svg')}}" alt="" width="100">
-                <h2>FORM PPN @if($ppn != 0) <span class="text-danger">({{$ppn}})</span> @endif</h2>
-            </a>
-        </div> --}}
         <div class="col-md-3 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="100">
@@ -157,6 +114,15 @@
             window.location.href = "{{route('form-kas-kecil.masuk')}}";
         }else if(selectKecil == 'keluar'){
             window.location.href = "{{route('form-kas-kecil.keluar')}}";
+        }
+    }
+
+    function funTransaksi(){
+        var selectTransaksi = document.getElementById('selectTransaksi').value;
+        if(selectTransaksi == 'masuk'){
+            window.location.href = "{{route('form-transaksi.masuk')}}";
+        }else if(selectTransaksi == 'keluar'){
+            window.location.href = "{{route('form-transaksi.index')}}";
         }
     }
 </script>

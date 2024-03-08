@@ -131,9 +131,8 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/form-transaksi', [App\Http\Controllers\FormTransaksiController::class, 'index'])->name('form-transaksi.index');
             Route::get('/form-transaksi/tambah/{customer}', [App\Http\Controllers\FormTransaksiController::class, 'tambah'])->name('form-transaksi.tambah');
             Route::post('/form-transaksi/tambah-store', [App\Http\Controllers\FormTransaksiController::class, 'tambah_store'])->name('form-transaksi.tambah-store');
-            Route::patch('/form-transaksi/edit/{transaksi}', [App\Http\Controllers\FormTransaksiController::class, 'edit_store'])->name('form-transaksi.edit_storebab');
-            Route::delete('/form-transaksi/delete/{transaksi}', [App\Http\Controllers\FormTransaksiController::class, 'delete'])->name('form-transaksi.delete');
-            Route::post('/form-transaksi/lanjutkan/{customer}', [App\Http\Controllers\FormTransaksiController::class, 'lanjutkan'])->name('form-transaksi.lanjutkan');
+            Route::get('/form-transaksi/masuk', [App\Http\Controllers\FormTransaksiController::class, 'masuk'])->name('form-transaksi.masuk');
+            Route::post('/form-transaksi/masuk/store', [App\Http\Controllers\FormTransaksiController::class, 'masuk_store'])->name('form-transaksi.masuk.store');
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
             Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan_tagihan'])->name('nota-tagihan.cicilan');

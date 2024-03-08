@@ -3,10 +3,10 @@
 <div class="container-fluid">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
-            <h1><u>Transaksi Dana Keluar</u></h1>
+            <h1><u>Transaksi Dana Masuk</u></h1>
         </div>
     </div>
-    <form action="{{route('form-transaksi.tambah-store')}}" method="post" id="masukForm">
+    <form action="{{route('form-transaksi.masuk.store')}}" method="post" id="masukForm">
         @csrf
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-3">

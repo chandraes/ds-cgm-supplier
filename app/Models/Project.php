@@ -103,11 +103,24 @@ class Project extends Model
     public static function updateProject($id, $data)
     {
         $data['nilai'] = str_replace('.', '', $data['nilai']);
-        $date = Carbon::createFromFormat('d-m-Y', $data['tanggal_mulai']);
-        $data['tanggal_mulai'] = $date->format('Y-m-d');
-        $jatuhTempo = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo']);
-        $data['jatuh_tempo'] = $jatuhTempo->format('Y-m-d');
+        $data['tanggal_mulai'] = Carbon::createFromFormat('d-m-Y', $data['tanggal_mulai'])->format('Y-m-d');
+        $data['jatuh_tempo'] = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo'])->format('Y-m-d');
 
-        return Project::where('id', $id)->update($data);
+        $project = Project::find($id);
+
+        if ($project) {
+            $invoice = InvoiceTagihan::where('project_id', $id)->first();
+
+            if ($invoice && $invoice->nilai_tagihan != $data['nilai']) {
+                $invoice->update([
+                    'nilai_tagihan' => $data['nilai'],
+                    'sisa_tagihan' => $data['nilai'] - $invoice->dibayar
+                ]);
+            }
+
+            $project->update($data);
+        }
+
+        return $project;
     }
 }

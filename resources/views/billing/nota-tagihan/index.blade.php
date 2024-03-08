@@ -47,9 +47,6 @@
                     <th class="text-center align-middle">Sisa Tagihan</th>
                     <th class="text-center align-middle">Lunas</th>
                     <th class="text-center align-middle">Cicil</th>
-                    @if (auth()->user()->role === 'su')
-                    <th class="text-center align-middle">Action</th>
-                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -109,11 +106,6 @@
                         </div>
 
                     </td>
-                    @if (auth()->user()->role === 'su')
-                    <td class="text-center align-middle">
-                        <a class="btn btn-danger" href="">Kembalikan</a>
-                    </td>
-                    @endif
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
