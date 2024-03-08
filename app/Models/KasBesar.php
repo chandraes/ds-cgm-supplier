@@ -87,7 +87,7 @@ class KasBesar extends Model
     public function deposit($data)
     {
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
-
+        $data['nominal'] = str_replace('.', '', $data['nominal']);
         $data['nomor_deposit'] = $this->max('nomor_deposit') + 1;
         $data['saldo'] = $this->saldoTerakhir() + $data['nominal'];
         $data['modal_investor'] = -$data['nominal'];
