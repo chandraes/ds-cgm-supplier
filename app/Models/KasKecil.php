@@ -98,4 +98,25 @@ class KasKecil extends Model
 
         return $store;
     }
+
+    public function voidKasKecil($id)
+    {
+        $db = $this->find($id);
+        $rekening = Rekening::where('untuk', 'kas-kecil')->first();
+
+        $db->update(['void' => 1]);
+
+        $data['uraian'] = 'Void '.$db->uraian;
+        $data['jenis'] = 1;
+        $data['nominal'] = $db->nominal;
+        $data['saldo'] = $this->saldoTerakhir() + $data['nominal'];
+        $data['no_rek'] = $rekening->no_rek;
+        $data['nama_rek'] = $rekening->nama_rek;
+        $data['bank'] = $rekening->bank;
+        $data['void'] = 1;
+
+        $store = $this->create($data);
+
+        return $store;
+    }
 }

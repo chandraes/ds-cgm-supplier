@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\GroupWa;
 use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\KasKecil;
 use App\Models\KasProject;
+use App\Models\PesanWa;
 use App\Models\Project;
+use App\Services\StarSender;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
@@ -234,116 +237,39 @@ class RekapController extends Controller
         return $pdf->stream('Rekap Kas Besar '.$stringBulanNow.' '.$tahun.'.pdf');
     }
 
+    public function void_kas_kecil(KasKecil $kas)
+    {
+        $db = new KasKecil();
 
+        $store = $db->voidKasKecil($kas->id);
 
-    // public function rekap_invoice(Customer $customer, Request $request)
-    // {
+        $group = GroupWa::where('untuk', 'team')->first();
 
-    //     $transaksi = new Transaksi;
+        $pesan =    "==========================\n".
+                    "*Form Void Kas Kecil*\n".
+                    "==========================\n\n".
+                    "Uraian: ".$store->uraian."\n\n".
+                    "Nilai : *Rp. ".number_format($store->nominal)."*\n\n".
+                    "Ditransfer ke rek:\n\n".
+                    "Bank      : ".$store->bank."\n".
+                    "Nama    : ".$store->nama_rek."\n".
+                    "No. Rek : ".$store->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas Kecil : \n".
+                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
 
-    //     $bulan = $request->bulan ?? date('m');
-    //     $tahun = $request->tahun ?? date('Y');
+        $send = new StarSender($group->nama_group, $pesan);
+        $res = $send->sendGroup();
 
-    //     $dataTahun = $transaksi->dataTahun();
+        $status = ($res == 'true') ? 1 : 0;
 
-    //     $data = $transaksi->rekapInvoice($customer->id, $bulan, $tahun);
-    //     $totalBerat = $data->sum('berat');
-    //     $total = $data->sum('total');
-    //     $totalPPN = $data->sum('total_ppn');
-    //     $totalTagihan = $data->sum('total_tagihan');
-    //     $totalProfit = $data->sum('profit');
-    //     $totalPPH = $data->sum('pph');
-    //     $totalBayar = $data->sum('total_bayar');
+        PesanWa::create([
+            'pesan' => $pesan,
+            'tujuan' => $group->nama_group,
+            'status' => $status,
+        ]);
 
-    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
-
-
-    //     return view('rekap.invoice.index', [
-    //         'customer' => $customer,
-    //         'data' => $data,
-    //         'dataTahun' => $dataTahun,
-    //         'tahun' => $tahun,
-    //         'bulan' => $bulan,
-    //         'stringBulanNow' => $stringBulanNow,
-    //         'totalBerat' => $totalBerat,
-    //         'total' => $total,
-    //         'totalPPN' => $totalPPN,
-    //         'totalTagihan' => $totalTagihan,
-    //         'totalProfit' => $totalProfit,
-    //         'totalPPH' => $totalPPH,
-    //         'totalBayar' => $totalBayar,
-    //     ]);
-
-    // }
-
-    // public function kas_supplier(Request $request)
-    // {
-
-    //     $supplier = Supplier::findOrFail($request->supplier);
-
-    //     $kas = new KasSupplier;
-
-    //     $bulan = $request->bulan ?? date('m');
-    //     $tahun = $request->tahun ?? date('Y');
-
-    //     $dataTahun = $kas->dataTahun();
-
-    //     $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
-
-    //     $bulanSebelumnya = $bulan - 1;
-    //     $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-    //     $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-    //     $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
-
-    //     $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
-
-    //     return view('rekap.kas-supplier.index', [
-    //         'supplier' => $supplier,
-    //         'data' => $data,
-    //         'dataTahun' => $dataTahun,
-    //         'dataSebelumnya' => $dataSebelumnya,
-    //         'stringBulan' => $stringBulan,
-    //         'tahun' => $tahun,
-    //         'tahunSebelumnya' => $tahunSebelumnya,
-    //         'bulan' => $bulan,
-    //         'stringBulanNow' => $stringBulanNow,
-    //     ]);
-    // }
-
-    // public function kas_supplier_print(Request $request)
-    // {
-
-    //     $supplier = Supplier::findOrFail($request->supplier);
-
-    //     $kas = new KasSupplier;
-
-    //     $bulan = $request->bulan ?? date('m');
-    //     $tahun = $request->tahun ?? date('Y');
-
-    //     $dataTahun = $kas->dataTahun();
-
-    //     $data = $kas->kasSupplierNow($supplier->id, $bulan, $tahun);
-
-    //     $bulanSebelumnya = $bulan - 1;
-    //     $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-    //     $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-    //     $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-    //     $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
-
-    //     $dataSebelumnya = $kas->lastKasSupplierByMonth($supplier->id,$bulanSebelumnya, $tahunSebelumnya);
-
-    //     $pdf = PDF::loadview('rekap.kas-supplier.pdf', [
-    //         'supplier' => $supplier,
-    //         'data' => $data,
-    //         'dataSebelumnya' => $dataSebelumnya,
-    //         'stringBulan' => $stringBulan,
-    //         'tahun' => $tahun,
-    //         'tahunSebelumnya' => $tahunSebelumnya,
-    //         'bulan' => $bulan,
-    //         'stringBulanNow' => $stringBulanNow,
-    //     ])->setPaper('a4', 'portrait');
-
-    //     return $pdf->stream('Rekap Kas Supplier '.$stringBulanNow.' '.$tahun.'.pdf');
-    // }
+        return redirect()->back()->with('success', 'Data berhasil di void');
+    }
 }

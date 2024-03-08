@@ -15,6 +15,11 @@ class Project extends Model
 
     protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai'];
 
+    public function kas_project()
+    {
+        return $this->hasMany(KasProject::class);
+    }
+
     public function invoice_tagihan()
     {
         return $this->hasOne(InvoiceTagihan::class);

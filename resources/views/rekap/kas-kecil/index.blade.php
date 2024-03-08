@@ -74,6 +74,7 @@
                 <th class="text-center align-middle">Saldo</th>
                 <th class="text-center align-middle">Cash/Transfer</th>
                 <th class="text-center align-middle">Bank</th>
+                <th class="text-center align-middle">Act</th>
             </tr>
             <tr class="table-warning">
                 <td class="text-center align-middle" colspan="3">Saldo Bulan
@@ -82,6 +83,7 @@
                 <td></td>
                 <td class="text-end align-middle">Rp. {{$dataSebelumnya ? number_format($dataSebelumnya->saldo,
                     0, ',','.') : ''}}</td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -101,6 +103,14 @@
                     <td class="text-end align-middle">{{$d->nf_saldo}}</td>
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
+                    {{-- delete button --}}
+                    <td class="text-center align-middle">
+                        @if ($d->void === 0)
+                        <button type="submit" class="btn btn-danger" onclick="voidKas({{$d->id}})">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
 
@@ -117,6 +127,7 @@
                             {{$data->last() ? number_format($data->last()->saldo, 0, ',', '.') : ''}}
                         </strong>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -143,6 +154,57 @@
         });
 
     });
+
+    function voidKas(id){
+        Swal.fire({
+                title: 'Masukkan Password',
+                input: 'password',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                showLoaderOnConfirm: true,
+                preConfirm: (password) => {
+                    return new Promise((resolve, reject) => {
+                        $.ajax({
+                            url: '{{route('pengaturan.password-konfirmasi-cek')}}',
+                            type: 'POST',
+                            data: JSON.stringify({ password: password }),
+                            contentType: 'application/json',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(data) {
+                                if (data.status === 'success') {
+                                    resolve();
+                                } else {
+                                    // swal show error message\
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: data.message
+                                    });
+                                }
+                            },
+                            error: function(jqXHR, textStatus, errorThrown) {
+                                Swal.fire({
+                                        icon: 'error',
+                                        title: 'Oops...',
+                                        text: textStatus+' '+errorThrown
+                                    });
+                            }
+                        });
+                    });
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#spinner').show();
+                    window.location.href = "/rekap/kas-kecil/"+id+"/void";
+                }
+            });
+    }
 
 </script>
 @endpush

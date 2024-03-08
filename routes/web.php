@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('/kas-kecil', [App\Http\Controllers\RekapController::class, 'kas_kecil'])->name('rekap.kas-kecil');
             Route::get('/kas-kecil/print/{bulan}/{tahun}', [App\Http\Controllers\RekapController::class, 'kas_kecil_print'])->name('rekap.kas-kecil.print');
+            Route::get('/kas-kecil/{kas}/void', [App\Http\Controllers\RekapController::class, 'void_kas_kecil'])->name('rekap.kas-kecil.void');
 
             Route::get('/invoice/{customer}', [App\Http\Controllers\RekapController::class, 'rekap_invoice'])->name('rekap.invoice');
 
@@ -137,12 +138,6 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
             Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan'])->name('nota-tagihan.cicilan');
-
-            Route::get('/nota-bayar', [App\Http\Controllers\NotaBayarController::class, 'index'])->name('nota-bayar.index');
-            Route::post('/nota-bayar/{supplier}/cutoff', [App\Http\Controllers\NotaBayarController::class, 'cutoff'])->name('nota-bayar.cutoff');
-
-            Route::get('/invoice-ppn/{customer}', [App\Http\Controllers\InvoicePpnController::class, 'index'])->name('invoice-ppn.index');
-            Route::post('/invoice-ppn/{customer}/cutoff', [App\Http\Controllers\InvoicePpnController::class, 'cutoff'])->name('invoice-ppn.cutoff');
 
         });
 

@@ -60,6 +60,8 @@ class FormTransaksiController extends Controller
 
         $store = $db->transaksiKeluar($data);
 
+        $sisa = $db->sisaTerakhir($store->project_id);
+
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
@@ -77,6 +79,8 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Total Pengeluaran Project : \n".
+                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         //Tambahkan total pengeluaran project
@@ -120,6 +124,8 @@ class FormTransaksiController extends Controller
 
         $store = $db->transaksiMasuk($data);
 
+        $sisa = $db->sisaTerakhir($store->project_id);
+
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
@@ -127,7 +133,7 @@ class FormTransaksiController extends Controller
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                     $store->uraian."\n\n".
                     "Project :  *".$store->project->nama."*\n\n".
-                    "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                    "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
                     "Nama    : ".$store->nama_rek."\n".
@@ -137,6 +143,8 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Total Pengeluaran Project : \n".
+                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         //Tambahkan total pengeluaran project
