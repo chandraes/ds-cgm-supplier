@@ -13,7 +13,7 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai'];
+    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai', 'kode'];
 
     public function kas_project()
     {
@@ -23,6 +23,11 @@ class Project extends Model
     public function invoice_tagihan()
     {
         return $this->hasOne(InvoiceTagihan::class);
+    }
+
+    public function getKodeAttribute()
+    {
+        return 'P' . str_pad($this->id, 2, '0', STR_PAD_LEFT);
     }
 
     public function getNfNilaiAttribute()

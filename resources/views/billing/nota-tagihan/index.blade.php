@@ -55,7 +55,7 @@
                 @foreach ($data as $d)
                 <tr>
                     <td class="text-center align-middle"></td>
-                    <td class="text-center align-middle">{{$d->customer->nama}}</td>
+                    <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
                     <td class="text-start align-middle">{{$d->project->nama}}</td>
 
                     <td class="text-end align-middle">
@@ -74,7 +74,7 @@
                         {{$d->nf_profit}}
                     </td>
                     <td class="text-center align-middle">
-                        <form action="" method="post" id="lunasForm-{{$d->id}}">
+                        <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="lunasForm-{{$d->id}}">
                         @csrf
                             <button type="submit" class="btn btn-success">Pelunasan </button>
                         </form>

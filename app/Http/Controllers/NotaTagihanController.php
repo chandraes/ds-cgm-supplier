@@ -72,4 +72,15 @@ class NotaTagihanController extends Controller
 
 
     }
+
+    public function pelunasan(InvoiceTagihan $invoice)
+    {
+        ini_set('max_execution_time', 180);
+        ini_set('memory_limit', '32M');
+
+        $db = new InvoiceTagihan();
+        $save = $db->pelunasan($invoice->id);
+
+        return redirect()->back()->with(($save['status'] == 0 ? "error" : "success"), $save['message']);
+    }
 }

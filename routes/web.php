@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
             Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan'])->name('nota-tagihan.cicilan');
+            Route::post('/nota-tagihan/pelunasan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'pelunasan'])->name('nota-tagihan.pelunasan');
 
         });
 
