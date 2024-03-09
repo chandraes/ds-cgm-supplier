@@ -13,6 +13,7 @@ class HistoriController extends Controller
         $data = PesanWa::leftJoin('group_was', 'pesan_was.tujuan', '=', 'group_was.nama_group')
             ->select('pesan_was.*', 'group_was.group_id')
             ->orderBy('pesan_was.id', 'desc')
+            ->limit(10)
             ->get();
 
         return view('histori.index', [

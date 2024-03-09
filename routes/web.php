@@ -48,7 +48,6 @@ Route::group(['middleware' => ['auth']], function() {
         // END ROUTE PENGATURAN
     });
 
-
         // ROUTE DB
     Route::view('db', 'db.index')->name('db')->middleware('role:su,admin,user');
     Route::prefix('db')->group(function () {
@@ -79,7 +78,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::patch('/rekening/{rekening}/update', [App\Http\Controllers\RekeningController::class, 'update'])->name('db.rekening.update');
         });
     });
-
 
 
     Route::group(['middleware' => ['role:su,admin,user,investor']], function() {
@@ -122,9 +120,6 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/form-kas-kecil/keluar', [App\Http\Controllers\FormKasKecilController::class, 'keluar'])->name('form-kas-kecil.keluar');
             Route::post('/form-kas-kecil/keluar/store', [App\Http\Controllers\FormKasKecilController::class, 'keluar_store'])->name('form-kas-kecil.keluar.store');
 
-            Route::get('billing/deviden', [App\Http\Controllers\FormDevidenController::class, 'index'])->name('billing.deviden.index');
-            Route::post('billing/deviden/store', [App\Http\Controllers\FormDevidenController::class, 'store'])->name('billing.deviden.store');
-
             Route::get('/form-lain/masuk', [App\Http\Controllers\FormLainController::class, 'masuk'])->name('form-lain.masuk');
             Route::post('/form-lain/masuk/store', [App\Http\Controllers\FormLainController::class, 'masuk_store'])->name('form-lain.masuk.store');
             Route::get('/form-lain/keluar', [App\Http\Controllers\FormLainController::class, 'keluar'])->name('form-lain.keluar');
@@ -144,10 +139,4 @@ Route::group(['middleware' => ['auth']], function() {
 
     });
 
-    Route::group(['middleware' => ['role:supplier']], function() {
-        Route::get('/kas-per-supplier', [App\Http\Controllers\KasPerSupplierController::class, 'index'])->name('kas-per-supplier');
-        Route::get('/kas-per-supplier/print/{bulan}/{tahun}', [App\Http\Controllers\KasPerSupplierController::class, 'print'])->name('kas-per-supplier.print');
-        Route::get('/kas-per-supplier/detail-bayar/{invoice}', [App\Http\Controllers\KasPerSupplierController::class, 'detail_bayar'])->name('kas-per-supplier.detail-bayar');
-        Route::get('/kas-per-supplier/detail-bayar/print/{invoice}', [App\Http\Controllers\KasPerSupplierController::class, 'detail_bayar_print'])->name('kas-per-supplier.detail-bayar.print');
-    });
 });
