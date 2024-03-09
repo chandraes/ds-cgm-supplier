@@ -6,17 +6,32 @@ use App\Services\StarSender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class InvoiceTagihan extends Model
 {
     use HasFactory;
+
     protected $guarded = [];
 
-    protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir'];
+    protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir',
+                            'bulan_akhir', 'tahun_akhir'];
 
     public function kasProjects()
     {
         return $this->hasManyThrough(KasProject::class, Project::class, 'id', 'project_id', 'project_id', 'id');
+    }
+
+    public function getBulanAkhirAttribute()
+    {
+        $bulan = $this->kasProjects->last() ? Carbon::parse($this->kasProjects->last()->create_at)->format('m') : date('m');
+        return $bulan;
+    }
+
+    public function getTahunAkhirAttribute()
+    {
+        $tahun = $this->kasProjects->last() ? Carbon::parse($this->kasProjects->last()->create_at)->format('Y') : date('Y');
+        return $tahun;
     }
 
     public function getPengeluaranAttribute()
@@ -142,6 +157,7 @@ class InvoiceTagihan extends Model
         $data['project_id'] = $invoice->project_id;
 
         $sisa = $db->sisaTerakhir($invoice->project_id);
+        $pengeluaranTotal = $sisa * -1;
         $uraian = "Pengembalian Modal Invesotor ".$invoice->project->nama;
         $pesan = [];
 
@@ -198,31 +214,37 @@ class InvoiceTagihan extends Model
             // add $pesanWithdraw to $pesan array
             array_push($pesan, $pesanWithdraw);
 
-            $deviden = $this->devidenProject($invoice);
+            // jika ada profit maka bagi deviden
+            if ($invoice->profit > 10) {
 
-            foreach ($deviden as $d) {
-                $p = "";
+                $deviden = $this->devidenProject($invoice);
 
-                $store3 = $this->devidenStore($d);
+                foreach ($deviden as $d) {
+                    $p = "";
 
-                $p = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                    "*Form Deviden*\n".
-                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                    "Uraian  : ".$store3->uraian."\n".
-                    "Nilai :  *Rp. ".number_format($store3->nominal, 0, ',', '.')."*\n\n".
-                    "Ditransfer ke rek:\n\n".
-                    "Bank      : ".$store3->bank."\n".
-                    "Nama    : ".$store3->nama_rek."\n".
-                    "No. Rek : ".$store3->no_rek."\n\n".
-                    "==========================\n".
-                    "Sisa Saldo Kas Besar : \n".
-                    "Rp. ".number_format($store3->saldo, 0, ',', '.')."\n\n".
-                    "Total Modal Investor : \n".
-                    "Rp. ".number_format($store3->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Terima kasih 🙏🙏🙏\n";
+                    $store3 = $this->devidenStore($d);
 
-                array_push($pesan, $p);
+                    $p = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                        "*Form Deviden Project*\n".
+                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                        "Uraian  : ".$store3->uraian."\n".
+                        "Nilai :  *Rp. ".number_format($store3->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$store3->bank."\n".
+                        "Nama    : ".$store3->nama_rek."\n".
+                        "No. Rek : ".$store3->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store3->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store3->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+                    array_push($pesan, $p);
+                }
+
             }
+
 
             DB::commit();
 
