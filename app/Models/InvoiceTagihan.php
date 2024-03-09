@@ -12,7 +12,7 @@ class InvoiceTagihan extends Model
     use HasFactory;
     protected $guarded = [];
 
-    protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit'];
+    protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir'];
 
     public function kasProjects()
     {
@@ -30,6 +30,17 @@ class InvoiceTagihan extends Model
     {
         $profit = $this->nilai_tagihan + $this->pengeluaran;
         return $profit;
+    }
+
+    public function getProfitAkhirAttribute()
+    {
+        $profit = $this->nilai_tagihan - $this->kasProjects()->where('jenis', 0)->sum('nominal');
+        return $profit;
+    }
+
+    public function getNfProfitAkhirAttribute()
+    {
+        return number_format($this->profit_akhir, 0, ',', '.');
     }
 
     public function getNfPengeluaranAttribute()
@@ -119,6 +130,7 @@ class InvoiceTagihan extends Model
 
     }
 
+    //cuma tuhan yang tau ini kenapa bisa berfungsi
     public function pelunasan($invoice_id)
     {
         $db = new KasProject();

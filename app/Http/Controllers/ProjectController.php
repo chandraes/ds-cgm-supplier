@@ -13,7 +13,7 @@ class ProjectController extends Controller
     public function index(Request $request)
     {
         $customer = Customer::all();
-        $data = Project::with(['customer', 'project_status'])->whereNot('project_status_id', 3)->get();
+        $data = Project::with(['customer', 'project_status'])->whereNot('project_status_id', 2)->get();
 
         return view('db.project.index',
             [

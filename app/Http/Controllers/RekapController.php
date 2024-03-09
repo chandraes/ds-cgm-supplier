@@ -272,4 +272,13 @@ class RekapController extends Controller
 
         return redirect()->back()->with('success', 'Data berhasil di void');
     }
+
+    public function rekap_invoice()
+    {
+        $data = InvoiceTagihan::where('finished', 1)->get();
+
+        return view('rekap.invoice.index', [
+            'data' => $data,
+        ]);
+    }
 }
