@@ -203,10 +203,10 @@ class InvoiceTagihan extends Model
             foreach ($deviden as $d) {
                 $p = "";
 
-                $store3 = $this->keluarKasBesar($d);
+                $store3 = $this->devidenStore($d);
 
                 $p = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                    "*Form Deviden *\n".
+                    "*Form Deviden*\n".
                     "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
                     "Uraian  : ".$store3->uraian."\n".
                     "Nilai :  *Rp. ".number_format($store3->nominal, 0, ',', '.')."*\n\n".
@@ -264,7 +264,7 @@ class InvoiceTagihan extends Model
         ]);
     }
 
-    private function keluarKasBesar($data)
+    private function devidenStore($data)
     {
         $kb = new KasBesar();
 
@@ -281,8 +281,7 @@ class InvoiceTagihan extends Model
             'nama_rek' => $data['nama_rek'],
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() - $data['nominal'],
-            'modal_investor' => $data['nominal'],
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir() + $data['nominal']
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
         ]);
 
         return $store;
@@ -317,7 +316,9 @@ class InvoiceTagihan extends Model
     {
         $kb = new KasBesar();
         $rekening = Rekening::where('untuk', 'withdraw')->first();
-        $sisa = $sisa * -1;
+        if ($sisa < 0) {
+            $sisa = $sisa * -1;
+        }
 
         $store = $kb->create([
             'project_id' => $project_id,
@@ -329,7 +330,7 @@ class InvoiceTagihan extends Model
             'bank' => $rekening->bank,
             'saldo' => $kb->saldoTerakhir() - $sisa,
             'modal_investor' => $sisa,
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir() - $sisa
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir() + $sisa
         ]);
 
         return $store;
