@@ -25,6 +25,12 @@ class Project extends Model
         return $this->hasOne(InvoiceTagihan::class);
     }
 
+    public static function generateKode()
+    {
+        $kode = Project::max('kode') + 1;
+        return $kode;
+    }
+
     public function getKodeAttribute()
     {
         return 'P' . str_pad($this->id, 2, '0', STR_PAD_LEFT);
@@ -73,6 +79,7 @@ class Project extends Model
         $jatuhTempo = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo']);
         $data['jatuh_tempo'] = $jatuhTempo->format('Y-m-d');
         $data['project_status_id'] = 1;
+        $data['kode'] = Project::generateKode();
 
         DB::beginTransaction();
 
