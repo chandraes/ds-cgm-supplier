@@ -32,6 +32,7 @@ class NotaTagihanController extends Controller
     {
         $data = $request->validate([
             'nominal' => 'required',
+            'uraian' => 'required',
         ]);
 
         $db = new InvoiceTagihan();
@@ -41,9 +42,10 @@ class NotaTagihanController extends Controller
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form Cicilan Tagihan*\n".
+                    "*Form Tagihan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "Project : *".$store->project->nama."*\n\n".
+                    "Project : *".$store->project->nama."*\n".
+                    "Uraian : *".$store->uraian."*\n\n".
                     "Nilai   :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".

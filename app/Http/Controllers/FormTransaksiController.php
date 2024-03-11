@@ -79,7 +79,7 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Total Pengeluaran Project : \n".
+                    "Total Kas Project : \n".
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
@@ -143,7 +143,7 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Total Pengeluaran Project : \n".
+                    "Total Kas Project : \n".
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 

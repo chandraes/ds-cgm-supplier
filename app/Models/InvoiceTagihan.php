@@ -101,7 +101,7 @@ class InvoiceTagihan extends Model
         $invoice = InvoiceTagihan::find($invoice_id);
 
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
-        $data['uraian'] = 'Cicilan '.$invoice->project->nama;
+        // $data['uraian'] = 'Cicilan '.$invoice->project->nama;
         $data['nominal'] = str_replace('.', '', $data['nominal']);
         $data['bank'] = $rekening->bank;
         $data['no_rek'] = $rekening->no_rek;
@@ -183,7 +183,7 @@ class InvoiceTagihan extends Model
                 "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
                 "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                "Total Pengeluaran Project : \n".
+                "Total Kas Project : \n".
                 "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
 
@@ -207,7 +207,7 @@ class InvoiceTagihan extends Model
                             "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
                             "Total Modal Investor : \n".
                             "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                            "Total Pengeluaran Project : \n".
+                            "Total Kas Project : \n".
                             "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                             "Terima kasih 🙏🙏🙏\n";
 

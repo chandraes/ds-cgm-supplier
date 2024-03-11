@@ -43,7 +43,7 @@
                     <th class="text-center align-middle">Customer</th>
                     <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">Nilai Kontrak</th>
-                    <th class="text-center align-middle">Total Pengeluaran</th>
+                    <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
                 </tr>
             </thead>

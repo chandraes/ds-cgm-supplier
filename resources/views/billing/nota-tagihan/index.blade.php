@@ -45,7 +45,7 @@
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
-                    <th class="text-center align-middle">Total Pengeluaran</th>
+                    <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
                     <th class="text-center align-middle">Lunas</th>
                     <th class="text-center align-middle">Cicil</th>
