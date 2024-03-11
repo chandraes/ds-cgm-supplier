@@ -88,7 +88,7 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Nilai Project : \n".
                     "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
-                    "Estimasi Profit Project : \n".
+                    "Estimasi Profit Sementara : \n".
                     "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
@@ -160,7 +160,7 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                     "Nilai Project : \n".
                     "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
-                    "Estimasi Profit Project : \n".
+                    "Estimasi Profit Sementara : \n".
                     "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
