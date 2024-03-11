@@ -80,6 +80,7 @@ class KasKecil extends Model
         $data['nama_rek'] = $kb->nama_rek;
         $data['bank'] = $kb->bank;
         $data['no_rek'] = $kb->no_rek;
+        $data['void'] = 1;
 
         $store = $this->create($data);
 
