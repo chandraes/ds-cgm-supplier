@@ -7,6 +7,7 @@ use App\Models\KasProject;
 use App\Models\Project;
 use App\Services\StarSender;
 use App\Models\GroupWa;
+use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\PesanWa;
 use App\Models\Rekening;
@@ -62,6 +63,10 @@ class FormTransaksiController extends Controller
 
         $sisa = $db->sisaTerakhir($store->project_id);
 
+        $inv = InvoiceTagihan::where('project_id', $store->project_id)->first();
+        $nilai = $inv->nilai_tagihan;
+        $profit = $inv->profit;
+
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
@@ -81,6 +86,10 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Total Kas Project : \n".
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                    "Nilai Project : \n".
+                    "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                    "Estimasi Profit Project : \n".
+                    "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         //Tambahkan total pengeluaran project
@@ -125,6 +134,10 @@ class FormTransaksiController extends Controller
         $store = $db->transaksiMasuk($data);
 
         $sisa = $db->sisaTerakhir($store->project_id);
+        $inv = InvoiceTagihan::where('project_id', $store->project_id)->first();
+        $nilai = $inv->nilai_tagihan;
+        $profit = $inv->profit;
+
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
@@ -145,6 +158,10 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Total Kas Project : \n".
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                    "Nilai Project : \n".
+                    "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                    "Estimasi Profit Project : \n".
+                    "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         //Tambahkan total pengeluaran project
