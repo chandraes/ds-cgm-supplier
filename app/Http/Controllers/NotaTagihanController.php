@@ -10,6 +10,7 @@ use App\Models\InvoiceTagihan;
 use App\Models\InvoiceTagihanDetail;
 use App\Models\KasBesar;
 use App\Models\GroupWa;
+use App\Models\Investor;
 use App\Models\PesanWa;
 use App\Services\StarSender;
 use Illuminate\Support\Facades\DB;
@@ -87,6 +88,12 @@ class NotaTagihanController extends Controller
 
         if ($saldo < $pengeluaran) {
             return redirect()->back()->with('error', 'Saldo Kas Besar tidak mencukupi untuk proses pelunasan!');
+        }
+
+        $check = Investor::sum('persentase');
+
+        if ($check < 100) {
+            return redirect()->back()->with('error', 'Total persentase investor belum mencapai 100%');
         }
 
         $save = $db->pelunasan($invoice->id);
