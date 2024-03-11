@@ -67,8 +67,8 @@ class FormTransaksiController extends Controller
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Form Transaksi (Dana Keluar)*\n".
                     "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                    "Project : "."*".$store->project->nama."*\n\n".
-                    "Uraian :  *".$store->uraian."*\n".
+                    "Project : "."*".$store->project->nama."*\n".
+                    "Uraian :  *".$store->uraian."*\n\n".
                     "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
@@ -131,8 +131,8 @@ class FormTransaksiController extends Controller
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Form Transaksi (Dana Masuk)*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    $store->uraian."\n\n".
-                    "Project :  *".$store->project->nama."*\n\n".
+                    "Project :  *".$store->project->nama."*\n".
+                    "Uraian : ".$store->uraian."\n\n".
                     "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                     "Ditransfer ke rek:\n\n".
                     "Bank      : ".$store->bank."\n".
