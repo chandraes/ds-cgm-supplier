@@ -31,12 +31,6 @@
         @endif
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-md-3 text-center mb-5 mt-3">
-            <a href="{{route('histori-pesan')}}" class="text-decoration-none">
-                <img src="{{asset('images/histori.svg')}}" alt="" width="100">
-                <h2>HISTORI PESAN WA</h2>
-            </a>
-        </div>
-        <div class="col-md-3 text-center mb-5 mt-3">
             <a href="{{route('pengaturan')}}" class="text-decoration-none">
                 <img src="{{asset('images/pengaturan.svg')}}" alt="" width="100">
                 <h2>PENGATURAN</h2>
