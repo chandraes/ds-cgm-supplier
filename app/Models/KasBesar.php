@@ -18,6 +18,11 @@ class KasBesar extends Model
         return $this->belongsTo(Project::class);
     }
 
+    public function investorModal()
+    {
+        return $this->belongsTo(InvestorModal::class);
+    }
+
     public function dataTahun()
     {
         return $this->selectRaw('YEAR(created_at) as tahun')->groupBy('tahun')->get();

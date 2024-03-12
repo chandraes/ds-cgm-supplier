@@ -76,6 +76,13 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('/rekening', [App\Http\Controllers\RekeningController::class, 'index'])->name('db.rekening');
             Route::patch('/rekening/{rekening}/update', [App\Http\Controllers\RekeningController::class, 'update'])->name('db.rekening.update');
+
+            Route::prefix('investor-modal')->group(function (){
+                Route::get('/', [App\Http\Controllers\InvestorModalController::class, 'index'])->name('db.investor-modal');
+                Route::post('/store', [App\Http\Controllers\InvestorModalController::class, 'store'])->name('db.investor-modal.store');
+                Route::patch('/{investor}/update', [App\Http\Controllers\InvestorModalController::class, 'update'])->name('db.investor-modal.update');
+                Route::delete('/{investor}/delete', [App\Http\Controllers\InvestorModalController::class, 'destroy'])->name('db.investor-modal.delete');
+            });
         });
     });
 
