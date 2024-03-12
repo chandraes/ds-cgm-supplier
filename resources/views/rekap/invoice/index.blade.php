@@ -58,7 +58,13 @@
                         </a>
                     </td>
                     <td class="text-end align-middle">
-                        {{$d->nf_nilai_tagihan}}
+                        <div class="text-end">
+                            <a href="#" data-bs-toggle="modal"
+                            data-bs-target="#detailInvoice-{{$d->id}}"> {{$d->nf_nilai_tagihan}}</a>
+                        </div>
+
+                        @include('billing.nota-tagihan.detail-modal')
+
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_pengeluaran}}

@@ -275,7 +275,7 @@ class RekapController extends Controller
 
     public function rekap_invoice()
     {
-        $data = InvoiceTagihan::where('finished', 1)->get();
+        $data = InvoiceTagihan::with(['invoiceTagihanDetails'])->where('finished', 1)->get();
 
         return view('rekap.invoice.index', [
             'data' => $data,
