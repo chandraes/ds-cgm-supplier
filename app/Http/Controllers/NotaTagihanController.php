@@ -21,7 +21,7 @@ class NotaTagihanController extends Controller
 {
     public function index()
     {
-        $data = InvoiceTagihan::with(['customer', 'project','kasProjects'])->where('finished', 0)->get();
+        $data = InvoiceTagihan::with(['customer', 'project','kasProjects', 'invoiceTagihanDetails'])->where('finished', 0)->get();
 
         return view('billing.nota-tagihan.index', [
             'data' => $data,

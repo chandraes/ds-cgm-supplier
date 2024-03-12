@@ -61,8 +61,14 @@
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_tagihan}}
                     </td>
-                    <td class="text-end align-middle">
-                        {{$d->nf_dibayar}}
+                    <td class="align-middle">
+                        <div class="text-end">
+                            <a href="#" data-bs-toggle="modal"
+                            data-bs-target="#detailInvoice-{{$d->id}}">{{$d->nf_dibayar}}</a>
+                        </div>
+
+                        @include('billing.nota-tagihan.detail-modal')
+
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_sisa_tagihan}}
@@ -71,6 +77,7 @@
                         {{$d->nf_pengeluaran}}
                     </td>
                     <td class="text-end align-middle">
+
                         {{$d->nf_profit}}
                     </td>
                     <td class="text-center align-middle">
@@ -79,12 +86,13 @@
                             <button type="submit" class="btn btn-success">Pelunasan </button>
                         </form>
                     </td>
-                    <td class="text-center align-middle">
+                    <td class="text-start align-middle">
                         <!-- Modal trigger button -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cicil-{{$d->id}}">
-                          Cicilan
-                        </button>
-
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cicil-{{$d->id}}">
+                                Cicilan
+                              </button>
+                        </div>
                         <!-- Modal Body -->
                         <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
                         <div class="modal fade" id="cicil-{{$d->id}}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
@@ -97,6 +105,10 @@
                                     <form action="{{route('nota-tagihan.cicilan', ['invoice' => $d->id])}}" method="post" id="cicilForm-{{$d->id}}">
                                         @csrf
                                     <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label class="form-label">Uraian</label>
+                                            <input type="text" class="form-control" name="uraian" required>
+                                        </div>
                                         <div class="input-group mb-3">
                                             <span class="input-group-text" id="basic-addon1">Rp</span>
                                             <input type="text" class="form-control @if ($errors->has('nominal'))
