@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\GroupWa;
+use App\Models\InvestorModal;
 use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\KasKecil;
@@ -278,6 +279,15 @@ class RekapController extends Controller
         $data = InvoiceTagihan::with(['invoiceTagihanDetails'])->where('finished', 1)->get();
 
         return view('rekap.invoice.index', [
+            'data' => $data,
+        ]);
+    }
+
+    public function rekap_investor()
+    {
+        $data = InvestorModal::all();
+
+        return view('rekap.kas-investor.index', [
             'data' => $data,
         ]);
     }

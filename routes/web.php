@@ -106,6 +106,9 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('kas-project', [App\Http\Controllers\RekapController::class, 'kas_project'])->name('rekap.kas-project');
             Route::get('/kas-project/print/{project}/{bulan}/{tahun}', [App\Http\Controllers\RekapController::class, 'kas_project_print'])->name('rekap.kas-project.print');
+
+            Route::get('/kas-investor', [App\Http\Controllers\RekapController::class, 'rekap_investor'])->name('rekap.kas-investor');
+
         });
     });
 
