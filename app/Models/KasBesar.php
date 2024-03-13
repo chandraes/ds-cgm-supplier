@@ -292,7 +292,7 @@ class KasBesar extends Model
         $this->hitungPersentase();
     }
 
-    private function kurangModal($nominal, $investor_id)
+    public function kurangModal($nominal, $investor_id)
     {
         $investor = InvestorModal::find($investor_id);
         $investor->update([

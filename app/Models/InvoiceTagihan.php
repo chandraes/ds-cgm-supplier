@@ -235,32 +235,40 @@ class InvoiceTagihan extends Model
 
             }
 
-            $store2 = $this->withdrawPengeluaran($sisa, $invoice->project_id, $uraian);
+            // withdraw pengeluaran project
+            $withdraw = $this->withdrawPelunasan($sisa, $invoice->project_id);
 
-            $pesanWithdraw =  "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                            "*Form Withdraw Project*\n".
-                            "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                            "Project : "."*".$store2->project->nama."*\n\n".
-                            "Uraian :  *".$store2->uraian."*\n".
-                            "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
-                            "Ditransfer ke rek:\n\n".
-                            "Bank      : ".$store2->bank."\n".
-                            "Nama    : ".$store2->nama_rek."\n".
-                            "No. Rek : ".$store2->no_rek."\n\n".
-                            "==========================\n".
-                            "Sisa Saldo Kas Besar : \n".
-                            "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
-                            "Total Modal Investor : \n".
-                            "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                            "Total Kas Project : \n".
-                            "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
-                            "Terima kasih 🙏🙏🙏\n";
+            foreach ($withdraw as $w) {
 
-            // add $pesanWithdraw to $pesan array
-            array_push($pesan, $pesanWithdraw);
+                $pesanWithdraw = '';
+
+                $store2 = $this->withdrawPelunasanStore($w);
+
+                $pesanWithdraw =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                                    "*Form Withdraw Project*\n".
+                                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                                    "Project : "."*".$store2->project->nama."*\n\n".
+                                    "Uraian :  *".$store2->uraian."*\n".
+                                    "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
+                                    "Ditransfer ke rek:\n\n".
+                                    "Bank      : ".$store2->bank."\n".
+                                    "Nama    : ".$store2->nama_rek."\n".
+                                    "No. Rek : ".$store2->no_rek."\n\n".
+                                    "==========================\n".
+                                    "Sisa Saldo Kas Besar : \n".
+                                    "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
+                                    "Total Modal Investor : \n".
+                                    "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                                    "Total Kas Project : \n".
+                                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                                    "Terima kasih 🙏🙏🙏\n";
+
+                array_push($pesan, $pesanWithdraw);
+
+            }
 
             // jika ada profit maka bagi deviden
-            if ($invoice->profit > 10) {
+            if ($invoice->profit > 0) {
 
                 $deviden = $this->devidenProject($invoice);
 
@@ -384,29 +392,68 @@ class InvoiceTagihan extends Model
 
     }
 
-    private function withdrawPengeluaran($sisa, $project_id, $uraian)
+    private function withdrawPelunasan($sisa,$project_id)
     {
-        $kb = new KasBesar();
-        $rekening = Rekening::where('untuk', 'withdraw')->first();
-        if ($sisa < 0) {
+        if($sisa < 0) {
             $sisa = $sisa * -1;
         }
 
+        $investor = InvestorModal::all();
+        $data = [];
+
+        foreach ($investor as $i) {
+            $data[] = [
+                'no_rek' => $i->no_rek,
+                'bank' => $i->bank,
+                'nama_rek' => $i->nama_rek,
+                'jenis' => 0,
+                'nominal' => $sisa * $i->persentase / 100,
+                'uraian' => 'Withdraw '.$i->nama,
+                'project_id' => $project_id,
+                'investor_modal_id' => $i->id
+            ];
+        }
+        // make every nominal to exact same as profit
+        $total = 0;
+        foreach ($data as $d) {
+            $total += $d['nominal'];
+        }
+
+        if($total > $sisa) {
+            $selisih = $total - $sisa;
+            $data[0]['nominal'] -= $selisih;
+        } else if($total < $sisa) {
+            $selisih = $sisa - $total;
+            $data[0]['nominal'] += $selisih;
+        }
+
+        return $data;
+    }
+
+    private function withdrawPelunasanStore($data)
+    {
+        $kb = new KasBesar();
+
+        if (!isset($data['project_id'])) {
+            throw new \Exception('project_id is not set in $data');
+        }
+
         $store = $kb->create([
-            'project_id' => $project_id,
-            'nominal' => $sisa,
-            'jenis' => 0,
-            'uraian' => $uraian,
-            'no_rek' => $rekening->no_rek,
-            'nama_rek' => $rekening->nama_rek,
-            'bank' => $rekening->bank,
-            'saldo' => $kb->saldoTerakhir() - $sisa,
-            'modal_investor' => $sisa,
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir() + $sisa
+            'project_id' => $data['project_id'],
+            'nominal' => $data['nominal'],
+            'jenis' => $data['jenis'],
+            'uraian' => $data['uraian'],
+            'no_rek' => $data['no_rek'],
+            'nama_rek' => $data['nama_rek'],
+            'bank' => $data['bank'],
+            'saldo' => $kb->saldoTerakhir() - $data['nominal'],
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir() + $data['nominal'],
+            'investor_modal_id' => $data['investor_modal_id']
         ]);
 
-        return $store;
+        $kb->kurangModal($data['nominal'], $data['investor_modal_id']);
 
+        return $store;
     }
 
     private function sendWa($pesan)
