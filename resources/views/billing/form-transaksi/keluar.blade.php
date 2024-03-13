@@ -103,8 +103,8 @@
 <link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
 @endpush
 @push('js')
-<script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-<script src="{{asset('assets/js/dt5.min.js')}}"></script>
+    <script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('assets/js/dt5.min.js')}}"></script>
     <script src="{{asset('assets/js/cleave.min.js')}}"></script>
     <script>
 
@@ -169,6 +169,7 @@
         //     numeralDecimalMark: ',',
         //     delimiter: '.'
         // });
+        
         // masukForm on submit, sweetalert confirm
         $('#masukForm').submit(function(e){
             e.preventDefault();

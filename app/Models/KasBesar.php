@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Services\StarSender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KasBesar extends Model
 {
@@ -92,6 +94,7 @@ class KasBesar extends Model
     public function deposit($data)
     {
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
+
         $data['nominal'] = str_replace('.', '', $data['nominal']);
         $data['nomor_deposit'] = $this->max('nomor_deposit') + 1;
         $data['saldo'] = $this->saldoTerakhir() + $data['nominal'];
@@ -102,14 +105,63 @@ class KasBesar extends Model
         $data['bank'] = $rekening->bank;
         $data['nama_rek'] = $rekening->nama_rek;
 
-        $store = $this->create($data);
+        DB::beginTransaction();
 
-        return $store;
+        try {
+
+            $store = $this->create($data);
+
+            $this->tambahModal($store->nominal, $store->investor_modal_id);
+
+            $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                        "*Form Permintaan Deposit*\n".
+                        "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                        "*".$store->kode_deposit."*\n\n".
+                        "Investor : ".$store->investorModal->nama."\n".
+                        "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$store->bank."\n".
+                        "Nama    : ".$store->nama_rek."\n".
+                        "No. Rek : ".$store->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+            DB::commit();
+
+            $result = [
+                'status' => "success",
+                'message' => 'Berhasil menambahkan data',
+                'data' => $store,
+            ];
+
+        } catch (\Throwable $th) {
+
+            DB::rollback();
+
+            $result = [
+                'status' => "error",
+                'message' => 'Gagal menambahkan data',
+                'data' => $th->getMessage(),
+            ];
+        }
+
+
+        $tujuan = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
+
+        $this->sendWa($tujuan, $pesan);
+
+        return $result;
     }
+
 
     public function withdraw($data)
     {
-        $rekening = Rekening::where('untuk', 'withdraw')->first();
+        $rekening = InvestorModal::find($data['investor_modal_id']);
+
         $data['uraian'] = "Withdraw";
         $data['nominal'] = str_replace('.', '', $data['nominal']);
         $data['saldo'] = $this->saldoTerakhir() - $data['nominal'];
@@ -120,9 +172,54 @@ class KasBesar extends Model
         $data['bank'] = $rekening->bank;
         $data['nama_rek'] = $rekening->nama_rek;
 
-        $store = $this->create($data);
+        DB::beginTransaction();
 
-        return $store;
+        try {
+
+            $store = $this->create($data);
+
+            $this->kurangModal($store->nominal, $store->investor_modal_id);
+
+            DB::commit();
+
+            $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                        "*Form Pengembalian Deposit*\n".
+                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                        "Investor : ".$store->investorModal->nama."\n".
+                        "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$store->bank."\n".
+                        "Nama    : ".$store->nama_rek."\n".
+                        "No. Rek : ".$store->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+            $result = [
+                'status' => "success",
+                'message' => 'Berhasil menambahkan data',
+                'data' => $store,
+            ];
+
+        } catch (\Throwable $th) {
+
+                DB::rollback();
+                $result = [
+                    'status' => "error",
+                    'message' => 'Gagal menambahkan data',
+                    'data' => $th->getMessage(),
+                ];
+        }
+
+
+        $tujuan = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
+
+        $this->sendWa($tujuan, $pesan);
+
+        return $result;
     }
 
     public function keluarKasKecil()
@@ -171,5 +268,59 @@ class KasBesar extends Model
         return $store;
     }
 
+    private function sendWa($tujuan, $pesan)
+    {
+        $send = new StarSender($tujuan, $pesan);
+        $res = $send->sendGroup();
 
+        $status = ($res == 'true') ? 1 : 0;
+
+        PesanWa::create([
+            'pesan' => $pesan,
+            'tujuan' => $tujuan,
+            'status' => $status,
+        ]);
+    }
+
+    private function tambahModal($nominal, $investor_id)
+    {
+        $investor = InvestorModal::find($investor_id);
+        $investor->update([
+            'modal' => $investor->modal + $nominal
+        ]);
+
+        $this->hitungPersentase();
+    }
+
+    private function kurangModal($nominal, $investor_id)
+    {
+        $investor = InvestorModal::find($investor_id);
+        $investor->update([
+            'modal' => $investor->modal - $nominal
+        ]);
+
+        $this->hitungPersentase();
+    }
+
+    private function hitungPersentase()
+    {
+        $investors = InvestorModal::all();
+        $totalModal = $investors->sum('modal');
+
+        $percentages = $investors->mapWithKeys(function ($investor) use ($totalModal) {
+            return [$investor->id => ($investor->modal / $totalModal) * 100];
+        });
+
+        $totalPercentage = $percentages->sum();
+
+        if ($totalPercentage !== 100) {
+            $percentages[$investors->first()->id] += 100 - $totalPercentage;
+        }
+
+        foreach ($percentages as $id => $percentage) {
+            InvestorModal::where('id', $id)->update(['persentase' => $percentage]);
+        }
+
+
+    }
 }

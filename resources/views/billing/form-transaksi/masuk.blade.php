@@ -145,16 +145,6 @@
 
             });
 
-        // $( function() {
-        //     $( "#tanggal" ).datepicker({
-        //         dateFormat: "dd-mm-yy"
-        //     });
-
-        //     $( "#edit_tanggal" ).datepicker({
-        //         dateFormat: "dd-mm-yy"
-        //     });
-        // });
-
 
         var nominal = new Cleave('#nominal', {
             numeral: true,
@@ -163,12 +153,7 @@
             delimiter: '.'
         });
 
-        // var editBerat = new Cleave('#edit_berat', {
-        //     numeral: true,
-        //     numeralThousandsGroupStyle: 'thousand',
-        //     numeralDecimalMark: ',',
-        //     delimiter: '.'
-        // });
+
         // masukForm on submit, sweetalert confirm
         $('#masukForm').submit(function(e){
             e.preventDefault();

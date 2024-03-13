@@ -29,6 +29,17 @@
                 @endif" name="uraian" id="uraian" required value="Deposit" disabled>
             </div>
             <div class="col-md-4 mb-3">
+                <div class="mb-3">
+                    <label for="investor_modal_id" class="form-label">Project</label>
+                    <select class="form-select" name="investor_modal_id" id="investor_modal_id" required>
+                        <option value="">-- Pilih Project --</option>
+                        @foreach ($investor as $s)
+                        <option value="{{$s->id}}" {{session('investor_modal_id') == $s->id ? 'selected' : ''}}>{{$s->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
                 <label for="nominal" class="form-label">Nominal</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
@@ -91,9 +102,20 @@
     </form>
 </div>
 @endsection
+@push('css')
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.bootstrap5.css')}}">
+<link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
+@endpush
 @push('js')
+    <script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
     <script src="{{asset('assets/js/cleave.min.js')}}"></script>
     <script>
+
+        $('#investor_modal_id').select2({
+            theme: 'bootstrap-5',
+            width: '100%',
+            placeholder: 'Pilih Investor Modal'
+        });
 
          var nominal = new Cleave('#nominal', {
             numeral: true,

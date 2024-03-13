@@ -6,9 +6,9 @@ use App\Models\Rekening;
 use App\Services\StarSender;
 use App\Models\PesanWa;
 use App\Models\GroupWa;
+use App\Models\InvestorModal;
 use App\Models\KasBesar;
 use App\Models\KasProject;
-use App\Models\Project;
 use Illuminate\Http\Request;
 
 class FormDepositController extends Controller
@@ -18,10 +18,12 @@ class FormDepositController extends Controller
 
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
         $kode = str_pad((KasBesar::max('nomor_deposit') + 1), 2, '0', STR_PAD_LEFT);
+        $investor = InvestorModal::all();
 
         return view('billing.form-deposit.masuk', [
             'rekening' => $rekening,
-            'kode' => $kode
+            'kode' => $kode,
+            'investor' => $investor,
         ]);
     }
 
@@ -29,49 +31,22 @@ class FormDepositController extends Controller
     {
         $data = $request->validate([
             'nominal' => 'required',
+            'investor_modal_id' => 'required|exists:investor_modals,id',
         ]);
 
         $db = new KasBesar();
 
         $store = $db->deposit($data);
 
-        $group = GroupWa::where('untuk', 'kas-besar')->first();
-
-        $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form Permintaan Deposit*\n".
-                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "*".$store->kode_deposit."*\n\n".
-                    "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
-                    "Ditransfer ke rek:\n\n".
-                    "Bank      : ".$store->bank."\n".
-                    "Nama    : ".$store->nama_rek."\n".
-                    "No. Rek : ".$store->no_rek."\n\n".
-                    "==========================\n".
-                    "Sisa Saldo Kas Besar : \n".
-                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                    "Total Modal Investor : \n".
-                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Terima kasih 🙏🙏🙏\n";
-        $send = new StarSender($group->nama_group, $pesan);
-        $res = $send->sendGroup();
-
-        $status = ($res == 'true') ? 1 : 0;
-
-        PesanWa::create([
-            'pesan' => $pesan,
-            'tujuan' => $group->nama_group,
-            'status' => $status,
-        ]);
-
-        return redirect()->route('billing')->with('success', 'Berhasil menambahkan data');
+        return redirect()->route('billing')->with($store['status'], $store['message']);
     }
 
     public function keluar()
     {
-        $rekening = Rekening::where('untuk', 'withdraw')->first();
+        $investor = InvestorModal::all();
 
         return view('billing.form-deposit.keluar', [
-            'rekening' => $rekening,
+            'investor' => $investor,
         ]);
     }
 
@@ -88,6 +63,7 @@ class FormDepositController extends Controller
     {
         $data = $request->validate([
             'nominal' => 'required',
+            'investor_modal_id' => 'required|exists:investor_modals,id',
         ]);
 
         $db = new KasBesar();
@@ -102,34 +78,7 @@ class FormDepositController extends Controller
 
         $store = $db->withdraw($data);
 
-        $group = GroupWa::where('untuk', 'kas-besar')->first();
 
-        $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                    "*Form Pengembalian Deposit*\n".
-                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                    "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
-                    "Ditransfer ke rek:\n\n".
-                    "Bank      : ".$store->bank."\n".
-                    "Nama    : ".$store->nama_rek."\n".
-                    "No. Rek : ".$store->no_rek."\n\n".
-                    "==========================\n".
-                    "Sisa Saldo Kas Besar : \n".
-                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                    "Total Modal Investor : \n".
-                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Terima kasih 🙏🙏🙏\n";
-
-        $send = new StarSender($group->nama_group, $pesan);
-        $res = $send->sendGroup();
-
-        $status = ($res == 'true') ? 1 : 0;
-
-        PesanWa::create([
-            'pesan' => $pesan,
-            'tujuan' => $group->nama_group,
-            'status' => $status,
-        ]);
-
-        return redirect()->route('billing')->with('success', 'Data berhasil disimpan');
+        return redirect()->route('billing')->with($store['status'], $store['message']);
     }
 }
