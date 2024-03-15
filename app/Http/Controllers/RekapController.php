@@ -291,4 +291,18 @@ class RekapController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function rekap_investor_detail(InvestorModal $investor, Request $request)
+    {
+        $data = $investor->load('kasBesar');
+
+        $data->kasBesar->each(function ($d) use (&$total) {
+            $d->jenis == 1 ? $total += $d->nominal : $total -= $d->nominal;
+        });
+
+        return view('rekap.kas-investor.detail', [
+            'data' => $data,
+            'total' => $total,
+        ]);
+    }
 }
