@@ -47,8 +47,8 @@
                     <th class="text-center align-middle">Sisa Tagihan</th>
                     <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
-                    <th class="text-center align-middle">Lunas</th>
-                    <th class="text-center align-middle">Cicil</th>
+                    <th class="text-center align-middle">DP / Termin</th>
+                    <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>
             <tbody>
@@ -80,17 +80,12 @@
 
                         {{$d->nf_profit}}
                     </td>
-                    <td class="text-center align-middle">
-                        <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="lunasForm-{{$d->id}}">
-                        @csrf
-                            <button type="submit" class="btn btn-success">Pelunasan </button>
-                        </form>
-                    </td>
+
                     <td class="text-start align-middle">
                         <!-- Modal trigger button -->
                         <div class="text-center">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cicil-{{$d->id}}">
-                                Cicilan
+                                DP / Termin
                               </button>
                         </div>
                         <!-- Modal Body -->
@@ -126,6 +121,7 @@
                         </div>
 
                     </td>
+                    <td class="text-center align-middle"></td>
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>

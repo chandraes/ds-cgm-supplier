@@ -236,36 +236,36 @@ class InvoiceTagihan extends Model
             }
 
             // withdraw pengeluaran project
-            $withdraw = $this->withdrawPelunasan($sisa, $invoice->project_id);
+            // $withdraw = $this->withdrawPelunasan($sisa, $invoice->project_id);
 
-            foreach ($withdraw as $w) {
+            // foreach ($withdraw as $w) {
 
-                $pesanWithdraw = '';
+            //     $pesanWithdraw = '';
 
-                $store2 = $this->withdrawPelunasanStore($w);
+            //     $store2 = $this->withdrawPelunasanStore($w);
 
-                $pesanWithdraw =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                                    "*Form Withdraw Project*\n".
-                                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                                    "Project : "."*".$store2->project->nama."*\n\n".
-                                    "Uraian :  *".$store2->uraian."*\n".
-                                    "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
-                                    "Ditransfer ke rek:\n\n".
-                                    "Bank      : ".$store2->bank."\n".
-                                    "Nama    : ".$store2->nama_rek."\n".
-                                    "No. Rek : ".$store2->no_rek."\n\n".
-                                    "==========================\n".
-                                    "Sisa Saldo Kas Besar : \n".
-                                    "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
-                                    "Total Modal Investor : \n".
-                                    "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                                    "Total Kas Project : \n".
-                                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
-                                    "Terima kasih 🙏🙏🙏\n";
+            //     $pesanWithdraw =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+            //                         "*Form Withdraw Project*\n".
+            //                         "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+            //                         "Project : "."*".$store2->project->nama."*\n\n".
+            //                         "Uraian :  *".$store2->uraian."*\n".
+            //                         "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
+            //                         "Ditransfer ke rek:\n\n".
+            //                         "Bank      : ".$store2->bank."\n".
+            //                         "Nama    : ".$store2->nama_rek."\n".
+            //                         "No. Rek : ".$store2->no_rek."\n\n".
+            //                         "==========================\n".
+            //                         "Sisa Saldo Kas Besar : \n".
+            //                         "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
+            //                         "Total Modal Investor : \n".
+            //                         "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
+            //                         "Total Kas Project : \n".
+            //                         "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+            //                         "Terima kasih 🙏🙏🙏\n";
 
-                array_push($pesan, $pesanWithdraw);
+            //     array_push($pesan, $pesanWithdraw);
 
-            }
+            // }
 
             // jika ada profit maka bagi deviden
             if ($invoice->profit > 0) {
