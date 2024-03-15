@@ -121,7 +121,12 @@
                         </div>
 
                     </td>
-                    <td class="text-center align-middle"></td>
+                    <td class="text-center align-middle">
+                        <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="lunasForm-{{$d->id}}">
+                            @csrf
+                                <button type="submit" class="btn btn-success">Pelunasan </button>
+                            </form>
+                    </td>
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
