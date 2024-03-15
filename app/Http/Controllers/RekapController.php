@@ -301,18 +301,11 @@ class RekapController extends Controller
     {
         if ($request->ajax()) {
             $length = $request->get('length'); // Get the requested number of records
-            $search = $request->get('search')['value']; // Get the search term
 
             // Define the columns for sorting
             $columns = ['created_at', 'uraian', 'nominal'];
 
-            $query = $investor->load('kasBesar')->kasBesar();
-
-            if ($search) {
-                // Adjust the fields to match your actual database columns
-                $query->where('uraian', 'like', '%' . $search . '%')
-                      ->orWhere('nominal', 'like', '%' . $search . '%');
-            }
+            $query = $investor->load('kasBesar')->kasBesar()->orderBy('created_at', 'desc');
 
             // Handle the sorting
             if ($request->has('order')) {
