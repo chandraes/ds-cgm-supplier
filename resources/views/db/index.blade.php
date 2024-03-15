@@ -27,10 +27,8 @@
             </a>
         </div>
         @endif
-
     </div>
     <div class="row justify-content-left">
-
         <div class="col-lg-4 my-4 text-center">
             <a href="{{route('db.customer')}}" class="text-decoration-none">
                 <img src="{{asset('images/customer.svg')}}" alt="" width="100">

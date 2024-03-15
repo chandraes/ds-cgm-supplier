@@ -6,19 +6,27 @@
 </div>
 <div class="container mt-5">
     <div class="row justify-content-left">
-        <div class="col-md-3 mt-3 text-center">
+        <div class="col-lg-4 mt-5 text-center">
             <a href="{{route('rekap.kas-besar')}}" class="text-decoration-none">
                 <img src="{{asset('images/kas-besar.svg')}}" alt="" width="100">
                 <h2>KAS BESAR</h2>
             </a>
         </div>
-        <div class="col-md-3 mt-3 text-center">
+        <div class="col-lg-4 mt-5 text-center">
             <a href="{{route('rekap.kas-kecil')}}" class="text-decoration-none">
                 <img src="{{asset('images/kas-kecil.svg')}}" alt="" width="100">
                 <h2>KAS KECIL</h2>
             </a>
         </div>
-        <div class="col-md-3 mt-3 text-center">
+        <div class="col-lg-4 mt-5 text-center">
+            <a href="{{route('rekap.kas-investor')}}" class="text-decoration-none">
+                <img src="{{asset('images/kas-investor.svg')}}" alt="" width="100">
+                <h2>KAS INVESTOR</h2>
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-left">
+        <div class="col-lg-4 mt-5 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
                 <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="100">
                 <h2>KAS PROJECT</h2>
@@ -51,53 +59,18 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mt-3 text-center">
+        <div class="col-lg-4 mt-5 text-center">
             <a href="{{route('rekap.invoice')}}" class="text-decoration-none">
                 <img src="{{asset('images/rekap-invoice.svg')}}" alt="" width="100">
                 <h2>INVOICE</h2>
             </a>
         </div>
-        <div class="col-md-3 mt-3 text-center">
-            <a href="{{route('rekap.kas-investor')}}" class="text-decoration-none">
-                <img src="{{asset('images/kas-investor.svg')}}" alt="" width="100">
-                <h2>KAS INVESTOR</h2>
-            </a>
-        </div>
-        {{-- <div class="col-md-3 mt-3 text-center">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalStatistik">
-                <img src="{{asset('images/statistik.svg')}}" alt="" width="100">
-                <h2>STATISTIK</h2>
-            </a>
-            <div class="modal fade" id="modalStatistik" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalStatistikTitle" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-xl" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalStatistikTitle">Statistik</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                @foreach ($customer as $c)
-                                <div class="col-md-3 m-2">
-                                    <a href="{{route('statistik.index', ['customer' => $c->id])}}" class="text-decoration-none">
-                                        <img src="{{asset('images/palm.svg')}}" alt="" width="100">
-                                        <h3 class="mt-2">{{$c->singkatan}}</h3>
-                                    </a>
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-        <div class="col-md-3 mt-3 text-center">
+        <div class="col-lg-4 mt-5 text-center">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="100">
                 <h2>DASHBOARD</h2>
             </a>
         </div>
-
     </div>
 </div>
 @endsection
