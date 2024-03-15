@@ -27,7 +27,7 @@ class InvestorModalController extends Controller
 
         $store = InvestorModal::create($data);
 
-        return redirect()->route('investor-modal.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('db.investor-modal')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function update(InvestorModal $investor, Request $request)
