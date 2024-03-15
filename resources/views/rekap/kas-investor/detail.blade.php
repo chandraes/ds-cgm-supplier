@@ -49,34 +49,12 @@
             </thead>
             <tbody>
 
-                @foreach ($data->kasBesar as $d)
-                <tr>
-                    <td class="text-center align-middle">{{$d->tanggal}}</td>
-                    <td class="text-start align-middle">
-                        @switch($d->jenis)
-                        @case(1)
-                        {{$d->kode_deposit}}
-                        @break
-                        @default
-                        {{$d->uraian}}
-                        @endswitch
-                    </td>
-                    <td class="text-center align-middle">
-                        @switch($d->jenis)
-                        @case(1)
-                        {{$d->nf_nominal}}
-                        @break
-                        @default
-                        -{{$d->nf_nominal}}
-                        @endswitch
-                    </td>
-                </tr>
-                @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <th class="text-center align-middle" colspan="2">Total</th>
-                    <th class="text-center align-middle">{{number_format($total, 0, ',','.')}}</th>
+                    <th colspan="2">Grand Total:</th> <!-- Label for the total -->
+                    <th id="total-nominal"></th> <!-- Cell where the total will be displayed -->
+
                 </tr>
             </tfoot>
         </table>
@@ -92,14 +70,35 @@
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
     $(document).ready(function() {
-            var table = $('#data-table').DataTable();
-
-            // table.on( 'order.dt search.dt', function () {
-            //     table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-            //         cell.innerHTML = i+1;
-            //     } );
-            // } ).draw();
+        $('#data-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route('rekap.kas-investor.detail', $investor->id) }}',
+            columns: [
+                { data: 'tanggal', name: 'tanggal', class: 'text-center'},
+                { data: 'uraian', name: 'uraian' },
+                {
+                    data: 'nominal',
+                    name: 'nominal',
+                    class: 'text-end',
+                    render: function(data, type, row) {
+                        // Use Intl.NumberFormat to format the number in Indonesian format
+                        return new Intl.NumberFormat('id-ID').format(data);
+                    }
+                },
+                // Add more columns as needed
+            ],
+            footerCallback: function(row, data, start, end, display) {
+                var api = this.api();
+                var total = api.column(2).data().reduce(function (a, b) {
+                    return parseInt(a) + parseInt(b);
+                }, 0);
+                $('#total-nominal').html(new Intl.NumberFormat('id-ID').format(total));
+            }
         });
+
+
+    });
 
 </script>
 @endpush

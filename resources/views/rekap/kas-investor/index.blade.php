@@ -50,7 +50,7 @@
                 <tr>
                     <td class="text-center align-middle"></td>
                     <td class="text-center align-middle">
-                        <a href="{{route('rekap.kas-investor.detail', $d->id)}}">{{$d->nama}}</a>
+                        <a href="{{route('rekap.kas-investor.show', $d->id)}}">{{$d->nama}}</a>
 
                     </td>
                     <td class="text-end align-middle">

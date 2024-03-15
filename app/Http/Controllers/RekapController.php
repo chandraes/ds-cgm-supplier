@@ -292,17 +292,63 @@ class RekapController extends Controller
         ]);
     }
 
+    public function rekap_investor_show(InvestorModal $investor)
+    {
+        return view('rekap.kas-investor.detail', ['investor' => $investor]);
+    }
+
     public function rekap_investor_detail(InvestorModal $investor, Request $request)
     {
-        $data = $investor->load('kasBesar');
+        if ($request->ajax()) {
+            $length = $request->get('length'); // Get the requested number of records
+            $search = $request->get('search')['value']; // Get the search term
 
-        $data->kasBesar->each(function ($d) use (&$total) {
-            $d->jenis == 1 ? $total += $d->nominal : $total -= $d->nominal;
-        });
+            // Define the columns for sorting
+            $columns = ['created_at', 'uraian', 'nominal'];
 
-        return view('rekap.kas-investor.detail', [
-            'data' => $data,
-            'total' => $total,
-        ]);
+            $query = $investor->load('kasBesar')->kasBesar();
+
+            if ($search) {
+                // Adjust the fields to match your actual database columns
+                $query->where('uraian', 'like', '%' . $search . '%')
+                      ->orWhere('nominal', 'like', '%' . $search . '%');
+            }
+
+            // Handle the sorting
+            if ($request->has('order')) {
+                $columnIndex = $request->get('order')[0]['column']; // Get the index of the sorted column
+                $sortDirection = $request->get('order')[0]['dir']; // Get the sort direction
+                $column = $columns[$columnIndex]; // Get the column name
+
+                $query->orderBy($column, $sortDirection);
+            }
+
+            $data = $query->paginate($length); // Use the requested number of records
+
+            $data->getCollection()->transform(function ($d) use (&$total) {
+                if ($d->jenis == 1) {
+                    $total += $d->nominal;
+                } else {
+                    $total -= $d->nominal;
+                    $d->nominal = '-' . $d->nominal; // Add "-" sign when jenis is 0
+                }
+
+                if (empty($d->uraian)) {
+                    $d->uraian = "Deposit"; // Render kode_deposit when uraian is empty
+                }
+
+                return $d;
+            });
+
+            return response()->json([
+                'draw' => intval($request->draw),
+                'recordsTotal' => $data->total(),
+                'recordsFiltered' => $data->total(),
+                'data' => $data->items(),
+                'total' => $total,
+            ]);
+        }
+
+        return abort(404);
     }
 }
