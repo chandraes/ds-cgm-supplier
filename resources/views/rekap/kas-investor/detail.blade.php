@@ -4,6 +4,7 @@
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
             <h1><u>HISTORY INVESTOR</u></h1>
+            <h2>{{$investor->nama}}</h2>
         </div>
     </div>
     {{-- if has any error --}}
