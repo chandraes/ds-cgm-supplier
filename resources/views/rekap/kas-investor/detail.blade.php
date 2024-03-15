@@ -73,6 +73,7 @@
         $('#data-table').DataTable({
             processing: true,
             serverSide: true,
+            searching: false,
             ajax: '{{ route('rekap.kas-investor.detail', $investor->id) }}',
             columns: [
                 { data: 'tanggal', name: 'tanggal', class: 'text-center'},
