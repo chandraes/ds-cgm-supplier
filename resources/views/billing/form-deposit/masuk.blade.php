@@ -30,9 +30,9 @@
             </div>
             <div class="col-md-4 mb-3">
                 <div class="mb-3">
-                    <label for="investor_modal_id" class="form-label">Project</label>
+                    <label for="investor_modal_id" class="form-label">Investor Modal</label>
                     <select class="form-select" name="investor_modal_id" id="investor_modal_id" required>
-                        <option value="">-- Pilih Project --</option>
+                        <option value="">-- Pilih Investor --</option>
                         @foreach ($investor as $s)
                         <option value="{{$s->id}}" {{session('investor_modal_id') == $s->id ? 'selected' : ''}}>{{$s->nama}}</option>
                         @endforeach

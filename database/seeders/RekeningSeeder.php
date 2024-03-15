@@ -26,6 +26,12 @@ class RekeningSeeder extends Seeder
                 'no_rek' => '1234567890',
                 'nama_rek' => 'PT. ABC'
             ],
+            [
+                'untuk' => 'pengelola',
+                'bank' => 'BCA',
+                'no_rek' => '1234567890',
+                'nama_rek' => 'PT. ABC'
+            ],
         ];
 
         foreach ($data as $key => $value) {
