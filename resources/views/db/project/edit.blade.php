@@ -57,6 +57,19 @@
                             </div>
                         </div>
                     </div>
+                    <hr>
+                    <div class="row">
+                        <div class="btn-group" role="group" data-bs-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="checkbox" class="me-2" name="ppn" id="edit_ppn" checked autocomplete="off" />
+                                PPn
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="checkbox" class="me-2" name="pph" id="edit_pph" autocomplete="off" />
+                                PPh
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>

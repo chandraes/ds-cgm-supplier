@@ -26,8 +26,8 @@
                         </div>
                         <div class="col-lg-4 col-md-12 mb-3">
                             <label for="nomor_kontrak" class="form-label">No. Kontrak</label>
-                            <input type="text" class="form-control" name="nomor_kontrak" id="nomor_kontrak" aria-describedby="helpId"
-                                placeholder="" required>
+                            <input type="text" class="form-control" name="nomor_kontrak" id="nomor_kontrak"
+                                aria-describedby="helpId" placeholder="" required>
                         </div>
                     </div>
                     <hr>
@@ -43,17 +43,30 @@
                             <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
-                                <input type="text" class="form-control" name="tanggal_mulai" id="tanggal_mulai" aria-describedby="helpId"
-                                    placeholder="" required readonly>
+                                <input type="text" class="form-control" name="tanggal_mulai" id="tanggal_mulai"
+                                    aria-describedby="helpId" placeholder="" required readonly>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 mb-3">
                             <label for="jatuh_tempo" class="form-label">Tanggal Jatuh Tempo</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
-                                <input type="text" class="form-control" name="jatuh_tempo" id="jatuh_tempo" aria-describedby="helpId"
-                                    placeholder="" required readonly>
+                                <input type="text" class="form-control" name="jatuh_tempo" id="jatuh_tempo"
+                                    aria-describedby="helpId" placeholder="" required readonly>
                             </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="btn-group" role="group" data-bs-toggle="buttons">
+                            <label class="btn btn-secondary active">
+                                <input type="checkbox" class="me-2" name="ppn" id="ppn" checked autocomplete="off" />
+                                PPn
+                            </label>
+                            <label class="btn btn-secondary">
+                                <input type="checkbox" class="me-2" name="pph" id="pph" autocomplete="off" />
+                                PPh
+                            </label>
                         </div>
                     </div>
                 </div>

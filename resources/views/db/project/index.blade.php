@@ -37,6 +37,8 @@
                 <th class="text-center align-middle">NILAI PROJECT</th>
                 <th class="text-center align-middle">TGL MULAI</th>
                 <th class="text-center align-middle">TGL JATUH TEMPO</th>
+                <th class="text-center align-middle">PPn</th>
+                <th class="text-center align-middle">PPh</th>
                 <th class="text-center align-middle">STATUS</th>
                 <th class="text-center align-middle">ACT</th>
             </tr>
@@ -52,6 +54,18 @@
                 <td class="text-end align-middle">{{$d->nf_nilai}}</td>
                 <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
                 <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
+                <td class="text-center align-middle">
+                    {{-- checked icon if ppn == 1 --}}
+                    @if ($d->ppn == 1)
+                    <i class="fa fa-check"></i>
+                    @endif
+                </td>
+                <td class="text-center align-middle">
+                    {{-- checked icon if ppn == 1 --}}
+                    @if ($d->pph == 1)
+                    <i class="fa fa-check"></i>
+                    @endif
+                </td>
                 <td class="text-center align-middle">
                     <button
                         class="btn {{ $d->project_status_id == 1 ? 'btn-warning' : ($d->project_status_id == 3 ? 'btn-success' : 'btn-danger') }}">
@@ -132,6 +146,12 @@
         document.getElementById('edit_nomor_kontrak').value = data.nomor_kontrak;
         document.getElementById('edit_tanggal_mulai').value = data.id_tanggal_mulai;
         document.getElementById('edit_jatuh_tempo').value = data.id_jatuh_tempo;
+        if (data.ppn == 1) {
+            document.getElementById('edit_ppn').checked = true;
+        }
+        if (data.pph == 1) {
+            document.getElementById('edit_pph').checked = true;
+        }
         document.getElementById('editForm').action = '/db/project/' + id + '/update';
     };
 

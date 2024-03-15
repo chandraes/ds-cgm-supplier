@@ -32,10 +32,14 @@ class ProjectController extends Controller
             'nilai' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
+            'ppn' => 'nullable',
+            'pph' => 'nullable',
             // 'project_status_id' => 'required|exists:project_statuses,id',
         ]);
 
         $data['project_status_id'] = 1;
+        $data['ppn'] = $request->filled('ppn') ? 1 : 0;
+        $data['pph'] = $request->filled('pph') ? 1 : 0;
 
         $store = Project::createProject($data);
 
@@ -53,8 +57,12 @@ class ProjectController extends Controller
             'nomor_kontrak' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
+            'ppn' => 'nullable',
+            'pph' => 'nullable',
         ]);
 
+        $data['ppn'] = $request->filled('ppn') ? 1 : 0;
+        $data['pph'] = $request->filled('pph') ? 1 : 0;
 
         DB::beginTransaction();
 

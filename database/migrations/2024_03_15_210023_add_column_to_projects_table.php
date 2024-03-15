@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('invoice_tagihans', function (Blueprint $table) {
-            //
+        Schema::table('projects', function (Blueprint $table) {
+            $table->boolean('ppn')->default(0)->after('customer_id');
+            $table->boolean('pph')->default(0)->after('ppn');
         });
     }
 
@@ -21,8 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('invoice_tagihans', function (Blueprint $table) {
-            //
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropColumn('ppn');
+            $table->dropColumn('pph');
         });
     }
 };
