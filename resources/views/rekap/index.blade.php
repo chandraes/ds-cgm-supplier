@@ -6,19 +6,19 @@
 </div>
 <div class="container mt-5">
     <div class="row justify-content-left">
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="{{route('rekap.kas-besar')}}" class="text-decoration-none">
                 <img src="{{asset('images/kas-besar.svg')}}" alt="" width="100">
                 <h2>KAS BESAR</h2>
             </a>
         </div>
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="{{route('rekap.kas-kecil')}}" class="text-decoration-none">
                 <img src="{{asset('images/kas-kecil.svg')}}" alt="" width="100">
                 <h2>KAS KECIL</h2>
             </a>
         </div>
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="{{route('rekap.kas-investor')}}" class="text-decoration-none">
                 <img src="{{asset('images/kas-investor.svg')}}" alt="" width="100">
                 <h2>KAS INVESTOR</h2>
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="row justify-content-left">
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
                 <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="100">
                 <h2>KAS PROJECT</h2>
@@ -59,13 +59,13 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="{{route('rekap.invoice')}}" class="text-decoration-none">
                 <img src="{{asset('images/rekap-invoice.svg')}}" alt="" width="100">
                 <h2>INVOICE</h2>
             </a>
         </div>
-        <div class="col-lg-4 mt-5 text-center">
+        <div class="col-lg-4 mt-3 mb-3 text-center">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="100">
                 <h2>DASHBOARD</h2>
