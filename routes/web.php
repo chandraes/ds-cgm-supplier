@@ -70,9 +70,7 @@ Route::group(['middleware' => ['auth']], function() {
             });
 
             Route::get('/investor', [App\Http\Controllers\InvestorController::class, 'index'])->name('db.investor');
-            Route::post('/investor/store', [App\Http\Controllers\InvestorController::class, 'store'])->name('db.investor.store');
             Route::patch('/investor/{investor}/update', [App\Http\Controllers\InvestorController::class, 'update'])->name('db.investor.update');
-            Route::delete('/investor/{investor}/delete', [App\Http\Controllers\InvestorController::class, 'destroy'])->name('db.investor.delete');
 
             Route::get('/rekening', [App\Http\Controllers\RekeningController::class, 'index'])->name('db.rekening');
             Route::patch('/rekening/{rekening}/update', [App\Http\Controllers\RekeningController::class, 'update'])->name('db.rekening.update');
@@ -142,6 +140,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::get('/nota-tagihan', [App\Http\Controllers\NotaTagihanController::class, 'index'])->name('nota-tagihan.index');
             Route::post('/nota-tagihan/cicilan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cicilan'])->name('nota-tagihan.cicilan');
+            Route::post('/nota-tagihan/cutoff/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cutoff'])->name('nota-tagihan.cutoff');
             Route::post('/nota-tagihan/pelunasan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'pelunasan'])->name('nota-tagihan.pelunasan');
 
         });

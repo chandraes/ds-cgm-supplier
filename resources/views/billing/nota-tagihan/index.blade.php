@@ -64,7 +64,7 @@
                     <td class="align-middle">
                         <div class="text-end">
                             <a href="#" data-bs-toggle="modal"
-                            data-bs-target="#detailInvoice-{{$d->id}}">{{$d->nf_dibayar}}</a>
+                                data-bs-target="#detailInvoice-{{$d->id}}">{{$d->nf_dibayar}}</a>
                         </div>
 
                         @include('billing.nota-tagihan.detail-modal')
@@ -84,57 +84,104 @@
                     <td class="text-start align-middle">
                         <!-- Modal trigger button -->
                         <div class="text-center">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cicil-{{$d->id}}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#cicil-{{$d->id}}">
                                 DP / Termin
-                              </button>
+                            </button>
                         </div>
                         <!-- Modal Body -->
                         <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-                        <div class="modal fade" id="cicil-{{$d->id}}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+                        <div class="modal fade" id="cicil-{{$d->id}}" tabindex="-1" data-bs-backdrop="static"
+                            data-bs-keyboard="false" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="modalTitleId">Jumlah Cicilan</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
-                                    <form action="{{route('nota-tagihan.cicilan', ['invoice' => $d->id])}}" method="post" id="cicilForm-{{$d->id}}">
+                                    <form action="{{route('nota-tagihan.cicilan', ['invoice' => $d->id])}}"
+                                        method="post" id="cicilForm-{{$d->id}}">
                                         @csrf
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Uraian</label>
-                                            <input type="text" class="form-control" name="uraian" required>
-                                        </div>
-                                        <div class="input-group mb-3">
-                                            <span class="input-group-text" id="basic-addon1">Rp</span>
-                                            <input type="text" class="form-control @if ($errors->has('nominal'))
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Uraian</label>
+                                                <input type="text" class="form-control" name="uraian" required>
+                                            </div>
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text" id="basic-addon1">Rp</span>
+                                                <input type="text" class="form-control @if ($errors->has('nominal'))
                                             is-invalid
-                                        @endif" name="nominal" id="cicilanInput-{{$d->id}}" required data-thousands="." >
-                                          </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </div>
-                                </form>
+                                        @endif" name="nominal" id="cicilanInput-{{$d->id}}" required
+                                                    data-thousands=".">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Tutup</button>
+                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
 
                     </td>
                     <td class="text-center align-middle">
-                        <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="lunasForm-{{$d->id}}">
-                            @csrf
-                                <button type="submit" class="btn btn-success">Pelunasan </button>
-                            </form>
+                        <!-- Modal trigger button -->
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                            data-bs-target="#cutoff-{{$d->id}}">
+                            Cutoff
+                        </button>
+
+                        <!-- Modal Body -->
+                        <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
+                        <div class="modal fade" id="cutoff-{{$d->id}}" tabindex="-1" data-bs-backdrop="static"
+                            data-bs-keyboard="false" role="dialog" aria-labelledby="cutoffInvoice-{{$d->id}}Label"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cutoffInvoice-{{$d->id}}Label">
+                                            Cutoff Invoice
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{route('nota-tagihan.cutoff', ['invoice'=> $d->id])}}" method="post"
+                                        id="cutoffForm-{{$d->id}}">
+                                        @csrf
+                                        <div class="modal-body">
+                                            <div class="col-md-12 mb-3">
+                                                <label for="estimasi_pembayaran" class="form-label">Estimasi Pembayaran</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" class="form-control" name="estimasi_pembayaran" id="estimasi_pembayaran-{{$d->id}}" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Tutup
+                                            </button>
+                                            <button type="submit" class="btn btn-primary">Lanjutkan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
-                     $('#lunasForm-{{$d->id}}').submit(function(e){
+                    flatpickr("#estimasi_pembayaran-{{$d->id}}", {
+                        dateFormat: "d-m-Y",
+                    });
+
+                    $('#cutoffForm-{{$d->id}}').submit(function(e){
                         e.preventDefault();
                         Swal.fire({
                             title: 'Apakah anda yakin?',
-                            text: "Pelunasan Tagihan sebesar Rp. {{number_format($d->sisa_tagihan, 0, ',', '.')}}",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
@@ -192,15 +239,14 @@
 @endsection
 @push('css')
 <link href="{{asset('assets/css/dt.min.css')}}" rel="stylesheet">
+<link rel="stylesheet" href="{{asset('assets/js/flatpickr/flatpickr.min.css')}}">
+<script src="{{asset('assets/js/flatpickr/flatpickr.js')}}"></script>
 <script src="{{asset('assets/js/cleave.min.js')}}"></script>
 @endpush
 @push('js')
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
-
-
-
-        $(document).ready(function() {
+    $(document).ready(function() {
             var table = $('#data-table').DataTable({
                 "paging": false,
                 "searching": true,

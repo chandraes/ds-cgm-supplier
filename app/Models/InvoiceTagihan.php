@@ -110,6 +110,45 @@ class InvoiceTagihan extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public static function cutoff(InvoiceTagihan $invoice, $data)
+    {
+        $data['estimasi_pembayaran'] = Carbon::parse($data['estimasi_pembayaran'])->format('Y-m-d');
+
+        DB::beginTransaction();
+
+        try {
+            $invoice->update([
+                'cutoff' => 1,
+                'estimasi_pembayaran' => $data['estimasi_pembayaran']
+            ]);
+
+            $invoice->project->update([
+                'project_status_id' => 3
+            ]);
+
+            DB::commit();
+
+            $result = [
+                'status' => 'success',
+                'message' => 'Cutoff berhasil diproses!'
+            ];
+
+            return $result;
+
+        } catch (\Throwable $th) {
+
+                DB::rollBack();
+
+                $result = [
+                    'status' => 'error',
+                    'message' => $th->getMessage()
+                ];
+
+                return $result;
+        }
+
+    }
+
     public function cicilan($invoice_id, $data)
     {
 

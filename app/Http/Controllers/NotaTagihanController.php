@@ -21,7 +21,10 @@ class NotaTagihanController extends Controller
 {
     public function index()
     {
-        $data = InvoiceTagihan::with(['customer', 'project','kasProjects', 'invoiceTagihanDetails'])->where('finished', 0)->get();
+        $data = InvoiceTagihan::with(['customer', 'project','kasProjects', 'invoiceTagihanDetails'])
+                                ->where('cutoff', 0)
+                                ->where('finished', 0)
+                                ->get();
 
         return view('billing.nota-tagihan.index', [
             'data' => $data,
@@ -73,6 +76,19 @@ class NotaTagihanController extends Controller
 
         return redirect()->back()->with('success', 'Cicilan berhasil ditambahkan');
 
+
+    }
+
+    public function cutoff(InvoiceTagihan $invoice, Request $request)
+    {
+
+        $data = $request->validate([
+            'estimasi_pembayaran' => 'required',
+        ]);
+
+        $store = InvoiceTagihan::cutoff($invoice, $data);
+
+        return redirect()->back()->with($store['status'], $store['message']);
 
     }
 
