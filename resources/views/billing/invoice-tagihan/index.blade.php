@@ -85,59 +85,21 @@
                     </td>
                     <td class="text-center align-middle">
                         <!-- Modal trigger button -->
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                            data-bs-target="#cutoff-{{$d->id}}">
-                            Pelunasan
-                        </button>
+                       <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="pelunasan-{{$d->id}}">
+                            @csrf
+                            <button type="submit" class="btn btn-primary">Pelunasan</button>
+                    </form>
 
-                        <!-- Modal Body -->
-                        <!-- if you want to close by clicking outside the modal, delete the last endpoint:data-bs-backdrop and data-bs-keyboard -->
-                        <div class="modal fade" id="cutoff-{{$d->id}}" tabindex="-1" data-bs-backdrop="static"
-                            data-bs-keyboard="false" role="dialog" aria-labelledby="cutoffInvoice-{{$d->id}}Label"
-                            aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="cutoffInvoice-{{$d->id}}Label">
-                                            Cutoff Invoice
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <form action="{{route('nota-tagihan.cutoff', ['invoice'=> $d->id])}}" method="post"
-                                        id="cutoffForm-{{$d->id}}">
-                                        @csrf
-                                        <div class="modal-body">
-                                            <div class="col-md-12 mb-3">
-                                                <label for="estimasi_pembayaran" class="form-label">Estimasi Pembayaran</label>
-                                                <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
-                                                    <input type="text" class="form-control" name="estimasi_pembayaran" id="estimasi_pembayaran-{{$d->id}}" required>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                Tutup
-                                            </button>
-                                            <button type="submit" class="btn btn-primary">Lanjutkan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     </td>
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
-                    flatpickr("#estimasi_pembayaran-{{$d->id}}", {
-                        dateFormat: "d-m-Y",
-                    });
 
-                    $('#cutoffForm-{{$d->id}}').submit(function(e){
+                    $('#pelunasan-{{$d->id}}').submit(function(e){
                         e.preventDefault();
                         Swal.fire({
                             title: 'Apakah anda yakin?',
+                            text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',

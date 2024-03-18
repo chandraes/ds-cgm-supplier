@@ -102,7 +102,7 @@ class NotaTagihanController extends Controller
         $db = new InvoiceTagihan();
 
         $saldo = $kb->saldoTerakhir() + $invoice->sisa_tagihan;
-        $pengeluaran = ($invoice->kasProjects()->orderBy('id', 'desc')->first()->sisa * -1) + ($invoice->profit > 0 ? $invoice->profit : 0);
+        $pengeluaran = (($invoice->kasProjects()->orderBy('id', 'desc')->first()->sisa ?? 0) * -1) + ($invoice->profit > 0 ? $invoice->profit : 0);
 
         if ($saldo < $pengeluaran) {
             return redirect()->back()->with('error', 'Saldo Kas Besar tidak mencukupi untuk proses pelunasan!');

@@ -43,7 +43,7 @@
                     <th class="text-center align-middle">Nama</th>
                     <th class="text-center align-middle">Total Modal</th>
                     <th class="text-center align-middle">Persentase</th>
-                    <th class="text-center align-middle">Total Keuntungan</th>
+                    <th class="text-center align-middle">Total Deviden</th>
                 </tr>
             </thead>
             <tbody>

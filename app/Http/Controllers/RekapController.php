@@ -286,7 +286,7 @@ class RekapController extends Controller
     public function rekap_investor()
     {
         $data = InvestorModal::with(['kasBesar' => function ($query) {
-                    $query->selectRaw('investor_modal_id, SUM(CASE WHEN jenis = 1 THEN nominal ELSE -nominal END) as total')
+                    $query->selectRaw('investor_modal_id, SUM(CASE WHEN jenis = 0 THEN nominal ELSE -nominal END) as total')
                         ->whereNull('modal_investor')
                         ->groupBy('investor_modal_id');
                 }])->get();

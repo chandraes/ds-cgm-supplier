@@ -404,7 +404,8 @@ class InvoiceTagihan extends Model
             'nama_rek' => $data['nama_rek'],
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() - $data['nominal'],
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
+            'investor_modal_id' => $data['investor_modal_id']
         ]);
 
         return $store;
@@ -516,34 +517,52 @@ class InvoiceTagihan extends Model
 
     private function devidenProject(InvoiceTagihan $invoice)
     {
+        $rp = Rekening::where('untuk', 'pengelola')->first();
+        $investorModal = InvestorModal::all();
         $profit = $invoice->profit;
-
-        $investor = Investor::all();
         $data = [];
+        $investor = Investor::all();
+        $totalProfitInvestor = 0;
+        $totalProfitPengelola = 0;
 
         foreach ($investor as $i) {
-            $data[] = [
-                'no_rek' => $i->no_rek,
-                'bank' => $i->bank,
-                'nama_rek' => $i->nama_rek,
-                'jenis' => 0,
-                'nominal' => $profit * $i->persentase / 100,
-                'uraian' => 'Bagi Deviden '.$i->nama,
-                'project_id' => $invoice->project_id
-            ];
-        }
-        // make every nominal to exact same as profit
-        $total = 0;
-        foreach ($data as $d) {
-            $total += $d['nominal'];
+            $nominal = $profit * $i->persentase / 100;
+
+            if ($i->nama == 'pengelola') {
+                $data[] = [
+                    'no_rek' => $rp->no_rek,
+                    'bank' => $rp->bank,
+                    'nama_rek' => $rp->nama_rek,
+                    'jenis' => 0,
+                    'nominal' => $nominal,
+                    'uraian' => 'Bagi Deviden '.$rp->untuk,
+                    'project_id' => $invoice->project_id,
+                    'investor_modal_id' => null,
+                ];
+            }
+
+            if ($i->nama == 'investor') {
+                $totalProfitInvestor = $nominal;
+                foreach ($investorModal as $im) {
+                    $data[] = [
+                        'no_rek' => $im->no_rek,
+                        'bank' => $im->bank,
+                        'nama_rek' => $im->nama_rek,
+                        'jenis' => 0,
+                        'nominal' => $nominal * $im->persentase / 100,
+                        'uraian' => 'Bagi Deviden '.$im->nama,
+                        'project_id' => $invoice->project_id,
+                        'investor_modal_id' => $im->id
+                    ];
+                }
+            }
         }
 
-        if($total > $profit) {
-            $selisih = $total - $profit;
-            $data[0]['nominal'] -= $selisih;
-        } else if($total < $profit) {
-            $selisih = $profit - $total;
-            $data[0]['nominal'] += $selisih;
+        $total = array_sum(array_column($data, 'nominal'));
+        if ($total > $profit) {
+            $data[0]['nominal'] -= $total - $profit;
+        } elseif ($total < $profit) {
+            $data[0]['nominal'] += $profit - $total;
         }
 
         return $data;
@@ -552,38 +571,55 @@ class InvoiceTagihan extends Model
 
     private function bagiRugi(InvoiceTagihan $invoice)
     {
+        $rp = Rekening::where('untuk', 'pengelola')->first();
+        $investorModal = InvestorModal::all();
         $profit = $invoice->profit * -1;
-
-        $investor = Investor::all();
         $data = [];
+        $investor = Investor::all();
+        $totalProfitInvestor = 0;
+        $totalProfitPengelola = 0;
 
         foreach ($investor as $i) {
-            $data[] = [
-                'no_rek' => $i->no_rek,
-                'bank' => $i->bank,
-                'nama_rek' => $i->nama_rek,
-                'jenis' => 1,
-                'nominal' => $profit * $i->persentase / 100,
-                'uraian' => 'Bagi Rugi '.$i->nama,
-                'project_id' => $invoice->project_id
-            ];
-        }
-        // make every nominal to exact same as profit
-        $total = 0;
-        foreach ($data as $d) {
-            $total += $d['nominal'];
+            $nominal = $profit * $i->persentase / 100;
+
+            if ($i->nama == 'pengelola') {
+                $data[] = [
+                    'no_rek' => $rp->no_rek,
+                    'bank' => $rp->bank,
+                    'nama_rek' => $rp->nama_rek,
+                    'jenis' => 1,
+                    'nominal' => $nominal,
+                    'uraian' => 'Bagi Rugi '.$rp->untuk,
+                    'project_id' => $invoice->project_id,
+                    'investor_modal_id' => null,
+                ];
+            }
+
+            if ($i->nama == 'investor') {
+                $totalProfitInvestor = $nominal;
+                foreach ($investorModal as $im) {
+                    $data[] = [
+                        'no_rek' => $im->no_rek,
+                        'bank' => $im->bank,
+                        'nama_rek' => $im->nama_rek,
+                        'jenis' => 1,
+                        'nominal' => $nominal * $im->persentase / 100,
+                        'uraian' => 'Bagi Rugi '.$im->nama,
+                        'project_id' => $invoice->project_id,
+                        'investor_modal_id' => $im->id
+                    ];
+                }
+            }
         }
 
-        if($total > $profit) {
-            $selisih = $total - $profit;
-            $data[0]['nominal'] -= $selisih;
-        } else if($total < $profit) {
-            $selisih = $profit - $total;
-            $data[0]['nominal'] += $selisih;
+        $total = array_sum(array_column($data, 'nominal'));
+        if ($total > $profit) {
+            $data[0]['nominal'] -= $total - $profit;
+        } elseif ($total < $profit) {
+            $data[0]['nominal'] += $profit - $total;
         }
 
         return $data;
-
     }
 
     private function bagiRugiStore($data)
@@ -603,7 +639,8 @@ class InvoiceTagihan extends Model
             'nama_rek' => $data['nama_rek'],
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() + $data['nominal'],
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
+            'investor_modal_id' => $data['investor_modal_id']
         ]);
 
         return $store;
