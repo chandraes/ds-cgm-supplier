@@ -309,7 +309,7 @@ class RekapController extends Controller
             // Define the columns for sorting
             $columns = ['created_at', 'uraian', 'nominal'];
 
-            $query = $investor->load('kasBesar')->kasBesar()->orderBy('created_at', 'desc');
+            $query = $investor->load('kasBesar')->kasBesar()->whereNotNull('modal_investor')->orderBy('created_at', 'desc');
 
             // Handle the sorting
             if ($request->has('order')) {
@@ -333,6 +333,58 @@ class RekapController extends Controller
                 if (empty($d->uraian)) {
                     $d->uraian = "Deposit"; // Render kode_deposit when uraian is empty
                 }
+
+                return $d;
+            });
+
+            return response()->json([
+                'draw' => intval($request->draw),
+                'recordsTotal' => $data->total(),
+                'recordsFiltered' => $data->total(),
+                'data' => $data->items(),
+                'total' => $total,
+            ]);
+        }
+
+        return abort(404);
+    }
+
+    public function rekap_investor_detail_deviden_show(InvestorModal $investor)
+    {
+        return view('rekap.kas-investor.detail-deviden', ['investor' => $investor]);
+    }
+
+    public function rekap_investor_detail_deviden(InvestorModal $investor, Request $request)
+    {
+        if ($request->ajax()) {
+            $length = $request->get('length'); // Get the requested number of records
+
+            // Define the columns for sorting
+            $columns = ['created_at', 'uraian', 'nominal'];
+
+            $query = $investor->load('kasBesar')->kasBesar()->whereNull('modal_investor')->with('project')->orderBy('created_at', 'desc');
+
+            // Handle the sorting
+            if ($request->has('order')) {
+                $columnIndex = $request->get('order')[0]['column']; // Get the index of the sorted column
+                $sortDirection = $request->get('order')[0]['dir']; // Get the sort direction
+                $column = $columns[$columnIndex]; // Get the column name
+
+                $query->orderBy($column, $sortDirection);
+            }
+
+            $data = $query->paginate($length); // Use the requested number of records
+
+            $data->getCollection()->transform(function ($d) use (&$total) {
+                if ($d->jenis == 1) {
+                    $total -= $d->nominal;
+                    $d->nominal = '-' . $d->nominal;
+                } else {
+                    $total += $d->nominal;
+                     // Add "-" sign when jenis is 0
+                }
+
+                $d->project_nama = $d->project->nama;
 
                 return $d;
             });

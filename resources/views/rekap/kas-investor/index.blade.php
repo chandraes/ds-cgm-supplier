@@ -61,7 +61,9 @@
                         {{$d->persentase}}%
                     </td>
                     <td class="text-end align-middle">
-                        {{$d->nf_keuntungan}}
+                        <a href="{{route('rekap.kas-investor.detail-deviden.show', $d->id)}}">
+                            {{$d->nf_keuntungan}}
+                        </a>
                     </td>
                 </tr>
                 @endforeach
