@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,6 +13,8 @@ class InvoiceTagihanDetail extends Model
     protected $guarded = [];
 
     protected $appends = ['nf_nominal', 'tanggal'];
+
+
 
     public function invoiceTagihan()
     {

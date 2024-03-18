@@ -43,6 +43,7 @@
                     <th class="text-center align-middle">Nama</th>
                     <th class="text-center align-middle">Total Modal</th>
                     <th class="text-center align-middle">Persentase</th>
+                    <th class="text-center align-middle">Total Keuntungan</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,6 +60,9 @@
                     <td class="text-center align-middle">
                         {{$d->persentase}}%
                     </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_keuntungan}}
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -67,6 +71,7 @@
                     <th class="text-center align-middle" colspan="2">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('modal'), 0, ',', '.')}}</th>
                     <th class="text-center align-middle">{{number_format($data->sum('persentase'), 0, ',', '.')}}%</th>
+                    <th></th>
                 </tr>
             </tfoot>
         </table>

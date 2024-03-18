@@ -15,8 +15,12 @@ class InvoiceTagihan extends Model
     protected $guarded = [];
 
     protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir',
-                            'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance'];
+                            'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran'];
 
+    public function getIdEstimasiPembayaranAttribute()
+    {
+        return Carbon::parse($this->estimasi_pembayaran)->format('d-m-Y');
+    }
     public function kasProjects()
     {
         return $this->hasManyThrough(KasProject::class, Project::class, 'id', 'project_id', 'project_id', 'id');

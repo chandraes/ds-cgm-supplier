@@ -10,7 +10,7 @@ class InvestorModal extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    protected $append = ['nf_modal'];
+    protected $append = ['nf_modal', 'keuntungan', 'nf_keuntungan'];
 
     public function getNfModalAttribute()
     {
@@ -20,5 +20,15 @@ class InvestorModal extends Model
     public function kasBesar()
     {
         return $this->hasMany(KasBesar::class);
+    }
+
+    public function getKeuntunganAttribute()
+    {
+        return $this->kasBesar->sum('total');
+    }
+
+    public function getNfKeuntunganAttribute()
+    {
+        return number_format($this->keuntungan, 0, ',', '.');
     }
 }
