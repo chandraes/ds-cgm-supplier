@@ -325,7 +325,7 @@ class KasBesar extends Model
 
     public function withdrawAll($data)
     {
-        $db = new KasBesar();
+
         $investor = InvestorModal::all();
         $nominalInvestor = $data['nominal'];
         $d = [];
@@ -344,7 +344,6 @@ class KasBesar extends Model
             ];
         }
 
-
         $total = array_sum(array_column($d, 'nominal'));
         if ($total > $nominalInvestor) {
             $d[0]['nominal'] -= $total - $nominalInvestor;
@@ -352,9 +351,10 @@ class KasBesar extends Model
             $d[0]['nominal'] += $nominalInvestor - $total;
         }
 
-        DB::beginTransaction();
-
         try {
+            DB::beginTransaction();
+
+            $db = new KasBesar();
 
             foreach($d as $data)
             {
@@ -396,7 +396,6 @@ class KasBesar extends Model
             $result = [
                 'status' => "success",
                 'message' => 'Berhasil menambahkan data',
-                'data' => $store,
             ];
 
         } catch (\Throwable $th) {
@@ -405,8 +404,7 @@ class KasBesar extends Model
 
             $result = [
                 'status' => "error",
-                'message' => 'Gagal menambahkan data',
-                'data' => $th->getMessage(),
+                'message' => $th->getMessage(),
             ];
 
             return $result;
