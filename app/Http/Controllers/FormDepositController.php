@@ -81,4 +81,33 @@ class FormDepositController extends Controller
 
         return redirect()->route('billing')->with($store['status'], $store['message']);
     }
+
+    public function keluar_all()
+    {
+        $investor = InvestorModal::all();
+
+        return view('billing.form-deposit.keluar-all', [
+            'investor' => $investor,
+        ]);
+    }
+
+    public function keluar_all_store(Request $request)
+    {
+        $data = $request->validate([
+            'nominal' => 'required',
+        ]);
+
+        $db = new KasBesar();
+        $saldo = $db->saldoTerakhir();
+
+        $data['nominal'] = str_replace('.', '', $data['nominal']);
+
+        if($saldo < $data['nominal']){
+            return redirect()->back()->with('error', 'Saldo Kas Besar Tidak Mencukupi !!');
+        }
+
+        $store = $db->withdrawAll($data);
+
+        return redirect()->route('billing')->with($store['status'], $store['message']);
+    }
 }

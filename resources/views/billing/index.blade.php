@@ -20,12 +20,6 @@
             </a>
             @include('billing.modal-form-kas-kecil')
         </div>
-        {{-- <div class="col-lg-3 text-center mt-5">
-            <a href="{{route('billing.deviden.index')}}" class="text-decoration-none">
-                <img src="{{asset('images/form-deviden.svg')}}" alt="" width="100">
-                <h2>FORM DEVIDEN</h2>
-            </a>
-        </div> --}}
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-lg-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLain">
@@ -95,6 +89,8 @@
             window.location.href = "{{route('form-deposit.masuk')}}";
         }else if(selectDeposit == 'keluar'){
             window.location.href = "{{route('form-deposit.keluar')}}";
+        }else if(selectDeposit == 'keluar-all'){
+            window.location.href = "{{route('form-deposit.keluar-all')}}";
         }
     }
 

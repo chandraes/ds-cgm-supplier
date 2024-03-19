@@ -10,6 +10,7 @@ role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
             <select class="form-select" name="selectDeposit" id="selectDeposit">
                 <option value="masuk">Penambahan Deposit</option>
                 <option value="keluar">Pengembalian Deposit</option>
+                <option value="keluar-all">Pengembalian Deposit All</option>
             </select>
         </div>
         <div class="modal-footer">
