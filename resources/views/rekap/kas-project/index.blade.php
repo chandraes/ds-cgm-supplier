@@ -67,6 +67,10 @@
             <th>Nama Project</th>
             <th style="width: 1rem">:</th>
             <th>{{$project->nama}}</th>
+            <th></th>
+            <th>Nilai Kontrak</th>
+            <th>:</th>
+            <th>Rp {{$project->nf_nilai}}</th>
         </tr>
         <tr>
             <th>Nomor Kontrak</th>
@@ -74,9 +78,7 @@
             <th>{{$project->nomor_kontrak}}</th>
         </tr>
         <tr>
-            <th>Nilai Kontrak</th>
-            <th>:</th>
-            <th>Rp {{$project->nf_nilai}}</th>
+
         </tr>
     </table>
     <div class="row mt-3">

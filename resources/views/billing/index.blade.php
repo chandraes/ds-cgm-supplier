@@ -22,6 +22,14 @@
         </div>
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'su')
         <div class="col-lg-3 text-center mt-5">
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalTransaksi">
+                <img src="{{asset('images/transaksi.svg')}}" alt="" width="100">
+                <h2>FORM TRANSAKSI</h2>
+            </a>
+            @include('billing.modal-form-transaksi')
+
+        </div>
+        <div class="col-lg-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLain">
                 <img src="{{asset('images/form-lain.svg')}}" alt="" width="100">
                 <h2>FORM LAIN-LAIN</h2>
@@ -52,18 +60,17 @@
 
     </div>
     <div class="row justify-content-left">
-        <div class="col-lg-3 text-center mt-5">
-            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalTransaksi">
-                <img src="{{asset('images/transaksi.svg')}}" alt="" width="100">
-                <h2>FORM TRANSAKSI</h2>
-            </a>
-            @include('billing.modal-form-transaksi')
 
-        </div>
         <div class="col-lg-3 text-center mt-5">
             <a href="{{route('nota-tagihan.index')}}" class="text-decoration-none">
                 <img src="{{asset('images/nota-tagihan.svg')}}" alt="" width="100">
                 <h2>NOTA TAGIHAN @if($nt != 0) <span class="text-danger">({{$nt}})</span> @endif</h2>
+            </a>
+        </div>
+        <div class="col-lg-3 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/form-ppn.svg')}}" alt="" width="100">
+                <h2>FORM PPn MASUKAN</h2>
             </a>
         </div>
         <div class="col-lg-3 text-center mt-5">
