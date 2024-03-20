@@ -64,18 +64,31 @@
 <div class="container-fluid table-responsive ml-3">
     <table>
         <tr>
-            <th>Nama Project</th>
-            <th style="width: 1rem">:</th>
-            <th>{{$project->nama}}</th>
-            <th></th>
+            <th>Customer</th>
+            <th>:</th>
+            <th>{{$project->customer->nama}}</th>
+            <th style="width: 80px"></th>
             <th>Nilai Kontrak</th>
             <th>:</th>
             <th>Rp {{$project->nf_nilai}}</th>
         </tr>
         <tr>
+            <th>Nama Project</th>
+            <th style="width: 1rem">:</th>
+            <th>{{$project->nama}}</th>
+            <th style="width: 80px"></th>
+            <th>Tanggal PO</th>
+            <th>:</th>
+            <th>{{$project->id_tanggal_mulai}}</th>
+        </tr>
+        <tr>
             <th>Nomor Kontrak</th>
             <th>:</th>
             <th>{{$project->nomor_kontrak}}</th>
+            <th style="width: 80px"></th>
+            <th>Tanggal Jatuh Tempo</th>
+            <th style="width: 20px">:</th>
+            <th>{{$project->id_jatuh_tempo}}</th>
         </tr>
         <tr>
 
