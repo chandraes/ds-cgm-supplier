@@ -70,7 +70,7 @@
         <div class="col-lg-3 text-center mt-5">
             <a href="#" class="text-decoration-none">
                 <img src="{{asset('images/form-ppn.svg')}}" alt="" width="100">
-                <h2>FORM PPn MASUKAN</h2>
+                <h2>NOTA PPn MASUKAN</h2>
             </a>
         </div>
         <div class="col-lg-3 text-center mt-5">
