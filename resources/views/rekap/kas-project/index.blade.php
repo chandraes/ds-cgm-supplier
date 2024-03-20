@@ -62,45 +62,46 @@
     </form>
 </div>
 <div class="container-fluid table-responsive ml-3">
-    <table>
-        <tr>
-            <th>Customer</th>
-            <th>:</th>
-            <th>{{$project->customer->nama}}</th>
-            <th style="width: 80px"></th>
-            <th>Nilai Kontrak</th>
-            <th>:</th>
-            <th>Rp {{$project->nf_nilai}}</th>
-        </tr>
-        <tr>
-            <th>Nama Project</th>
-            <th style="width: 1rem">:</th>
-            <th>{{$project->nama}}</th>
-            <th style="width: 80px"></th>
-            <th>Tanggal PO</th>
-            <th>:</th>
-            <th>{{$project->id_tanggal_mulai}}</th>
-        </tr>
-        <tr>
-            <th>Nomor Kontrak</th>
-            <th>:</th>
-            <th>{{$project->nomor_kontrak}}</th>
-            <th style="width: 80px"></th>
-            <th>Tanggal Jatuh Tempo</th>
-            <th style="width: 20px">:</th>
-            <th>{{$project->id_jatuh_tempo}}</th>
-        </tr>
-        <tr>
+    <div style="display: flex; justify-content: flex-end;">
+        <table>
+            <tr>
+                <th>Customer</th>
+                <th>:</th>
+                <th>{{$project->customer->nama}}</th>
+                <th style="width: 80px"></th>
+                <th>Nilai Kontrak</th>
+                <th>:</th>
+                <th>Rp {{$project->nf_nilai}}</th>
+            </tr>
+            <tr>
+                <th>Nama Project</th>
+                <th style="width: 1rem">:</th>
+                <th>{{$project->nama}}</th>
+                <th style="width: 80px"></th>
+                <th>Tanggal PO</th>
+                <th>:</th>
+                <th>{{$project->id_tanggal_mulai}}</th>
+            </tr>
+            <tr>
+                <th>Nomor Kontrak</th>
+                <th>:</th>
+                <th>{{$project->nomor_kontrak}}</th>
+                <th style="width: 80px"></th>
+                <th>Tanggal Jatuh Tempo</th>
+                <th style="width: 20px">:</th>
+                <th>{{$project->id_jatuh_tempo}}</th>
+            </tr>
 
-        </tr>
-    </table>
+        </table>
+    </div>
+
     <div class="row mt-3">
+
         <table class="table table-hover table-bordered" id="rekapTable">
             <thead class=" table-success">
             <tr>
                 <th class="text-center align-middle">Tanggal</th>
                 <th class="text-center align-middle">Uraian</th>
-
                 <th class="text-center align-middle">Masuk</th>
                 <th class="text-center align-middle">Keluar</th>
                 <th class="text-center align-middle">Sisa</th>
