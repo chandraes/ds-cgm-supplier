@@ -15,7 +15,18 @@ class InvoiceTagihan extends Model
     protected $guarded = [];
 
     protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir',
-                            'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran'];
+                            'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran', 'nf_nilai_ppn', 'nf_nilai_pph',
+                            'ppn_masukan', 'nf_ppn_masukan'];
+
+    public function getNfNilaiPphAttribute()
+    {
+        return number_format($this->nilai_pph, 0, ',', '.');
+    }
+
+    public function getNfNilaiPpnAttribute()
+    {
+        return number_format($this->nilai_ppn, 0, ',', '.');
+    }
 
     public function getIdEstimasiPembayaranAttribute()
     {
@@ -66,6 +77,17 @@ class InvoiceTagihan extends Model
     {
         $profit = $this->nilai_tagihan + $this->pengeluaran;
         return $profit;
+    }
+
+    public function getPpnMasukanAttribute()
+    {
+        $ppn = $this->kasProjects->where('ppn_masuk', 1)->sum('nominal');
+        return $ppn;
+    }
+
+    public function getNfPpnMasukanAttribute()
+    {
+        return number_format($this->ppn_masukan, 0, ',', '.');
     }
 
     public function getProfitAkhirAttribute()

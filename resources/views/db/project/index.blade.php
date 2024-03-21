@@ -34,7 +34,7 @@
                 <th class="text-center align-middle">CUSTOMER</th>
                 <th class="text-center align-middle">NAMA PROJECT</th>
                 <th class="text-center align-middle">NO KONTRAK</th>
-                <th class="text-center align-middle">NILAI PROJECT</th>
+                <th class="text-center align-middle">NILAI DPP</th>
                 <th class="text-center align-middle">TGL MULAI</th>
                 <th class="text-center align-middle">TGL JATUH TEMPO</th>
                 <th class="text-center align-middle">PPn</th>

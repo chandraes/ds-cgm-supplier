@@ -34,7 +34,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-lg-4 col-md-12 col-sm-12 mb-3">
-                            <label for="nilai" class="form-label">Nilai Project</label>
+                            <label for="nilai" class="form-label">Nilai DPP</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1">Rp</span>
                                 <input type="text" class="form-control" name="nilai" id="edit_nilai" required>
@@ -61,7 +61,7 @@
                     <div class="row">
                         <div class="btn-group" role="group" data-bs-toggle="buttons">
                             <label class="btn btn-secondary active">
-                                <input type="checkbox" class="me-2" name="ppn" id="edit_ppn" checked autocomplete="off" />
+                                <input type="checkbox" class="me-2" name="ppn" id="edit_ppn" autocomplete="off" />
                                 PPn
                             </label>
                             <label class="btn btn-secondary">

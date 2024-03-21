@@ -15,28 +15,6 @@ class InvestorController extends Controller
         ]);
     }
 
-    // public function store(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'nama' => 'required',
-    //         'no_wa' => 'required',
-    //         'persentase' => 'required|integer',
-    //         'bank' => 'required',
-    //         'no_rek' => 'required',
-    //         'nama_rek' => 'required',
-    //     ]);
-
-    //     $check = Investor::sum('persentase') + $data['persentase'];
-
-    //     if ($check > 100) {
-    //         return redirect()->back()->with('error', 'Persentase investor melebihi 100%');
-    //     }
-
-    //     Investor::create($data);
-
-    //     return redirect()->back()->with('success', 'Data berhasil ditambahkan!');
-    // }
-
     public function update(Request $request, Investor $investor)
     {
         $data = $request->validate([
@@ -54,9 +32,4 @@ class InvestorController extends Controller
         return redirect()->back()->with('success', 'Data berhasil diubah!');
     }
 
-    // public function destroy(Investor $investor)
-    // {
-    //     $investor->delete();
-    //     return redirect()->back()->with('success', 'Data berhasil dihapus!');
-    // }
 }

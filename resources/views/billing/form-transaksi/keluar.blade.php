@@ -21,7 +21,8 @@
                     <select class="form-select" name="project_id" id="project_id" required>
                         <option value="">-- Pilih Project --</option>
                         @foreach ($project as $s)
-                        <option value="{{$s->id}}" {{session('project_id') == $s->id ? 'selected' : ''}}>{{$s->nama}}</option>
+                        <option value="{{$s->id}}" {{session('project_id')==$s->id ? 'selected' : ''}}>{{$s->nama}}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -38,14 +39,38 @@
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('nominal'))
                     is-invalid
-                @endif" name="nominal" id="nominal" required data-thousands="." >
-                  </div>
+                @endif" name="nominal" id="nominal" required data-thousands=".">
+                </div>
                 @if ($errors->has('nominal'))
                 <div class="invalid-feedback">
                     {{$errors->first('nominal')}}
                 </div>
                 @endif
             </div>
+            <div class="col-lg-6 col-md-12 mb-3">
+                <label for="ppn" class="form-label">Apakah Transaksi Menggunakan PPn??</label>
+                <select class="form-select" name="ppn" id="ppn" required>
+                    <option value="">-- Pilih Salah Satu --</option>
+                    <option value="1">Dengan PPn</option>
+                    <option value="0">Tanpa PPn</option>
+                </select>
+
+            </div>
+            <div class="col-lg-6 col-md-12 mb-3">
+                <label for="total" class="form-label">Total</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Rp</span>
+                    <input type="text" class="form-control @if ($errors->has('total'))
+                    is-invalid
+                @endif" name="total" id="total" required data-thousands=".">
+                </div>
+                @if ($errors->has('total'))
+                <div class="invalid-feedback">
+                    {{$errors->first('total')}}
+                </div>
+                @endif
+            </div>
+
         </div>
         <hr>
         <h3>Transfer Ke</h3>
@@ -103,12 +128,11 @@
 <link rel="stylesheet" href="{{asset('assets/plugins/select2/select2.min.css')}}">
 @endpush
 @push('js')
-    <script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
-    <script src="{{asset('assets/js/dt5.min.js')}}"></script>
-    <script src="{{asset('assets/js/cleave.min.js')}}"></script>
-    <script>
-
-        $('#project_id').select2({
+<script src="{{asset('assets/plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{asset('assets/js/dt5.min.js')}}"></script>
+<script src="{{asset('assets/js/cleave.min.js')}}"></script>
+<script>
+    $('#project_id').select2({
             theme: 'bootstrap-5',
             width: '100%',
             placeholder: 'Pilih Project'
@@ -145,16 +169,6 @@
 
             });
 
-        // $( function() {
-        //     $( "#tanggal" ).datepicker({
-        //         dateFormat: "dd-mm-yy"
-        //     });
-
-        //     $( "#edit_tanggal" ).datepicker({
-        //         dateFormat: "dd-mm-yy"
-        //     });
-        // });
-
 
         var nominal = new Cleave('#nominal', {
             numeral: true,
@@ -163,13 +177,6 @@
             delimiter: '.'
         });
 
-        // var editBerat = new Cleave('#edit_berat', {
-        //     numeral: true,
-        //     numeralThousandsGroupStyle: 'thousand',
-        //     numeralDecimalMark: ',',
-        //     delimiter: '.'
-        // });
-        
         // masukForm on submit, sweetalert confirm
         $('#masukForm').submit(function(e){
             e.preventDefault();
@@ -223,5 +230,5 @@
                 }
             })
         });
-    </script>
+</script>
 @endpush
