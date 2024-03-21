@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Customer;
-use App\Models\Supplier;
-use App\Models\Transaksi;
-use App\Models\InvoicePpn;
 use App\Models\InvoiceTagihan;
-use App\Models\InvoiceTagihanDetail;
 use App\Models\KasBesar;
 use App\Models\GroupWa;
 use App\Models\Investor;
 use App\Models\PesanWa;
 use App\Services\StarSender;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 
 class NotaTagihanController extends Controller
 {
