@@ -16,7 +16,7 @@ class InvoiceTagihan extends Model
 
     protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir',
                             'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran', 'nf_nilai_ppn', 'nf_nilai_pph',
-                            'ppn_masukan', 'nf_ppn_masukan'];
+                            'ppn_masukan', 'nf_ppn_masukan', 'total_tagihan', 'nf_total_tagihan'];
 
     public function getNfNilaiPphAttribute()
     {
@@ -88,6 +88,17 @@ class InvoiceTagihan extends Model
     public function getNfPpnMasukanAttribute()
     {
         return number_format($this->ppn_masukan, 0, ',', '.');
+    }
+
+    public function getTotalTagihanAttribute()
+    {
+        $total = $this->nilai_tagihan + $this->nilai_ppn - $this->nilai_pph;
+        return $total;
+    }
+
+    public function getNfTotalTagihanAttribute()
+    {
+        return number_format($this->total_tagihan, 0, ',', '.');
     }
 
     public function getProfitAkhirAttribute()

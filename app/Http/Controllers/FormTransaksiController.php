@@ -40,6 +40,7 @@ class FormTransaksiController extends Controller
             'no_rek' => 'required',
             'nama_rek' => 'required',
             'bank' => 'required',
+            'ppn' => 'required',
         ]);
 
         session(['project_id' => $data['project_id'],
@@ -49,15 +50,28 @@ class FormTransaksiController extends Controller
 
         $db = new KasProject();
         $kb = new KasBesar();
+        $nominalPpn = 0;
 
         $data['nominal'] = str_replace('.', '', $data['nominal']);
+
+        if ($data['ppn'] == 1) {
+            $nominalPpn = $data['nominal'] * 0.1;
+        }
 
         $saldo = $kb->saldoTerakhir();
 
 
-        if ($saldo < $data['nominal']) {
+        if ($saldo < ($data['nominal']+ $nominalPpn)) {
             return redirect()->back()->with('error', 'Saldo Kas Besar tidak mencukupi. Saldo Kas Besar terakhir: Rp. '.number_format($saldo, 0, ',', '.'));
         }
+        if ($data['ppn'] == 1) {
+            unset($data['ppn']);
+            $store = $db->transaksiKeluarPpn($data);
+
+            return redirect()->back()->with($store['status'], $store['message']);
+        }
+
+        unset($data['ppn']);
 
         $store = $db->transaksiKeluar($data);
 
@@ -66,12 +80,14 @@ class FormTransaksiController extends Controller
         $inv = InvoiceTagihan::where('project_id', $store->project_id)->first();
         $nilai = $inv->nilai_tagihan;
         $profit = $inv->profit;
+        $ppnMasukan = $inv->ppn_masukan;
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
 
         $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                     "*Form Transaksi (Dana Keluar)*\n".
                     "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                    "Customer : ".$store->project->customer->singkatan."\n".
                     "Project : "."*".$store->project->nama."*\n".
                     "Uraian :  *".$store->uraian."*\n\n".
                     "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
@@ -86,6 +102,8 @@ class FormTransaksiController extends Controller
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                     "Total Kas Project : \n".
                     "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                    "Total PPn Masukan : \n".
+                    "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
                     "Nilai Project : \n".
                     "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
                     "Estimasi Profit Sementara : \n".

@@ -45,6 +45,7 @@
                     <th class="text-center align-middle">Nilai DPP</th>
                     <th class="text-center align-middle">PPn</th>
                     <th class="text-center align-middle">PPh</th>
+                    <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
                     <th class="text-center align-middle">PPn Masukan</th>
@@ -69,6 +70,9 @@
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_pph}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_total_tagihan}}
                     </td>
                     <td class="align-middle">
                         <div class="text-end">
@@ -239,6 +243,7 @@
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_ppn'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('total_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('ppn_masukan'), 0, ',', '.')}}</th>

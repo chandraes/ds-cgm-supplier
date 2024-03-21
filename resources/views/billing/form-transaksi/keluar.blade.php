@@ -34,12 +34,27 @@
                 @endif" name="uraian" id="uraian" required>
             </div>
             <div class="col-lg-6 col-md-12 mb-3">
+                <label for="ppn" class="form-label">Apakah Transaksi Menggunakan PPn??</label>
+                <select class="form-select" name="ppn" id="ppn" required onchange="ppnCheck()">
+                    <option value="x">-- Pilih Salah Satu --</option>
+                    <option value="1">
+                        Dengan PPn
+                    </option>
+                    <option value="0">Tanpa PPn</option>
+                </select>
+
+            </div>
+        </div>
+
+        <div class="row" id="divNominal" style="display: none;">
+
+            <div class="col-lg-6 col-md-12 mb-3">
                 <label for="nominal" class="form-label">Nominal</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('nominal'))
-                    is-invalid
-                @endif" name="nominal" id="nominal" required data-thousands=".">
+                        is-invalid
+                    @endif" name="nominal" id="nominal" required data-thousands="." onkeyup="hitungPpn()">
                 </div>
                 @if ($errors->has('nominal'))
                 <div class="invalid-feedback">
@@ -47,22 +62,14 @@
                 </div>
                 @endif
             </div>
-            <div class="col-lg-6 col-md-12 mb-3">
-                <label for="ppn" class="form-label">Apakah Transaksi Menggunakan PPn??</label>
-                <select class="form-select" name="ppn" id="ppn" required>
-                    <option value="">-- Pilih Salah Satu --</option>
-                    <option value="1">Dengan PPn</option>
-                    <option value="0">Tanpa PPn</option>
-                </select>
 
-            </div>
             <div class="col-lg-6 col-md-12 mb-3">
                 <label for="total" class="form-label">Total</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('total'))
-                    is-invalid
-                @endif" name="total" id="total" required data-thousands=".">
+                        is-invalid
+                    @endif" name="total" id="total" readonly>
                 </div>
                 @if ($errors->has('total'))
                 <div class="invalid-feedback">
@@ -70,7 +77,6 @@
                 </div>
                 @endif
             </div>
-
         </div>
         <hr>
         <h3>Transfer Ke</h3>
@@ -152,6 +158,36 @@
             document.getElementById('editForm').action = '/billing/form-transaksi/edit/' + id;
         }
 
+        function ppnCheck()
+        {
+
+            var ppn = $('#ppn').val();
+            console.log(ppn);
+            if (ppn == 1 || ppn == 0){
+                $('#divNominal').show();
+            } else {
+                $('#nominal').val('');
+                $('#total').val('');
+                $('#divNominal').hide();
+            }
+        }
+
+        function hitungPpn()
+        {
+            console.log('hitung');
+            var ppn = $('#ppn').val();
+            var nominal = parseFloat($('#nominal').val().replace(/\./g, ''));
+            if (ppn == 1){
+                var total = nominal * 1.1;
+                $('#total').val(total.toLocaleString('id-ID'));
+            } else {
+                $('#total').val('');
+                var total = nominal;
+                $('#total').val(total.toLocaleString('id-ID'));
+            }
+
+        }
+
         $(document).ready(function() {
                 var table = $('#tableTransaksi').DataTable({
                     "paging": false,
@@ -160,12 +196,16 @@
                     "scrollY": "550px",
                 });
 
+
                 // add no column to table
                 table.on( 'order.dt search.dt', function () {
                     table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
                         cell.innerHTML = i+1;
                     } );
                 } ).draw();
+
+
+
 
             });
 
