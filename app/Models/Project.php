@@ -86,11 +86,17 @@ class Project extends Model
         try {
             $store = Project::create($data);
 
+            $ppn = ($store->ppn == 1) ? $store->nilai * 0.11 : 0;
+            $pph = ($store->pph == 1) ? $store->nilai * 0.02 : 0;
+            $sisa_tagihan = $store->nilai + $ppn - $pph;
+
             $invoice = InvoiceTagihan::create([
                 'customer_id' => $data['customer_id'],
                 'project_id' => $store->id,
                 'nilai_tagihan' => $data['nilai'],
-                'sisa_tagihan' => $data['nilai'],
+                'nilai_ppn' => $ppn,
+                'nilai_pph' => $pph,
+                'sisa_tagihan' => $sisa_tagihan,
                 'dibayar' => 0,
             ]);
 
@@ -126,16 +132,24 @@ class Project extends Model
         $project = Project::find($id);
 
         if ($project) {
+            $project->update($data);
+
+            // Retrieve the updated project
+            $updatedProject = Project::find($id);
+
+            $ppn = ($updatedProject->ppn == 1) ? $updatedProject->nilai * 0.11 : 0;
+            $pph = ($updatedProject->pph == 1) ? $updatedProject->nilai * 0.02 : 0;
+            $sisa_tagihan = $updatedProject->nilai + $ppn - $pph;
+
             $invoice = InvoiceTagihan::where('project_id', $id)->first();
 
-            if ($invoice && $invoice->nilai_tagihan != $data['nilai']) {
-                $invoice->update([
-                    'nilai_tagihan' => $data['nilai'],
-                    'sisa_tagihan' => $data['nilai'] - $invoice->dibayar
-                ]);
-            }
+            $invoice->update([
+                'nilai_tagihan' => $data['nilai'],
+                'nilai_ppn' => $ppn,
+                'nilai_pph' => $pph,
+                'sisa_tagihan' => $sisa_tagihan - $invoice->dibayar
+            ]);
 
-            $project->update($data);
         }
 
         return $project;

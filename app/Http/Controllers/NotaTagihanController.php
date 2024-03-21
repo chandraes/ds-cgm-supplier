@@ -47,6 +47,7 @@ class NotaTagihanController extends Controller
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Form Tagihan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "Customer : ".$store->project->customer->singkatan."\n".
                     "Project : *".$store->project->nama."*\n".
                     "Uraian : *".$store->uraian."*\n\n".
                     "Nilai   :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
