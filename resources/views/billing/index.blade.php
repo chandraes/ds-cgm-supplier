@@ -68,9 +68,9 @@
             </a>
         </div>
         <div class="col-lg-3 text-center mt-5">
-            <a href="#" class="text-decoration-none">
+            <a href="{{route('nota-ppn-masukan')}}" class="text-decoration-none">
                 <img src="{{asset('images/form-ppn.svg')}}" alt="" width="100">
-                <h2>NOTA PPn MASUKAN</h2>
+                <h2>NOTA PPn MASUKAN @if($np != 0) <span class="text-danger">({{$np}})</span> @endif</h2>
             </a>
         </div>
         <div class="col-lg-3 text-center mt-5">

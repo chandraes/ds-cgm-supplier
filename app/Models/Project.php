@@ -13,11 +13,22 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
-    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai', 'kode'];
+    protected $appends = ['id_tanggal_mulai', 'id_jatuh_tempo', 'nf_nilai', 'kode', 'total_tagihan', 'nf_total_tagihan'];
 
     public function kas_project()
     {
         return $this->hasMany(KasProject::class);
+    }
+
+    public function getTotalTagihanAttribute()
+    {
+        $total = $this->nilai + ($this->nilai * 0.11) - ($this->nilai * 0.02);
+        return $total;
+    }
+
+    public function getNfTotalTagihanAttribute()
+    {
+        return number_format($this->total_tagihan, 0, ',', '.');
     }
 
     public function invoice_tagihan()

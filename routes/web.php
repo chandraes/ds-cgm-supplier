@@ -155,6 +155,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('/nota-tagihan/cutoff/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'cutoff'])->name('nota-tagihan.cutoff');
             Route::post('/nota-tagihan/pelunasan/{invoice}', [App\Http\Controllers\NotaTagihanController::class, 'pelunasan'])->name('nota-tagihan.pelunasan');
 
+            Route::prefix('nota-ppn-masukan')->group(function(){
+                Route::get('/', [App\Http\Controllers\BillingController::class, 'nota_ppn_masukan'])->name('nota-ppn-masukan');
+            });
+
             Route::prefix('invoice-tagihan')->group(function () {
                 Route::get('/', [App\Http\Controllers\BillingController::class, 'invoice_tagihan'])->name('invoice-tagihan');
             });

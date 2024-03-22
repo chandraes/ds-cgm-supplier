@@ -71,7 +71,7 @@
                 <th style="width: 80px"></th>
                 <th>Nilai Kontrak</th>
                 <th>:</th>
-                <th>Rp {{$project->nf_nilai}}</th>
+                <th>Rp {{$project->nf_total_tagihan}}</th>
             </tr>
             <tr>
                 <th>Nama Project</th>

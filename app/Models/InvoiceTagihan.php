@@ -103,7 +103,7 @@ class InvoiceTagihan extends Model
 
     public function getProfitAkhirAttribute()
     {
-        $profit = $this->nilai_tagihan - $this->kasProjects()->where('jenis', 0)->sum('nominal');
+        $profit = ($this->nilai_tagihan - $this->nilai_pph) - $this->kasProjects()->where('jenis', 0)->sum('nominal');
         return $profit;
     }
 

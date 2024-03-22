@@ -80,6 +80,10 @@ class NotaTagihanController extends Controller
             'estimasi_pembayaran' => 'required',
         ]);
 
+        if ($invoice->ppn_masukan > 0) {
+            return redirect()->back()->with('error', 'Tagihan ini memiliki PPn Masukan, silahkan lakukan transaksi PPn Masukan terlebih dahulu!');
+        }
+
         $store = InvoiceTagihan::cutoff($invoice, $data);
 
         return redirect()->back()->with($store['status'], $store['message']);
