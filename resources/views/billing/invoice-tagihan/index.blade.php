@@ -43,6 +43,9 @@
                     <th class="text-center align-middle">Customer</th>
                     <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">Estimasi Pembayaran</th>
+                    <th class="text-center align-middle">Nilai DPP</th>
+                    <th class="text-center align-middle">PPn</th>
+                    <th class="text-center align-middle">PPh</th>
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
@@ -63,7 +66,15 @@
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_tagihan}}
                     </td>
-
+                    <td class="text-end align-middle">
+                        {{$d->nf_nilai_ppn}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_nilai_pph}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_total_tagihan}}
+                    </td>
                     <td class="align-middle">
                         <div class="text-end">
                             <a href="#" data-bs-toggle="modal"
@@ -143,6 +154,9 @@
                 <tr>
                     <th class="text-center align-middle" colspan="4">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('nilai_ppn'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('total_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>

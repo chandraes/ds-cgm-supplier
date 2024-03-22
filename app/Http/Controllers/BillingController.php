@@ -44,4 +44,13 @@ class BillingController extends Controller
             'data' => $data,
         ]);
     }
+
+    public function claim_ppn(KasProject $kasProject)
+    {
+        $db = new KasProject();
+
+        $store = $db->claim_ppn($kasProject);
+
+        return redirect()->back()->with($store['status'], $store['message']);
+    }
 }

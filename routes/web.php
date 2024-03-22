@@ -157,6 +157,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::prefix('nota-ppn-masukan')->group(function(){
                 Route::get('/', [App\Http\Controllers\BillingController::class, 'nota_ppn_masukan'])->name('nota-ppn-masukan');
+                Route::post('/claim/{kasProject}', [App\Http\Controllers\BillingController::class, 'claim_ppn'])->name('nota-ppn-masukan.claim');
             });
 
             Route::prefix('invoice-tagihan')->group(function () {

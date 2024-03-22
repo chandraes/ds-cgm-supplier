@@ -251,6 +251,91 @@ class KasProject extends Model
 
     }
 
+    public function claim_ppn(KasProject $kasProject)
+    {
+        $db = new KasBesar();
+        $kp = new KasProject();
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
+
+        DB::beginTransaction();
+
+        try {
+
+           $store = $db->create([
+                'project_id' => $kasProject->project_id,
+                'nominal' => $kasProject->nominal,
+                'jenis' => 1,
+                'saldo' => $db->saldoTerakhir() + $kasProject->nominal,
+                'modal_investor_terakhir' => $db->modalInvestorTerakhir(),
+                'uraian' => "Klaim ". $kasProject->uraian,
+                'no_rek' => $rekening->no_rek,
+                'nama_rek' => $rekening->nama_rek,
+                'bank' => $rekening->bank,
+            ]);
+
+            $sisaTerakhir = $kp->sisaTerakhir($kasProject->project_id);
+
+            KasProject::create([
+                'project_id' => $kasProject->project_id,
+                'nominal' => $kasProject->nominal,
+                'jenis' => 1,
+                'sisa' => $sisaTerakhir + $kasProject->nominal,
+                'uraian' => "Klaim ". $kasProject->uraian,
+                'no_rek' => $rekening->no_rek,
+                'nama_rek' => $rekening->nama_rek,
+                'bank' => $rekening->bank,
+            ]);
+
+            $kasProject->update([
+                'ppn_masuk' => 0
+            ]);
+
+            DB::commit();
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+
+            $result = [
+                'status' => 'error',
+                'message' => 'Gagal mengklaim PPN Masukan'
+            ];
+
+            return $result;
+        }
+
+        $sisaTerakhir = $kp->sisaTerakhir($kasProject->project_id);
+
+        $group = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
+
+        $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                    "*Klaim PPn Masukan*\n".
+                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                    "Customer : ".$kasProject->project->customer->singkatan."\n".
+                    "Project : "."*".$kasProject->project->nama."*\n".
+                    "Uraian :  *Klaim ".$kasProject->uraian."*\n\n".
+                    "Nilai    :  *Rp. ".number_format($kasProject->nominal, 0, ',', '.')."*\n\n".
+                    "Ditransfer ke rek:\n\n".
+                    "Bank      : ".$rekening->bank."\n".
+                    "Nama    : ".$rekening->nama_rek."\n".
+                    "No. Rek : ".$rekening->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas Besar : \n".
+                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    "Total Modal Investor : \n".
+                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
+
+        $this->sendWa($group, $pesan);
+
+        $result = [
+            'status' => 'success',
+            'message' => 'PPN Masukan berhasil diklaim'
+        ];
+
+        return $result;
+
+    }
+
     private function sendWa($tujuan, $pesan)
     {
         $send = new StarSender($tujuan, $pesan);

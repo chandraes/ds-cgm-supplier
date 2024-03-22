@@ -56,7 +56,10 @@
                     <td class="text-start align-middle">{{$d->uraian}}</td>
                     <td class="text-end align-middle">{{$d->nf_nominal}}</td>
                     <td class="text-center align-middle">
-
+                        <form action="{{route('nota-ppn-masukan.claim', ['kasProject' => $d])}}" method="post" id="masukForm">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Claim</button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
@@ -99,8 +102,7 @@
         $('#masukForm').submit(function(e){
             e.preventDefault();
             Swal.fire({
-                title: 'Apakah data sudah benar?',
-                text: "Pastikan data sudah benar sebelum disimpan!",
+                title: 'Apakah anda Yakin?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
