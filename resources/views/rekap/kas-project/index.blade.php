@@ -136,13 +136,33 @@
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
                     <td class="text-center align-middle">
-                        <form action="#" method="post"
+                        <form action="{{route('rekap.kas-project.void', ['kasProject'=> $d])}}" method="post"
                             id="void-{{$d->id}}">
                             @csrf
                             <button type="submit" class="btn btn-danger">Void</button>
                         </form>
                     </td>
                 </tr>
+                <script>
+
+                    $('#void-{{$d->id}}').submit(function(e){
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'Apakah anda yakin?',
+                            text: "Uraian: Void {{$d->uraian}}",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#6c757d',
+                            confirmButtonText: 'Ya, simpan!'
+                            }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#spinner').show();
+                                this.submit();
+                            }
+                        })
+                    });
+                </script>
                 @endforeach
             </tbody>
             <tfoot>

@@ -49,7 +49,7 @@
         <div class="row" id="divNominal" style="display: none;">
 
             <div class="col-lg-6 col-md-12 mb-3">
-                <label for="nominal" class="form-label">Nominal</label>
+                <label for="nominal" class="form-label">Nominal DPP</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('nominal'))
@@ -64,7 +64,7 @@
             </div>
 
             <div class="col-lg-6 col-md-12 mb-3">
-                <label for="total" class="form-label">Total</label>
+                <label for="total" class="form-label">Total Dibayar</label>
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1">Rp</span>
                     <input type="text" class="form-control @if ($errors->has('total'))
@@ -178,7 +178,7 @@
             var ppn = $('#ppn').val();
             var nominal = parseFloat($('#nominal').val().replace(/\./g, ''));
             if (ppn == 1){
-                var total = nominal * 1.1;
+                var total = nominal + (nominal * 0.11);
                 $('#total').val(total.toLocaleString('id-ID'));
             } else {
                 $('#total').val('');

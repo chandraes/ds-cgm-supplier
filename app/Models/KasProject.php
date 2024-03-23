@@ -336,6 +336,50 @@ class KasProject extends Model
 
     }
 
+    public function void_transaksi(KasProject $kasProject)
+    {
+        $db = new KasBesar();
+        $kp = new KasProject();
+
+        DB::beginTransaction();
+
+        try {
+
+                $db->create([
+                    'project_id' => $kasProject->project_id,
+                    'nominal' => $kasProject->nominal,
+                    'jenis' => 1,
+                    'saldo' => $db->saldoTerakhir() + $kasProject->nominal,
+                    'modal_investor_terakhir' => $db->modalInvestorTerakhir(),
+                    'uraian' => "Void ". $kasProject->uraian,
+                    'no_rek' => $kasProject->no_rek,
+                    'nama_rek' => $kasProject->nama_rek,
+                    'bank' => $kasProject->bank,
+                ]);
+
+                $kasProject->update([
+                    'ppn_masuk' => 0,
+                    'void' => 1
+                ]);
+
+                DB::commit();
+
+            } catch (\Throwable $th) {
+                DB::rollback();
+
+                $result = [
+                    'status' => 'error',
+                    'message' => 'Gagal membatalkan transaksi'
+                ];
+
+                return $result;
+            }
+
+
+
+
+    }
+
     private function sendWa($tujuan, $pesan)
     {
         $send = new StarSender($tujuan, $pesan);

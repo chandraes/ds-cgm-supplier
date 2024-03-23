@@ -156,6 +156,14 @@ class RekapController extends Controller
         return $pdf->stream('Rekap Kas Project '.$stringBulanNow.' '.$tahun.'.pdf');
     }
 
+    public function void_kas_project(KasProject $kasProject)
+    {
+        $db = new KasProject();
+        $store = $db->void_transaksi($kasProject);
+
+        return redirect()->back()->with($store['status'], $store['message']);
+    }
+
     public function detail_tagihan(InvoiceTagihan $invoice)
     {
         $data = $invoice->transaksi;
