@@ -107,12 +107,14 @@
                 <th class="text-center align-middle">Sisa</th>
                 <th class="text-center align-middle">Transfer Ke Rekening</th>
                 <th class="text-center align-middle">Bank</th>
+                <th class="text-center align-middle">ACT</th>
             </tr>
             <tr class="table-warning">
                 <td colspan="3" class="text-center align-middle">Sisa
                     {{$stringBulan}} {{$tahunSebelumnya}}</td>
                 <td></td>
                 <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_sisa : ''}}</td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -133,6 +135,13 @@
                     <td class="text-end align-middle">{{$d->nf_sisa}}</td>
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
+                    <td class="text-center align-middle">
+                        <form action="#" method="post"
+                            id="void-{{$d->id}}">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Void</button>
+                        </form>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -151,7 +160,7 @@
                     </td>
                     <td></td>
                     <td></td>
-
+                    <td></td>
                 </tr>
             </tfoot>
         </table>
