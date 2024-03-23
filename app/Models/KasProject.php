@@ -307,6 +307,12 @@ class KasProject extends Model
 
         $group = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
 
+        $inv = InvoiceTagihan::where('project_id', $kasProject->project_id)->first();
+        $nilai = $inv->nilai_tagihan;
+        $profit = $inv->profit;
+        $ppnMasukan = $inv->ppn_masukan;
+        $sisa = $kp->sisaTerakhir($kasProject->project_id);
+
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Klaim PPn Masukan*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
@@ -323,6 +329,14 @@ class KasProject extends Model
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Total Kas Project : \n".
+                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                    "Total PPn Masukan : \n".
+                    "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
+                    "Nilai Project : \n".
+                    "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                    "Estimasi Profit Sementara : \n".
+                    "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         $this->sendWa($group, $pesan);

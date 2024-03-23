@@ -257,6 +257,7 @@ class InvoiceTagihan extends Model
             $pesanPelunasan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                 "*Form Pelunasan Project*\n".
                 "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                "Customer : *".$store->project->customer->singkatan."*\n".
                 "Project :  *".$store->project->nama."*\n\n".
                 "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
                 "Ditransfer ke rek:\n\n".
