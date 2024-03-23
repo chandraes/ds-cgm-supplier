@@ -315,7 +315,7 @@ class KasProject extends Model
 
         if ($inv->finished == 1) {
             $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                        "*Klaim PPn Masukan*\n".
+                        "*PPn Masukan Susulan*\n".
                         "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                         "Customer : ".$kasProject->project->customer->singkatan."\n".
                         "Project : "."*".$kasProject->project->nama."*\n".
