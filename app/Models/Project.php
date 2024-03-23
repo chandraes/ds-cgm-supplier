@@ -44,7 +44,7 @@ class Project extends Model
 
     public function getKodeAttribute()
     {
-        return 'P' . str_pad($this->kode, 2, '0', STR_PAD_LEFT);
+        return 'P' . str_pad($this->id, 2, '0', STR_PAD_LEFT);
     }
 
     public function getNfNilaiAttribute()
