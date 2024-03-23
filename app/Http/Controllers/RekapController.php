@@ -291,6 +291,40 @@ class RekapController extends Controller
         ]);
     }
 
+    public function rekap_invoice_detail_project(Request $request)
+    {
+        $project = Project::findOrFail($request->project);
+
+        $kas = new KasProject();
+
+        $bulan = $request->bulan ?? date('m');
+        $tahun = $request->tahun ?? date('Y');
+
+        $dataTahun = $kas->dataTahun();
+
+        $data = $kas->kasProject($project->id, $bulan, $tahun);
+
+        $bulanSebelumnya = $bulan - 1;
+        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
+        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
+        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
+        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+
+        $dataSebelumnya = $kas->kasProjectByMonth($project->id, $bulanSebelumnya, $tahunSebelumnya);
+
+        return view('rekap.invoice.detail', [
+            'data' => $data,
+            'project' => $project,
+            'dataTahun' => $dataTahun,
+            'dataSebelumnya' => $dataSebelumnya,
+            'stringBulan' => $stringBulan,
+            'tahun' => $tahun,
+            'tahunSebelumnya' => $tahunSebelumnya,
+            'bulan' => $bulan,
+            'stringBulanNow' => $stringBulanNow,
+        ]);
+    }
+
     public function rekap_investor()
     {
         $data = InvestorModal::with(['kasBesar' => function ($query) {

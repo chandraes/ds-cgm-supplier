@@ -53,7 +53,7 @@
                     <td class="text-center align-middle"></td>
                     <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
                     <td class="text-start align-middle">
-                        <a href="{{route('rekap.kas-project', ['project'=>$d->project->id])}}">
+                        <a href="{{route('rekap.invoice.detail-project', ['project'=>$d->project->id])}}">
                             {{$d->project->nama}}
                         </a>
                     </td>
