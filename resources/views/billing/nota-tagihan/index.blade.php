@@ -145,7 +145,7 @@
                     </td>
                     <td class="text-center align-middle">
                         <!-- Modal trigger button -->
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        <button type="button" class="btn {{$d->ppn_masukan>0 ? 'btn-danger': 'btn-success'}}" data-bs-toggle="modal"
                             data-bs-target="#cutoff-{{$d->id}}">
                             Cutoff
                         </button>
