@@ -333,15 +333,17 @@ class KasBesar extends Model
 
         foreach($investor as $i)
         {
-            $d[] = [
-                'uraian' => 'Withdraw '. $i->nama,
-                'nominal' => $data['nominal'] * $i->persentase / 100,
-                'jenis' => 0,
-                'investor_modal_id' => $i->id,
-                'no_rek' => $i->no_rek,
-                'bank' => $i->bank,
-                'nama_rek' => $i->nama_rek,
-            ];
+            if ($i->persentase > 0) {
+                $d[] = [
+                    'uraian' => 'Withdraw '. $i->nama,
+                    'nominal' => $data['nominal'] * $i->persentase / 100,
+                    'jenis' => 0,
+                    'investor_modal_id' => $i->id,
+                    'no_rek' => $i->no_rek,
+                    'bank' => $i->bank,
+                    'nama_rek' => $i->nama_rek,
+                ];
+            }
         }
 
         $total = array_sum(array_column($d, 'nominal'));
