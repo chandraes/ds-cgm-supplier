@@ -271,6 +271,8 @@ class InvoiceTagihan extends Model
                 "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                 "Total Kas Project : \n".
                 "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                "Sisa PPn Masukan : \n".
+                "Rp. ".number_format($invoice->ppn_masukan, 0, ',', '.')."\n\n".
                 "Profit Project : \n".
                 "Rp. ".number_format($invoice->profit, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
