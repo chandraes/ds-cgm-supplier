@@ -106,7 +106,7 @@
                         @endif
 
                     </td>
-                    <td class="text-center align-middle">{{$d->project ? $d->project->kode : ''}}</td>
+                    <td class="text-center align-middle">{{$d->project ? $d->project->kode_project : ''}}</td>
                     <td class="text-center align-middle">{{$d->kode_deposit}}</td>
                     <td class="text-center align-middle">{{$d->kode_kas_kecil}}</td>
                     <td class="text-end align-middle">{{$d->jenis === 1 ?
