@@ -62,37 +62,50 @@
     </form>
 </div>
 <div class="container-fluid table-responsive ml-3">
-    <div style="display: flex; justify-content: flex-end;">
-        <table>
-            <tr>
-                <th>Customer</th>
-                <th>:</th>
-                <th>{{$project->customer->nama}}</th>
-                <th style="width: 80px"></th>
-                <th>Nilai Kontrak</th>
-                <th>:</th>
-                <th>Rp {{$project->nf_total_tagihan}}</th>
-            </tr>
-            <tr>
-                <th>Nama Project</th>
-                <th style="width: 1rem">:</th>
-                <th>{{$project->nama}}</th>
-                <th style="width: 80px"></th>
-                <th>Tanggal PO</th>
-                <th>:</th>
-                <th>{{$project->id_tanggal_mulai}}</th>
-            </tr>
-            <tr>
-                <th>Nomor Kontrak</th>
-                <th>:</th>
-                <th>{{$project->nomor_kontrak}}</th>
-                <th style="width: 80px"></th>
-                <th>Tanggal Jatuh Tempo</th>
-                <th style="width: 20px">:</th>
-                <th>{{$project->id_jatuh_tempo}}</th>
-            </tr>
+    <div class="row mx-5">
+        <div class="col-md-6 d-flex justify-content-start">
+            <table>
+                <tr>
+                    <th>Customer</th>
+                    <th>:</th>
+                    <th>{{$project->customer->nama}}</th>
+                </tr>
+                <tr>
+                    <th>Nama Project</th>
+                    <th style="width: 1rem">:</th>
+                    <th>{{$project->nama}}</th>
+                </tr>
+                <tr>
+                    <th>Nomor Kontrak</th>
+                    <th>:</th>
+                    <th>{{$project->nomor_kontrak}}</th>
+                </tr>
 
-        </table>
+            </table>
+        </div>
+           <div class="col-md-6 d-flex justify-content-end">
+            <table>
+                <tr>
+                    <th>Nilai Kontrak</th>
+                    <th>:</th>
+                    <th>Rp {{$project->nf_total_tagihan}}</th>
+                </tr>
+                <tr>
+                    <th>Tanggal PO</th>
+                    <th>:</th>
+                    <th>{{$project->id_tanggal_mulai}}</th>
+                </tr>
+                <tr>
+                    <th>Tanggal Jatuh Tempo</th>
+                    <th style="width: 20px">:</th>
+                    <th>{{$project->id_jatuh_tempo}}</th>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+
     </div>
 
     <div class="row mt-3">
