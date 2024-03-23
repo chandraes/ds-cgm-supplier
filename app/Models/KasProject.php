@@ -313,31 +313,56 @@ class KasProject extends Model
         $ppnMasukan = $inv->ppn_masukan;
         $sisa = $kp->sisaTerakhir($kasProject->project_id);
 
-        $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Klaim PPn Masukan*\n".
-                    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                    "Customer : ".$kasProject->project->customer->singkatan."\n".
-                    "Project : "."*".$kasProject->project->nama."*\n".
-                    "Uraian :  *Klaim ".$kasProject->uraian."*\n\n".
-                    "Nilai    :  *Rp. ".number_format($kasProject->nominal, 0, ',', '.')."*\n\n".
-                    "Ditransfer ke rek:\n\n".
-                    "Bank      : ".$rekening->bank."\n".
-                    "Nama    : ".$rekening->nama_rek."\n".
-                    "No. Rek : ".$rekening->no_rek."\n\n".
-                    "==========================\n".
-                    "Sisa Saldo Kas Besar : \n".
-                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
-                    "Total Modal Investor : \n".
-                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                    "Total Kas Project : \n".
-                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
-                    "Total PPn Masukan : \n".
-                    "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
-                    "Nilai Project : \n".
-                    "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
-                    "Estimasi Profit Sementara : \n".
-                    "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
-                    "Terima kasih 🙏🙏🙏\n";
+        if ($inv->finished == 1) {
+            $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                        "*Klaim PPn Masukan*\n".
+                        "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                        "Customer : ".$kasProject->project->customer->singkatan."\n".
+                        "Project : "."*".$kasProject->project->nama."*\n".
+                        "Uraian :  *Klaim ".$kasProject->uraian."*\n\n".
+                        "Nilai    :  *Rp. ".number_format($kasProject->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$rekening->bank."\n".
+                        "Nama    : ".$rekening->nama_rek."\n".
+                        "No. Rek : ".$rekening->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Total PPn Masukan : \n".
+                        "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+        } else {
+            $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                        "*Klaim PPn Masukan*\n".
+                        "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                        "Customer : ".$kasProject->project->customer->singkatan."\n".
+                        "Project : "."*".$kasProject->project->nama."*\n".
+                        "Uraian :  *Klaim ".$kasProject->uraian."*\n\n".
+                        "Nilai    :  *Rp. ".number_format($kasProject->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$rekening->bank."\n".
+                        "Nama    : ".$rekening->nama_rek."\n".
+                        "No. Rek : ".$rekening->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Total Kas Project : \n".
+                        "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                        "Total PPn Masukan : \n".
+                        "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
+                        "Nilai Project : \n".
+                        "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                        "Estimasi Profit Sementara : \n".
+                        "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+        }
+
 
         $this->sendWa($group, $pesan);
 
