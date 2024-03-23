@@ -102,31 +102,55 @@
                         <!-- Modal trigger button -->
                        <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="pelunasan-{{$d->id}}">
                             @csrf
-                            <button type="submit" class="btn btn-primary">Pelunasan</button>
+                            <button type="submit" @if ($d->ppn_masukan != 0)
+                                class="btn btn-danger"
+                                @else
+                                class="btn btn-primary"
+                            @endif >Pelunasan</button>
                     </form>
 
                     </td>
                 </tr>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 <script>
+                    if ('{{$d->ppn_masukan}}' != 0) {
+                        $('#pelunasan-{{$d->id}}').submit(function(e){
+                            e.preventDefault();
+                            Swal.fire({
+                                title: 'Apakah anda yakin? \n Invoice ini masih memiliki PPN Masukan Sebesar Rp. {{$d->nf_ppn_masukan}}',
+                                text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Ya, simpan!'
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#spinner').show();
+                                    this.submit();
+                                }
+                            })
+                        });
+                    } else {
+                        $('#pelunasan-{{$d->id}}').submit(function(e){
+                            e.preventDefault();
+                            Swal.fire({
+                                title: 'Apakah anda yakin?',
+                                text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#6c757d',
+                                confirmButtonText: 'Ya, simpan!'
+                                }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#spinner').show();
+                                    this.submit();
+                                }
+                            })
+                        });
+                    }
 
-                    $('#pelunasan-{{$d->id}}').submit(function(e){
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'Apakah anda yakin?',
-                            text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Ya, simpan!'
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                $('#spinner').show();
-                                this.submit();
-                            }
-                        })
-                    });
 
                     var cicilan{{$d->id}} = new Cleave('#cicilanInput-{{$d->id}}', {
                         numeral: true,
