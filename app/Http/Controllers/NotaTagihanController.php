@@ -6,6 +6,7 @@ use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\GroupWa;
 use App\Models\Investor;
+use App\Models\KasProject;
 use App\Models\PesanWa;
 use App\Services\StarSender;
 use Illuminate\Http\Request;
@@ -32,10 +33,18 @@ class NotaTagihanController extends Controller
         ]);
 
         $db = new InvoiceTagihan();
+        $kp = new KasProject();
 
         $store = $db->cicilan($invoice->id, $data);
 
         $group = GroupWa::where('untuk', 'kas-besar')->first();
+
+        $inv = InvoiceTagihan::where('project_id', $store->project_id)->first();
+
+        $nilai = $inv->nilai_tagihan;
+        $profit = $inv->profit;
+        $sisa = $kp->sisaTerakhir($store->project_id);
+        $ppnMasukan = $inv->ppn_masukan;
 
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                     "*Form Tagihan*\n".
@@ -53,6 +62,14 @@ class NotaTagihanController extends Controller
                     "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Total Modal Investor : \n".
                     "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Total Kas Project : \n".
+                    "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                    "Total PPn Masukan : \n".
+                    "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
+                    "Nilai Project : \n".
+                    "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                    "Estimasi Profit Sementara : \n".
+                    "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         //Tambahkan sisa tagihan
