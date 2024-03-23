@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
-            <h1><u>NOTA TAGIHAN</u></h1>
+            <h1><u>NOTA PPn Masukan</u></h1>
         </div>
     </div>
     {{-- if has any error --}}
