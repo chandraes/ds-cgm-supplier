@@ -577,16 +577,18 @@ class InvoiceTagihan extends Model
             if ($i->nama == 'investor') {
                 $totalProfitInvestor = $nominal;
                 foreach ($investorModal as $im) {
-                    $data[] = [
-                        'no_rek' => $im->no_rek,
-                        'bank' => $im->bank,
-                        'nama_rek' => $im->nama_rek,
-                        'jenis' => 0,
-                        'nominal' => $nominal * $im->persentase / 100,
-                        'uraian' => 'Bagi Deviden '.$im->nama,
-                        'project_id' => $invoice->project_id,
-                        'investor_modal_id' => $im->id
-                    ];
+                    if ($im->persentase > 0) {
+                        $data[] = [
+                            'no_rek' => $im->no_rek,
+                            'bank' => $im->bank,
+                            'nama_rek' => $im->nama_rek,
+                            'jenis' => 0,
+                            'nominal' => $nominal * $im->persentase / 100,
+                            'uraian' => 'Bagi Deviden '.$im->nama,
+                            'project_id' => $invoice->project_id,
+                            'investor_modal_id' => $im->id
+                        ];
+                    }
                 }
             }
         }
@@ -677,6 +679,71 @@ class InvoiceTagihan extends Model
         ]);
 
         return $store;
+    }
+
+    public function invoice_ppn_bayar(InvoiceTagihan $invoice)
+    {
+        $db = new KasBesar();
+
+        DB::beginTransaction();
+
+        try {
+            $store = $db->create([
+                'project_id' => $invoice->project_id,
+                'nominal' => $invoice->nilai_ppn,
+                'jenis' => 0,
+                'uraian' => 'Pembayaran PPN '.$invoice->project->nama,
+                'no_rek' => '-',
+                'nama_rek' => 'Negara',
+                'bank' => 'Negara',
+                'saldo' => $db->saldoTerakhir() - $invoice->nilai_ppn,
+                'modal_investor_terakhir' => $db->modalInvestorTerakhir()
+            ]);
+
+            $invoice->update([
+                'ppn' => 1
+            ]);
+
+            DB::commit();
+
+            $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                        "*Form Pembayaran PPN*\n".
+                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                        "Customer :  *".$store->project->customer->nama."*\n".
+                        "Project :  *".$store->project->nama."*\n\n".
+                        "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$store->bank."\n".
+                        "Nama     : ".$store->nama_rek."\n".
+                        "No. Rek  : ".$store->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+            $result = [
+                'status' => 'success',
+                'message' => 'Pembayaran PPN berhasil diproses!'
+            ];
+
+
+        } catch (\Throwable $th) {
+
+            DB::rollBack();
+
+            $result = [
+                'status' => 'error',
+                'message' => $th->getMessage()
+            ];
+
+        }
+
+        $this->sendWa($pesan);
+
+        return $result;
+
     }
 
 }

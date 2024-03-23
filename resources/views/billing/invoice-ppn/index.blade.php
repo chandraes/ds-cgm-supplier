@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid">
+<div class="container">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
             <h1><u>INVOICE PPN</u></h1>
@@ -43,7 +43,6 @@
                     <th class="text-center align-middle">Customer</th>
                     <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">PPn</th>
-                    <th class="text-center align-middle">PPh</th>
                     <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>
@@ -56,14 +55,12 @@
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_ppn}}
                     </td>
-                    <td class="text-end align-middle">
-                        {{$d->nf_nilai_pph}}
-                    </td>
+
                     <td class="text-center align-middle">
                         <!-- Modal trigger button -->
-                       <form action="{{route('nota-tagihan.pelunasan', ['invoice' => $d->id])}}" method="post" id="pelunasan-{{$d->id}}">
+                       <form action="{{route('invoice-ppn.bayar', ['invoice' => $d])}}" method="post" id="pelunasan-{{$d->id}}">
                             @csrf
-                            <button type="submit" class="btn btn-primary">Pelunasan</button>
+                            <button type="submit" class="btn btn-primary">Bayar</button>
                     </form>
 
                     </td>
@@ -75,31 +72,7 @@
                         e.preventDefault();
                         Swal.fire({
                             title: 'Apakah anda yakin?',
-                            text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Ya, simpan!'
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                $('#spinner').show();
-                                this.submit();
-                            }
-                        })
-                    });
-
-                    var cicilan{{$d->id}} = new Cleave('#cicilanInput-{{$d->id}}', {
-                        numeral: true,
-                        numeralThousandsGroupStyle: 'thousand',
-                        numeralDecimalMark: ',',
-                        delimiter: '.'
-                    });
-
-                    $('#cicilForm-{{$d->id}}').submit(function(e){
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'Apakah anda yakin?',
+                            text: "Total Tagihan Rp. {{$d->nf_nilai_ppn}}",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
@@ -119,7 +92,6 @@
                 <tr>
                     <th class="text-center align-middle" colspan="3">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_ppn'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
                     <th></th>
                 </tr>
             </tfoot>

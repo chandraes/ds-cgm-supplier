@@ -166,6 +166,7 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::prefix('invoice-ppn')->group(function() {
                 Route::get('/', [App\Http\Controllers\BillingController::class, 'invoice_ppn'])->name('invoice-ppn');
+                Route::post('/bayar/{invoice}', [App\Http\Controllers\BillingController::class, 'invoice_ppn_bayar'])->name('invoice-ppn.bayar');
             });
 
         });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\InvoiceTagihan;
+use App\Models\KasBesar;
 use App\Models\KasProject;
 use Illuminate\Http\Request;
 
@@ -11,9 +12,8 @@ class BillingController extends Controller
 {
     public function index()
     {
-        $invoiceTagihanQuery = InvoiceTagihan::where('finished', 0);
-        $nt = $invoiceTagihanQuery->where('cutoff', 0)->count();
-        $it = $invoiceTagihanQuery->where('cutoff', 1)->count();
+        $nt = InvoiceTagihan::where('cutoff', 0)->where('finished', 0)->count();
+        $it = InvoiceTagihan::where('cutoff', 1)->where('finished', 0)->count();
 
         $ip = InvoiceTagihan::where('cutoff', 1)
                             ->where('ppn', 0)
@@ -74,5 +74,21 @@ class BillingController extends Controller
         return view('billing.invoice-ppn.index', [
             'data' => $data,
         ]);
+    }
+
+    public function invoice_ppn_bayar(InvoiceTagihan $invoice)
+    {
+        $db = new InvoiceTagihan();
+        $kb = new KasBesar();
+
+        $saldo = $kb->saldoTerakhir();
+
+        if ($saldo < $invoice->nilai_ppn) {
+            return redirect()->back()->with('error', 'Saldo kas besar tidak mencukupi');
+        }
+
+        $store = $db->invoice_ppn_bayar($invoice);
+
+        return redirect()->back()->with($store['status'], $store['message']);
     }
 }
