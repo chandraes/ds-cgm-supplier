@@ -236,6 +236,7 @@ class KasProject extends Model
                     'no_rek' => $data['no_rek'],
                     'nama_rek' => $data['nama_rek'],
                     'bank' => $data['bank'],
+                    'void' => 1,
                 ]);
 
         $db = new KasBesar();
@@ -287,7 +288,7 @@ class KasProject extends Model
             ]);
 
             $kasProject->update([
-                'ppn_masuk' => 0
+                'ppn_masuk' => 0,
             ]);
 
             DB::commit();
@@ -379,12 +380,14 @@ class KasProject extends Model
     {
         $db = new KasBesar();
         $kp = new KasProject();
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
 
         DB::beginTransaction();
 
         try {
 
-                $db->create([
+
+                $store = $db->create([
                     'project_id' => $kasProject->project_id,
                     'nominal' => $kasProject->nominal,
                     'jenis' => 1,
@@ -396,10 +399,26 @@ class KasProject extends Model
                     'bank' => $kasProject->bank,
                 ]);
 
+                $kp->create([
+                    'project_id' => $kasProject->project_id,
+                    'nominal' => $kasProject->nominal,
+                    'jenis' => 1,
+                    'sisa' => $kp->sisaTerakhir($kasProject->project_id) + $kasProject->nominal,
+                    'uraian' => "Void ". $kasProject->uraian,
+                    'no_rek' => $rekening->no_rek,
+                    'nama_rek' => $rekening->nama_rek,
+                    'bank' => $rekening->bank,
+                    'void' => 1
+                ]);
+
+
                 $kasProject->update([
                     'ppn_masuk' => 0,
                     'void' => 1
                 ]);
+
+
+
 
                 DB::commit();
 
@@ -414,8 +433,48 @@ class KasProject extends Model
                 return $result;
             }
 
+            $group = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
+            $inv = InvoiceTagihan::where('project_id', $kasProject->project_id)->first();
+            $nilai = $inv->nilai_tagihan;
+            $profit = $inv->profit;
+            $ppnMasukan = $inv->ppn_masukan;
+            $sisa = $kp->sisaTerakhir($kasProject->project_id);
 
 
+            $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                        "*Void Transaksi*\n".
+                        "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
+                        "Customer : ".$kasProject->project->customer->singkatan."\n".
+                        "Project : "."*".$kasProject->project->nama."*\n".
+                        "Uraian :  *Void ".$kasProject->uraian."*\n\n".
+                        "Nilai    :  *Rp. ".number_format($kasProject->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$kasProject->bank."\n".
+                        "Nama    : ".$kasProject->nama_rek."\n".
+                        "No. Rek : ".$kasProject->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Total Kas Project : \n".
+                        "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                        "Total PPn Masukan : \n".
+                        "Rp. ".number_format($ppnMasukan, 0, ',', '.')."\n\n".
+                        "Nilai Project : \n".
+                        "Rp. ".number_format($nilai, 0, ',', '.')."\n\n".
+                        "Estimasi Profit Sementara : \n".
+                        "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+            $this->sendWa($group, $pesan);
+
+            $result = [
+                'status' => 'success',
+                'message' => 'Transaksi berhasil dibatalkan'
+            ];
+
+            return $result;
 
     }
 

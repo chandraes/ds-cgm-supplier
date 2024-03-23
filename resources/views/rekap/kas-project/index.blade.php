@@ -149,11 +149,13 @@
                     <td class="text-center align-middle">{{$d->nama_rek}}</td>
                     <td class="text-center align-middle">{{$d->bank}}</td>
                     <td class="text-center align-middle">
+                        @if ($d->void == 0)
                         <form action="{{route('rekap.kas-project.void', ['kasProject'=> $d])}}" method="post"
                             id="void-{{$d->id}}">
                             @csrf
                             <button type="submit" class="btn btn-danger">Void</button>
                         </form>
+                        @endif
                     </td>
                 </tr>
                 <script>
