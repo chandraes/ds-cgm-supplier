@@ -49,6 +49,7 @@
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
+                    <th class="text-center align-middle">PPn Masukan</th>
                     <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
                     <th class="text-center align-middle">ACT</th>
@@ -86,6 +87,9 @@
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_sisa_tagihan}}
+                    </td>
+                    <td class="text-end align-middle">
+                        {{$d->nf_ppn_masukan}}
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_pengeluaran}}
@@ -159,6 +163,7 @@
                     <th class="text-end align-middle">{{number_format($data->sum('total_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('ppn_masukan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('profit'), 0, ',', '.')}}</th>
                     <th></th>
