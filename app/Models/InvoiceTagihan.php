@@ -638,16 +638,18 @@ class InvoiceTagihan extends Model
             if ($i->nama == 'investor') {
                 $totalProfitInvestor = $nominal;
                 foreach ($investorModal as $im) {
-                    $data[] = [
-                        'no_rek' => $im->no_rek,
-                        'bank' => $im->bank,
-                        'nama_rek' => $im->nama_rek,
-                        'jenis' => 1,
-                        'nominal' => $nominal * $im->persentase / 100,
-                        'uraian' => 'Bagi Rugi '.$im->nama,
-                        'project_id' => $invoice->project_id,
-                        'investor_modal_id' => $im->id
-                    ];
+                    if ($im->persentase > 0) {
+                        $data[] = [
+                            'no_rek' => $im->no_rek,
+                            'bank' => $im->bank,
+                            'nama_rek' => $im->nama_rek,
+                            'jenis' => 1,
+                            'nominal' => $nominal * $im->persentase / 100,
+                            'uraian' => 'Bagi Rugi '.$im->nama,
+                            'project_id' => $invoice->project_id,
+                            'investor_modal_id' => $im->id
+                        ];
+                    }
                 }
             }
         }
