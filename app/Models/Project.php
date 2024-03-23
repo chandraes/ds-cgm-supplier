@@ -22,7 +22,7 @@ class Project extends Model
 
     public function getTotalTagihanAttribute()
     {
-        $total = $this->nilai + ($this->nilai * 0.11) - ($this->nilai * 0.02);
+        $total = $this->nilai + ($this->nilai_ppn) - ($this->nilai_pph);
         return $total;
     }
 
