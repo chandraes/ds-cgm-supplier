@@ -164,6 +164,10 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('/', [App\Http\Controllers\BillingController::class, 'invoice_tagihan'])->name('invoice-tagihan');
             });
 
+            Route::prefix('invoice-ppn')->group(function() {
+                Route::get('/', [App\Http\Controllers\BillingController::class, 'invoice_ppn'])->name('invoice-ppn');
+            });
+
         });
 
     });

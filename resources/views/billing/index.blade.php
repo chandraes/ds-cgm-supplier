@@ -80,6 +80,12 @@
             </a>
         </div>
         <div class="col-lg-3 text-center mt-5">
+            <a href="{{route('invoice-ppn')}}" class="text-decoration-none">
+                <img src="{{asset('images/taxes.svg')}}" alt="" width="100">
+                <h2>INVOICE PPN @if($ip != 0) <span class="text-danger">({{$ip}})</span> @endif</h2>
+            </a>
+        </div>
+        <div class="col-lg-3 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="100">
                 <h2>DASHBOARD</h2>
