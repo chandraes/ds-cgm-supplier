@@ -423,4 +423,145 @@ class KasBesar extends Model
         return $result;
 
     }
+
+    public function ppn_masuk_susulan($nominal)
+    {
+
+        $nominal = str_replace('.', '', $nominal);
+
+
+        $persenInvestor = Investor::where('nama', 'investor')->first()->persentase;
+        $persenPengelola = Investor::where('nama', 'pengelola')->first()->persentase;
+        $rekeningPengelola = Rekening::where('untuk', 'pengelola')->first();
+        $investor = InvestorModal::where('persentase', '>', 0)->get();
+
+        $saldoTerakhir = $this->saldoTerakhir();
+        $nominalPengelola = $nominal * ($persenPengelola / 100);
+        $nominalInvestor = $nominal * ($persenInvestor / 100);
+
+        $pesan = [];
+        $pembagian = [];
+
+        if ($saldoTerakhir < $nominal) {
+            return [
+                'status' => 'error',
+                'message' => 'Saldo kas besar tidak mencukupi!! Sisa Saldo : Rp. '.number_format($saldoTerakhir, 0, ',', '.'),
+            ];
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $store = $this->create([
+                        'uraian' => 'PPN Masukan Susulan Pengelola',
+                        'nominal' => $nominalPengelola,
+                        'saldo' => $this->saldoTerakhir() - $nominalPengelola,
+                        'modal_investor_terakhir' => $this->modalInvestorTerakhir(),
+                        'jenis' => 0,
+                        'no_rek' => $rekeningPengelola->no_rek,
+                        'bank' => $rekeningPengelola->bank,
+                        'nama_rek' => $rekeningPengelola->nama_rek,
+                    ]);
+
+            $p1 =   "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                    "*PPN Masukan Susulan*\n".
+                    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                    "Uraian : ".$store['uraian']."\n\n".
+                    "Nilai :  *Rp. ".number_format($store['nominal'], 0, ',', '.')."*\n\n".
+                    "Ditransfer ke rek:\n\n".
+                    "Bank      : ".$rekeningPengelola->bank."\n".
+                    "Nama    : ".$rekeningPengelola->nama_rek."\n".
+                    "No. Rek : ".$rekeningPengelola->no_rek."\n\n".
+                    "==========================\n".
+                    "Sisa Saldo Kas Besar : \n".
+                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    "Total Modal Investor : \n".
+                    "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                    "Terima kasih 🙏🙏🙏\n";
+
+            array_push($pesan, $p1);
+
+            foreach($investor as $i)
+            {
+                $pembagian[] = [
+                    'uraian' => 'PPn Masukan Susulan '. $i->nama,
+                    'nominal' => $nominalInvestor * $i->persentase / 100,
+                    'jenis' => 0,
+                    'investor_modal_id' => $i->id,
+                    'no_rek' => $i->no_rek,
+                    'bank' => $i->bank,
+                    'nama_rek' => $i->nama_rek,
+                ];
+            }
+
+            $total = array_sum(array_column($pembagian, 'nominal'));
+            if ($total > $nominalInvestor) {
+                $pembagian[0]['nominal'] -= $total - $nominalInvestor;
+            } elseif ($total < $nominalInvestor) {
+                $pembagian[0]['nominal'] += $nominalInvestor - $total;
+            }
+
+            foreach($pembagian as $p)
+            {
+                $store = $this->create([
+                    'uraian' => $p['uraian'],
+                    'nominal' => $p['nominal'],
+                    'jenis' => $p['jenis'],
+                    'investor_modal_id' => $p['investor_modal_id'],
+                    'no_rek' => $p['no_rek'],
+                    'bank' => $p['bank'],
+                    'nama_rek' => $p['nama_rek'],
+                    'saldo' => $this->saldoTerakhir() - $p['nominal'],
+                    'modal_investor_terakhir' => $this->modalInvestorTerakhir(),
+                ]);
+
+                $p2 =   "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                        "*PPN Masukan Susulan*\n".
+                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                        "Uraian : ".$store->uraian."\n".
+                        "Nilai :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$store->bank."\n".
+                        "Nama    : ".$store->nama_rek."\n".
+                        "No. Rek : ".$store->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+                array_push($pesan, $p2);
+
+            }
+
+            DB::commit();
+
+
+
+        } catch (\Throwable $th) {
+
+            DB::rollback();
+
+            return [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
+        }
+
+        $tujuan = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
+
+        foreach($pesan as $p)
+        {
+            $this->sendWa($tujuan, $p);
+        }
+
+        return [
+            'status' => 'success',
+            'message' => 'Berhasil menambahkan data',
+        ];
+
+
+    }
 }

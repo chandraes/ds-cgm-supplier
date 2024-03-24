@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Investor;
+use App\Models\InvestorModal;
 use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\KasProject;
@@ -90,5 +92,35 @@ class BillingController extends Controller
         $store = $db->invoice_ppn_bayar($invoice);
 
         return redirect()->back()->with($store['status'], $store['message']);
+    }
+
+    public function ppn_masuk_susulan()
+    {
+        $data = Investor::all();
+        $im = InvestorModal::where('persentase', '>', 0)->get();
+
+        $pp = Investor::where('nama', 'pengelola')->first()->persentase;
+        $pi = Investor::where('nama', 'investor')->first()->persentase;
+
+        return view('billing.ppn-susulan.index', [
+            'data' => $data,
+            'im' => $im,
+            'pp' => $pp,
+            'pi' => $pi,
+        ]);
+    }
+
+    public function ppn_masuk_susulan_store(Request $request)
+    {
+        $data = $request->validate([
+                    'nominal' => 'required',
+                ]);
+
+        $db = new KasBesar();
+
+        $store = $db->ppn_masuk_susulan($data['nominal']);
+
+        return redirect()->back()->with($store['status'], $store['message']);
+
     }
 }

@@ -171,6 +171,11 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('/bayar/{invoice}', [App\Http\Controllers\BillingController::class, 'invoice_ppn_bayar'])->name('invoice-ppn.bayar');
             });
 
+            Route::prefix('ppn-susulan')->group(function() {
+                Route::get('/', [App\Http\Controllers\BillingController::class, 'ppn_masuk_susulan'])->name('ppn-susulan');
+                Route::post('/store', [App\Http\Controllers\BillingController::class, 'ppn_masuk_susulan_store'])->name('ppn-susulan.store');
+            });
+
         });
 
     });
