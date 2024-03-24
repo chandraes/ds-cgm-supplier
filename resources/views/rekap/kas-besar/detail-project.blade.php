@@ -43,7 +43,7 @@
                         <label for="nilai_kontrak" class="form-label">Nilai DPP</label>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Rp</span>
-                            <input type="text" class="form-control" value="{{$d->project->nf_nilai}}">
+                            <input type="text" class="form-control" value="{{$d->project->nf_nilai}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -51,7 +51,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Rp</span>
                             <input type="text" class="form-control"
-                                value="{{$d->project->invoice_tagihan->nf_nilai_ppn}}">
+                                value="{{$d->project->invoice_tagihan->nf_nilai_ppn}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -59,7 +59,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Rp</span>
                             <input type="text" class="form-control"
-                                value="{{$d->project->invoice_tagihan->nf_nilai_pph}}">
+                                value="{{$d->project->invoice_tagihan->nf_nilai_pph}}" readonly>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -67,7 +67,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon1">Rp</span>
                             <input type="text" class="form-control"
-                                value="{{$d->project->invoice_tagihan->nf_total_tagihan}}">
+                                value="{{$d->project->invoice_tagihan->nf_total_tagihan}}" readonly>
                         </div>
                     </div>
                 </div>
