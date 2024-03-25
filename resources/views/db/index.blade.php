@@ -17,7 +17,7 @@
         <div class="col-lg-4 my-4 text-center">
             <a href="{{route('db.investor')}}" class="text-decoration-none">
                 <img src="{{asset('images/investor.svg')}}" alt="" width="100">
-                <h2>PERSENTASE DEVIDEN</h2>
+                <h2>PERSENTASE DIVIDEN</h2>
             </a>
         </div>
         <div class="col-lg-4 my-4 text-center">
