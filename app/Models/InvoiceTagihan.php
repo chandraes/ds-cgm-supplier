@@ -75,7 +75,7 @@ class InvoiceTagihan extends Model
 
     public function getProfitAttribute()
     {
-        $profit = $this->nilai_tagihan + $this->pengeluaran;
+        $profit = ($this->nilai_tagihan-$this->nilai_pph) + $this->pengeluaran;
         return $profit;
     }
 
