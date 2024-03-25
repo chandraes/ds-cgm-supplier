@@ -426,7 +426,7 @@ class RekapController extends Controller
                      // Add "-" sign when jenis is 0
                 }
 
-                $d->project_nama = $d->project->nama;
+                $d->project_nama = $d->project->nama ?? '';
 
                 return $d;
             });
