@@ -47,7 +47,7 @@
             @foreach ($data as $d)
             <tr>
                 <td class="text-center align-middle">{{$loop->iteration}}</td>
-                <td class="text-center align-middle">{{$d->kode}}</td>
+                <td class="text-center align-middle">{{$d->kode_project}}</td>
                 <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
                 <td class="text-center align-middle">{{$d->nama}}</td>
                 <td class="text-center align-middle">{{$d->nomor_kontrak}}</td>
