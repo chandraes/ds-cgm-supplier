@@ -178,7 +178,7 @@
             var ppn = $('#ppn').val();
             var nominal = parseFloat($('#nominal').val().replace(/\./g, ''));
             if (ppn == 1){
-                var total = nominal + (nominal * 0.11);
+                var total = Math.round(nominal + (nominal * 0.11));
                 $('#total').val(total.toLocaleString('id-ID'));
             } else {
                 $('#total').val('');
