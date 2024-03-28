@@ -254,6 +254,9 @@ class InvoiceTagihan extends Model
 
             $store = $this->masukKasBesar($data);
 
+            $tst = $this->sumSisaTagihan($invoice->customer_id);
+            $tsi = $this->sumSisaInvoice($invoice->customer_id);
+
             $pesanPelunasan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                 "*PEMBAYARAN INVOICE*\n".
                 "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
@@ -265,6 +268,8 @@ class InvoiceTagihan extends Model
                 "Nama    : ".$store->nama_rek."\n".
                 "No. Rek : ".$store->no_rek."\n\n".
                 "==========================\n".
+                "Customer : ".$store->project->customer->singkatan."\n".
+                "Tagihan : Rp. ".number_format($tst, 0, ',', '.')."\n\n".
                 "Sisa Saldo Kas Besar : \n".
                 "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
@@ -275,6 +280,8 @@ class InvoiceTagihan extends Model
                 "Rp. ".number_format($invoice->ppn_masukan, 0, ',', '.')."\n\n".
                 "Profit Project : \n".
                 "Rp. ".number_format($invoice->profit, 0, ',', '.')."\n\n".
+                "Invoice : \n".
+                "Rp. ".number_format($tsi, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
 
             // add $pesanPelunasan to $pesan array
@@ -751,6 +758,18 @@ class InvoiceTagihan extends Model
 
         return $result;
 
+    }
+
+    public function sumSisaTagihan($customerId)
+    {
+        $total = InvoiceTagihan::where('cutoff', 0)->where('finished', 0)->where('customer_id', $customerId)->sum('sisa_tagihan');
+        return $total;
+    }
+
+    public function sumSisaInvoice($customerId)
+    {
+        $total = InvoiceTagihan::where('cutoff', 1)->where('finished', 0)->where('customer_id', $customerId)->sum('sisa_tagihan');
+        return $total;
     }
 
 }
