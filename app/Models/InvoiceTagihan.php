@@ -255,7 +255,7 @@ class InvoiceTagihan extends Model
             $store = $this->masukKasBesar($data);
 
             $pesanPelunasan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                "*Form Pelunasan Project*\n".
+                "*PEMBAYARAN INVOICE*\n".
                 "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                 "Customer : *".$store->project->customer->singkatan."*\n".
                 "Project :  *".$store->project->nama."*\n\n".

@@ -47,7 +47,7 @@ class NotaTagihanController extends Controller
         $ppnMasukan = $inv->ppn_masukan;
 
         $pesan =    "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
-                    "*Form Tagihan*\n".
+                    "*CICILAN INVOICE*\n".
                     "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
                     "Customer : ".$store->project->customer->singkatan."\n".
                     "Project : *".$store->project->nama."*\n".
