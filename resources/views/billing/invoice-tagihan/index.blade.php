@@ -136,7 +136,7 @@
                             e.preventDefault();
                             Swal.fire({
                                 title: 'Apakah anda yakin?',
-                                text: "Total Tagihan Rp. {{$d->nf_sisa_tagihan}}",
+                                text: "Total Tagihan Rp. {{number_format($d->sisa_tagihan+$d->nilai_pph, 0, ',', '.')}}",
                                 icon: 'warning',
                                 showCancelButton: true,
                                 confirmButtonColor: '#3085d6',
@@ -151,30 +151,6 @@
                         });
                     }
 
-
-                    var cicilan{{$d->id}} = new Cleave('#cicilanInput-{{$d->id}}', {
-                        numeral: true,
-                        numeralThousandsGroupStyle: 'thousand',
-                        numeralDecimalMark: ',',
-                        delimiter: '.'
-                    });
-
-                    $('#cicilForm-{{$d->id}}').submit(function(e){
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'Apakah anda yakin?',
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Ya, simpan!'
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                $('#spinner').show();
-                                this.submit();
-                            }
-                        })
-                    });
                 </script>
                 @endforeach
             </tbody>

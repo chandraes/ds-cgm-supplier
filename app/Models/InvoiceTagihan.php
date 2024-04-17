@@ -252,7 +252,7 @@ class InvoiceTagihan extends Model
 
             $this->updatePelunasan($invoice, $data);
 
-            $store = $this->masukKasBesar($data);
+            $store = $this->masukKasBesar($data, $invoice);
 
             $tst = $this->sumSisaTagihan($invoice->customer_id);
             $tsi = $this->sumSisaInvoice($invoice->customer_id);
@@ -286,6 +286,30 @@ class InvoiceTagihan extends Model
 
             // add $pesanPelunasan to $pesan array
             array_push($pesan, $pesanPelunasan);
+
+            if ($invoice->nilai_pph > 0) {
+                $storePph = $this->keluarPph($invoice);
+
+                $pesanPph = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                        "*Form PPH*\n".
+                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                        "Uraian  : ".$storePph->uraian."\n".
+                        "Nilai :  *Rp. ".number_format($storePph->nominal, 0, ',', '.')."*\n\n".
+                        "Ditransfer ke rek:\n\n".
+                        "Bank      : ".$storePph->bank."\n".
+                        "Nama    : ".$storePph->nama_rek."\n".
+                        "No. Rek : ".$storePph->no_rek."\n\n".
+                        "==========================\n".
+                        "Sisa Saldo Kas Besar : \n".
+                        "Rp. ".number_format($storePph->saldo, 0, ',', '.')."\n\n".
+                        "Total Modal Investor : \n".
+                        "Rp. ".number_format($storePph->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        "Terima kasih 🙏🙏🙏\n";
+
+                        array_push($pesan, $pesanPph);
+
+            }
+
 
             //pengembalian rugi modal
 
@@ -424,7 +448,7 @@ class InvoiceTagihan extends Model
 
         $invoice->invoiceTagihanDetails()->create([
             'uraian' => $data['uraian'],
-            'nominal' => $data['nominal']
+            'nominal' => $data['nominal'] + $invoice->nilai_pph
         ]);
 
         Project::find($invoice->project_id)->update([
@@ -456,7 +480,7 @@ class InvoiceTagihan extends Model
         return $store;
     }
 
-    private function masukKasBesar($data)
+    private function masukKasBesar($data, InvoiceTagihan $invoice)
     {
         $kb = new KasBesar();
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
@@ -467,7 +491,7 @@ class InvoiceTagihan extends Model
 
         $store = $kb->create([
             'project_id' => $data['project_id'],
-            'nominal' => $data['nominal'],
+            'nominal' => $data['nominal'] + $invoice->nilai_pph,
             'jenis' => $data['jenis'],
             'uraian' => $data['uraian'],
             'no_rek' => $rekening->no_rek,
@@ -702,6 +726,7 @@ class InvoiceTagihan extends Model
         DB::beginTransaction();
 
         try {
+
             $store = $db->create([
                 'project_id' => $invoice->project_id,
                 'nominal' => $invoice->nilai_ppn,
@@ -744,14 +769,11 @@ class InvoiceTagihan extends Model
 
 
         } catch (\Throwable $th) {
-
             DB::rollBack();
-
             $result = [
                 'status' => 'error',
                 'message' => $th->getMessage()
             ];
-
         }
 
         $this->sendWa($pesan);
@@ -770,6 +792,39 @@ class InvoiceTagihan extends Model
     {
         $total = InvoiceTagihan::where('cutoff', 1)->where('finished', 0)->where('customer_id', $customerId)->sum('sisa_tagihan');
         return $total;
+    }
+
+    private function keluarPph(InvoiceTagihan $invoice)
+    {
+        $nilai_pph = $invoice->nilai_pph;
+        $kb = new KasBesar();
+        $kp = new KasProject();
+
+        $store = $kb->create([
+                    'project_id' => $invoice->project_id,
+                    'nominal' => $nilai_pph,
+                    'jenis' => 0,
+                    'uraian' => 'Pembayaran PPH '.$invoice->project->nama,
+                    'no_rek' => 'EBILLING',
+                    'nama_rek' => 'PT CGM',
+                    'bank' => 'PAJAK',
+                    'saldo' => $kb->saldoTerakhir() - $nilai_pph,
+                    'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+                ]);
+
+        $kp->create([
+            'project_id' => $invoice->project_id,
+            'nominal' => $nilai_pph,
+            'uraian' => 'Pembayaran PPH '.$invoice->project->nama,
+            'jenis' => 0,
+            'sisa' => $kp->sisaTerakhir($invoice->project_id) - $nilai_pph,
+            'no_rek' => 'EBILLING',
+            'nama_rek' => 'PT CGM',
+            'bank' => 'PAJAK',
+        ]);
+
+        return $store;
+
     }
 
 }

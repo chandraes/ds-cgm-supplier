@@ -6,7 +6,9 @@
             <h1><u>Invoice</u></h1>
         </div>
     </div>
-    {{-- if has any error --}}
+    @php
+        $profit = 0;
+    @endphp
     @if ($errors->any())
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -70,7 +72,10 @@
                         {{$d->nf_pengeluaran}}
                     </td>
                     <td class="text-end align-middle">
-                        {{$d->nf_profit}}
+                        @php
+                            $profit += ($d->nilai_tagihan + $d->pengeluaran);
+                        @endphp
+                        {{number_format($d->nilai_tagihan + $d->pengeluaran, 0, ',', '.')}}
                     </td>
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 </tr>
@@ -81,7 +86,7 @@
                     <th class="text-center align-middle" colspan="3">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('profit'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($profit, 0, ',', '.')}}</th>
                 </tr>
             </tfoot>
         </table>
