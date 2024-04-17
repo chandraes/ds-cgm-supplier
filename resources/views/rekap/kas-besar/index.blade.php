@@ -110,10 +110,10 @@
                         @if ($d->project)
                         <div class="text-center">
                             <a href="#"  data-bs-toggle="modal"
-                            data-bs-target="#modalId">{{$d->project->kode_project}}</a>
+                            data-bs-target="#modalId{{$d->project->id}}">{{$d->project->kode_project}}</a>
                         </div>
                         @include('rekap.kas-besar.detail-project')
-                        
+
                         @endif
                     <td class="text-center align-middle">{{$d->kode_deposit}}</td>
                     <td class="text-center align-middle">{{$d->kode_kas_kecil}}</td>
