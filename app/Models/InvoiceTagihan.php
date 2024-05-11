@@ -28,6 +28,11 @@ class InvoiceTagihan extends Model
         return number_format($this->nilai_ppn, 0, ',', '.');
     }
 
+    public function dataTahun()
+    {
+        return $this->selectRaw('YEAR(created_at) as tahun')->groupBy('tahun')->get();
+    }
+
     public function getIdEstimasiPembayaranAttribute()
     {
         return Carbon::parse($this->estimasi_pembayaran)->format('d-m-Y');
@@ -288,28 +293,35 @@ class InvoiceTagihan extends Model
             array_push($pesan, $pesanPelunasan);
 
             if ($invoice->nilai_pph > 0) {
-                $storePph = $this->keluarPph($invoice);
 
-                $pesanPph = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-                        "*Form PPH*\n".
-                        "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                        "Uraian  : ".$storePph->uraian."\n".
-                        "Nilai :  *Rp. ".number_format($storePph->nominal, 0, ',', '.')."*\n\n".
-                        "Ditransfer ke rek:\n\n".
-                        "Bank      : ".$storePph->bank."\n".
-                        "Nama    : ".$storePph->nama_rek."\n".
-                        "No. Rek : ".$storePph->no_rek."\n\n".
-                        "==========================\n".
-                        "Sisa Saldo Kas Besar : \n".
-                        "Rp. ".number_format($storePph->saldo, 0, ',', '.')."\n\n".
-                        "Total Modal Investor : \n".
-                        "Rp. ".number_format($storePph->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                        "Terima kasih 🙏🙏🙏\n";
+                if ($invoice->project->pph_badan == 1) {
 
-                        array_push($pesan, $pesanPph);
+                    $this->keluarPphBadan($invoice);
+
+                } else {
+
+                    $storePph = $this->keluarPph($invoice);
+
+                    $pesanPph = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+                            "*Form PPH*\n".
+                            "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
+                            "Uraian  : ".$storePph->uraian."\n".
+                            "Nilai :  *Rp. ".number_format($storePph->nominal, 0, ',', '.')."*\n\n".
+                            "Ditransfer ke rek:\n\n".
+                            "Bank      : ".$storePph->bank."\n".
+                            "Nama    : ".$storePph->nama_rek."\n".
+                            "No. Rek : ".$storePph->no_rek."\n\n".
+                            "==========================\n".
+                            "Sisa Saldo Kas Besar : \n".
+                            "Rp. ".number_format($storePph->saldo, 0, ',', '.')."\n\n".
+                            "Total Modal Investor : \n".
+                            "Rp. ".number_format($storePph->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                            "Terima kasih 🙏🙏🙏\n";
+
+                    array_push($pesan, $pesanPph);
+                }
 
             }
-
 
             //pengembalian rugi modal
 
@@ -812,6 +824,7 @@ class InvoiceTagihan extends Model
                     'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
                 ]);
 
+
         $kp->create([
             'project_id' => $invoice->project_id,
             'nominal' => $nilai_pph,
@@ -825,6 +838,26 @@ class InvoiceTagihan extends Model
 
         return $store;
 
+    }
+
+    private function keluarPphBadan(InvoiceTagihan $invoice)
+    {
+        $nilai_pph = $invoice->nilai_pph;
+
+        $kp = new KasProject();
+
+        $kp->create([
+            'project_id' => $invoice->project_id,
+            'nominal' => $nilai_pph,
+            'uraian' => 'PPH '.$invoice->project->nama,
+            'jenis' => 0,
+            'sisa' => $kp->sisaTerakhir($invoice->project_id) - $nilai_pph,
+            'no_rek' => 'EBILLING',
+            'nama_rek' => 'PT CGM',
+            'bank' => 'PAJAK',
+        ]);
+
+        return true;
     }
 
 }

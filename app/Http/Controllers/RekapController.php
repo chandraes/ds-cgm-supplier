@@ -447,7 +447,7 @@ class RekapController extends Controller
     {
         $data = InvoiceTagihan::with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
                             ->whereHas('project', function($query){
-                                $query->where('pph', 1);
+                                $query->where('pph', 1)->where('pph_badan', 0);
                             })->where('finished', 1)->get();
 
         return view('rekap.invoice-pph.index', [
@@ -461,6 +461,8 @@ class RekapController extends Controller
 
         $tahun = $request->tahun ?? date('Y');
 
+        $dataTahun = $db->dataTahun();
+
         $data = $db->with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
                                 ->whereHas('project', function($query) use ($tahun){
                                     $query->where('pph_badan', 1)->whereYear('created_at', $tahun);
@@ -468,7 +470,8 @@ class RekapController extends Controller
 
         return view('rekap.ppn-tahunan.index', [
             'data' => $data,
-            'tahun' => $tahun
+            'tahun' => $tahun,
+            'dataTahun' => $dataTahun
         ]);
 
     }

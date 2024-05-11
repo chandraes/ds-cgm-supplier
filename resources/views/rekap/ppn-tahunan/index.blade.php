@@ -3,7 +3,8 @@
 <div class="container-fluid">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
-            <h1><u>INVOICE PPH</u></h1>
+            <h1><u>INVOICE PPH </u></h1>
+            <h1>{{$tahun}}</h1>
         </div>
     </div>
     @php
@@ -24,7 +25,7 @@
         </div>
     </div>
     @endif
-    <div class="flex-row justify-content-between mt-3">
+    <div class="row justify-content-between mt-3">
         <div class="col-md-6">
             <table class="table">
                 <tr class="text-center">
@@ -32,10 +33,23 @@
                                 width="30"> Dashboard</a></td>
                     <td><a href="{{route('rekap')}}"><img src="{{asset('images/rekap.svg')}}" alt="dokumen"
                                 width="30"> REKAP</a></td>
-
                 </tr>
             </table>
         </div>
+        <form action="{{route('rekap.pph-badan')}}" method="get" class="col-md-6">
+            <div class="row mt-2">
+                <div class="col-md-6 mb-3">
+                    <select class="form-select" name="tahun" id="tahun">
+                        @foreach ($dataTahun as $d)
+                        <option value="{{$d->tahun}}" {{$d->tahun == $tahun ? 'selected' : ''}}>{{$d->tahun}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <button type="submit" class="btn btn-primary form-control" id="btn-cari">Tampilkan</button>
+                </div>
+            </div>
+        </form>
     </div>
     <div class="row mt-3">
         <table class="table table-bordered table-hover" id="data-table">
