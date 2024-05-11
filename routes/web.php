@@ -97,8 +97,16 @@ Route::group(['middleware' => ['auth']], function() {
             Route::get('/kas-kecil/print/{bulan}/{tahun}', [App\Http\Controllers\RekapController::class, 'kas_kecil_print'])->name('rekap.kas-kecil.print');
             Route::get('/kas-kecil/{kas}/void', [App\Http\Controllers\RekapController::class, 'void_kas_kecil'])->name('rekap.kas-kecil.void');
 
-            Route::get('/invoice', [App\Http\Controllers\RekapController::class, 'rekap_invoice'])->name('rekap.invoice');
-            Route::get('/invoice/detail-project', [App\Http\Controllers\RekapController::class, 'rekap_invoice_detail_project'])->name('rekap.invoice.detail-project');
+            Route::prefix('invoice')->group(function(){
+                Route::get('/', [App\Http\Controllers\RekapController::class, 'rekap_invoice'])->name('rekap.invoice');
+                Route::get('/detail-project', [App\Http\Controllers\RekapController::class, 'rekap_invoice_detail_project'])->name('rekap.invoice.detail-project');
+            });
+
+            Route::prefix('invoice-pph')->group(function(){
+                Route::get('/', [App\Http\Controllers\RekapController::class, 'rekap_invoice_pph'])->name('rekap.invoice-pph');
+
+                Route::get('/badan', [App\Http\Controllers\RekapController::class, 'pph_badan'])->name('rekap.pph-badan');
+            });
 
             Route::get('/statistik/{customer}', [App\Http\Controllers\StatistikController::class, 'index'])->name('statistik.index');
             Route::get('/statistik/{customer}/print', [App\Http\Controllers\StatistikController::class, 'print'])->name('statistik.print');
@@ -135,11 +143,12 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::post('/keluar-all/store', [App\Http\Controllers\FormDepositController::class, 'keluar_all_store'])->name('form-deposit.keluar-all.store');
             });
 
-
-            Route::get('/form-kas-kecil/masuk', [App\Http\Controllers\FormKasKecilController::class, 'masuk'])->name('form-kas-kecil.masuk');
-            Route::post('/form-kas-kecil/masuk/store', [App\Http\Controllers\FormKasKecilController::class, 'masuk_store'])->name('form-kas-kecil.masuk.store');
-            Route::get('/form-kas-kecil/keluar', [App\Http\Controllers\FormKasKecilController::class, 'keluar'])->name('form-kas-kecil.keluar');
-            Route::post('/form-kas-kecil/keluar/store', [App\Http\Controllers\FormKasKecilController::class, 'keluar_store'])->name('form-kas-kecil.keluar.store');
+            Route::prefix('form-kas-kecil')->group(function(){
+                Route::get('/masuk', [App\Http\Controllers\FormKasKecilController::class, 'masuk'])->name('form-kas-kecil.masuk');
+                Route::post('/masuk/store', [App\Http\Controllers\FormKasKecilController::class, 'masuk_store'])->name('form-kas-kecil.masuk.store');
+                Route::get('/keluar', [App\Http\Controllers\FormKasKecilController::class, 'keluar'])->name('form-kas-kecil.keluar');
+                Route::post('/keluar/store', [App\Http\Controllers\FormKasKecilController::class, 'keluar_store'])->name('form-kas-kecil.keluar.store');
+            });
 
             Route::get('/form-lain/masuk', [App\Http\Controllers\FormLainController::class, 'masuk'])->name('form-lain.masuk');
             Route::post('/form-lain/masuk/store', [App\Http\Controllers\FormLainController::class, 'masuk_store'])->name('form-lain.masuk.store');

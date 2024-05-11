@@ -442,4 +442,34 @@ class RekapController extends Controller
 
         return abort(404);
     }
+
+    public function rekap_invoice_pph()
+    {
+        $data = InvoiceTagihan::with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
+                            ->whereHas('project', function($query){
+                                $query->where('pph', 1);
+                            })->where('finished', 1)->get();
+
+        return view('rekap.invoice-pph.index', [
+            'data' => $data,
+        ]);
+    }
+
+    public function pph_badan(Request $request)
+    {
+        $db = new InvoiceTagihan();
+
+        $tahun = $request->tahun ?? date('Y');
+
+        $data = $db->with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
+                                ->whereHas('project', function($query) use ($tahun){
+                                    $query->where('pph_badan', 1)->whereYear('created_at', $tahun);
+                                })->where('finished', 1)->get();
+
+        return view('rekap.ppn-tahunan.index', [
+            'data' => $data,
+            'tahun' => $tahun
+        ]);
+
+    }
 }

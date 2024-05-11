@@ -152,6 +152,9 @@
         if (data.pph == 1) {
             document.getElementById('edit_pph').checked = true;
         }
+        if (data.pph_badan == 1) {
+            document.getElementById('edit_pph_badan').checked = true;
+        }
         document.getElementById('editForm').action = '/db/project/' + id + '/update';
     };
 

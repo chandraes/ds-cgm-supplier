@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center mb-5">
         <div class="col-md-12 text-center">
-            <h1><u>Invoice</u></h1>
+            <h1><u>INVOICE PPH</u></h1>
         </div>
     </div>
     @php
@@ -44,9 +44,7 @@
                     <th class="text-center align-middle">No</th>
                     <th class="text-center align-middle">Customer</th>
                     <th class="text-center align-middle">Project</th>
-                    <th class="text-center align-middle">Nilai Kontrak</th>
-                    <th class="text-center align-middle">Total Kas Project</th>
-                    <th class="text-center align-middle">Profit</th>
+                    <th class="text-center align-middle">Nilai PPH</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,33 +58,15 @@
                         </a>
                     </td>
                     <td class="text-end align-middle">
-                        <div class="text-end">
-                            <a href="#" data-bs-toggle="modal"
-                            data-bs-target="#detailInvoice-{{$d->id}}"> {{$d->nf_nilai_tagihan}}</a>
-                        </div>
-
-                        @include('billing.nota-tagihan.detail-modal')
-
+                        {{$d->nf_nilai_pph}}
                     </td>
-                    <td class="text-end align-middle">
-                        {{$d->nf_pengeluaran}}
-                    </td>
-                    <td class="text-end align-middle">
-                        @php
-                            $profit += ($d->nilai_tagihan + $d->pengeluaran);
-                        @endphp
-                        {{number_format($d->nilai_tagihan + $d->pengeluaran, 0, ',', '.')}}
-                    </td>
-                {{-- <button class="btn btn-primary">Test</button> --}}
                 </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
                     <th class="text-center align-middle" colspan="3">Grand Total</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($profit, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
                 </tr>
             </tfoot>
         </table>

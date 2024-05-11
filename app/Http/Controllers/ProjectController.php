@@ -34,12 +34,18 @@ class ProjectController extends Controller
             'jatuh_tempo' => 'required',
             'ppn' => 'nullable',
             'pph' => 'nullable',
+            'pph_badan' => 'nullable',
             // 'project_status_id' => 'required|exists:project_statuses,id',
         ]);
 
         $data['project_status_id'] = 1;
         $data['ppn'] = $request->filled('ppn') ? 1 : 0;
         $data['pph'] = $request->filled('pph') ? 1 : 0;
+        $data['pph_badan'] = $request->filled('pph_badan') ? 1 : 0;
+
+        if ($data['pph'] == 0) {
+            $data['pph_badan'] = 0;
+        }
 
         $store = Project::createProject($data);
 
@@ -59,10 +65,16 @@ class ProjectController extends Controller
             'jatuh_tempo' => 'required',
             'ppn' => 'nullable',
             'pph' => 'nullable',
+            'pph_badan' => 'nullable',
         ]);
 
         $data['ppn'] = $request->filled('ppn') ? 1 : 0;
         $data['pph'] = $request->filled('pph') ? 1 : 0;
+        $data['pph_badan'] = $request->filled('pph_badan') ? 1 : 0;
+
+        if ($data['pph'] == 0) {
+            $data['pph_badan'] = 0;
+        }
 
         DB::beginTransaction();
 
