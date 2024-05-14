@@ -424,7 +424,7 @@ class InvoiceTagihan extends Model
             }
 
 
-            // DB::commit();
+            DB::commit();
 
 
         } catch (\Throwable $th) {
