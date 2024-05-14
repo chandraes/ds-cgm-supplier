@@ -236,6 +236,7 @@ class InvoiceTagihan extends Model
     }
 
     //cuma tuhan yang tau ini kenapa bisa berfungsi
+    // TODO: Bersihkan kode ini
     public function pelunasan($invoice_id)
     {
         $db = new KasProject();

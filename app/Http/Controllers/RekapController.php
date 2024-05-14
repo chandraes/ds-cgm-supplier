@@ -21,7 +21,7 @@ class RekapController extends Controller
     public function index()
     {
         $customer = Customer::all();
-        $project = Project::where('project_status_id', 1)->get();
+        $project = Project::where('project_status_id', 2)->get();
 
         return view('rekap.index', [
             'customer' => $customer,
