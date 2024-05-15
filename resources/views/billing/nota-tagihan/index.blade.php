@@ -79,7 +79,6 @@
                         @php
                              $pph += $d->nilai_pph;
                         @endphp
-
                         @else
                         0
                         @endif

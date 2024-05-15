@@ -45,11 +45,18 @@
                     <th class="text-center align-middle">Customer</th>
                     <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">Nilai Kontrak</th>
-                    <th class="text-center align-middle">Total Kas Project</th>
+                    <th class="text-center align-middle">Total Kas Project<br>(Modal)</th>
+                    <th class="text-center align-middle">PPh<br>Dipotong</th>
+                    <th class="text-center align-middle">PPh<br>Disimpan</th>
                     <th class="text-center align-middle">Profit</th>
                 </tr>
             </thead>
             <tbody>
+                @php
+                $modal = 0;
+                $pph = 0;
+                $pph_badan = 0;
+                @endphp
                 @foreach ($data as $d)
                 <tr>
                     <td class="text-center align-middle"></td>
@@ -69,7 +76,30 @@
 
                     </td>
                     <td class="text-end align-middle">
-                        {{$d->nf_pengeluaran}}
+                        {{number_format($d->pengeluaran+$d->nilai_pph, 0, ',', '.')}}
+                        @php
+                            $modal += ($d->pengeluaran+$d->nilai_pph);
+                        @endphp
+                    </td>
+                    <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 0)
+                        {{$d->nf_nilai_pph}}
+                        @php
+                             $pph += $d->nilai_pph;
+                        @endphp
+                        @else
+                        0
+                        @endif
+                    </td>
+                    <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 1)
+                        {{$d->nf_nilai_pph}}
+                        @php
+                             $pph_badan += $d->nilai_pph;
+                        @endphp
+                        @else
+                        0
+                        @endif
                     </td>
                     <td class="text-end align-middle">
                         @php
@@ -85,7 +115,9 @@
                 <tr>
                     <th class="text-center align-middle" colspan="3">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($modal, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph_badan, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($profit, 0, ',', '.')}}</th>
                 </tr>
             </tfoot>
