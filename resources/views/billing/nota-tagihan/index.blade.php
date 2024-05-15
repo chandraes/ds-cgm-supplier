@@ -68,7 +68,9 @@
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_ppn}}
                     </td>
-                    <td class="text-end align-middle">
+                    <td class="text-end align-middle @if ($d->project->pph_badan == 1)
+                        table-danger
+                    @endif">
                         {{$d->nf_nilai_pph}}
                     </td>
                     <td class="text-end align-middle">
