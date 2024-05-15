@@ -98,6 +98,7 @@ class InvoiceTagihan extends Model
     public function getTotalTagihanAttribute()
     {
         $total = $this->nilai_tagihan + $this->nilai_ppn - $this->nilai_pph;
+        
         return $total;
     }
 
