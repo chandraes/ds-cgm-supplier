@@ -98,7 +98,7 @@ class InvoiceTagihan extends Model
     public function getTotalTagihanAttribute()
     {
         $total = $this->nilai_tagihan + $this->nilai_ppn - $this->nilai_pph;
-        
+
         return $total;
     }
 
@@ -281,7 +281,7 @@ class InvoiceTagihan extends Model
                 "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
                 "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
-                "Total Kas Project : \n".
+                "Total Kas Project (Modal) : \n".
                 "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
                 "Sisa PPn Masukan : \n".
                 "Rp. ".number_format($invoice->ppn_masukan, 0, ',', '.')."\n\n".

@@ -30,7 +30,6 @@
                                 width="30"> Dashboard</a></td>
                     <td><a href="{{route('billing')}}"><img src="{{asset('images/billing.svg')}}" alt="dokumen"
                                 width="30"> Billing</a></td>
-
                 </tr>
             </table>
         </div>
