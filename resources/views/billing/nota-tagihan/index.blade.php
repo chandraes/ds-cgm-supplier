@@ -35,7 +35,7 @@
             </table>
         </div>
     </div>
-    <div class="row mt-3">
+    <div class="row mt-3 table-responsive">
         <table class="table table-bordered table-hover" id="data-table">
             <thead class="table-success">
                 <tr>
@@ -44,7 +44,8 @@
                     <th class="text-center align-middle">Project</th>
                     <th class="text-center align-middle">Nilai DPP</th>
                     <th class="text-center align-middle">PPn</th>
-                    <th class="text-center align-middle">PPh</th>
+                    <th class="text-center align-middle">PPh<br>Dipotong</th>
+                    <th class="text-center align-middle">PPh<br>Disimpan</th>
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
@@ -55,6 +56,10 @@
                     <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>
+            @php
+                $pph = 0;
+                $pph_badan = 0;
+            @endphp
             <tbody>
                 @foreach ($data as $d)
                 <tr>
@@ -68,10 +73,26 @@
                     <td class="text-end align-middle">
                         {{$d->nf_nilai_ppn}}
                     </td>
-                    <td class="text-end align-middle @if ($d->project->pph_badan == 1)
-                        table-danger
-                    @endif">
+                    <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 0)
                         {{$d->nf_nilai_pph}}
+                        @php
+                             $pph += $d->nilai_pph;
+                        @endphp
+
+                        @else
+                        0
+                        @endif
+                    </td>
+                    <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 1)
+                        {{$d->nf_nilai_pph}}
+                        @php
+                             $pph_badan += $d->nilai_pph;
+                        @endphp
+                        @else
+                        0
+                        @endif
                     </td>
                     <td class="text-end align-middle">
                         {{$d->nf_total_tagihan}}
@@ -244,7 +265,8 @@
                     <th class="text-center align-middle" colspan="3">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_ppn'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph_badan, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('total_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
@@ -274,6 +296,7 @@
                 "searching": true,
                 "scrollCollapse": true,
                 "scrollY": "500px",
+                "scrollX": "100%",
 
             });
 
