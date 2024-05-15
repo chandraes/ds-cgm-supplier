@@ -66,11 +66,11 @@
                             </label>
                             <label class="btn btn-secondary">
                                 <input type="checkbox" class="me-2" name="pph" id="edit_pph" autocomplete="off" />
-                                PPh
+                                PPh Dipotong
                             </label>
                             <label class="btn btn-secondary">
                                 <input type="checkbox" class="me-2" name="pph_badan" id="edit_pph_badan" autocomplete="off" />
-                                PPh Tahunan
+                                PPh Tahunan (Disimpan)
                             </label>
                         </div>
                     </div>
