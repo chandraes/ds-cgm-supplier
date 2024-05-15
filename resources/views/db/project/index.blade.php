@@ -39,6 +39,7 @@
                 <th class="text-center align-middle">TGL JATUH TEMPO</th>
                 <th class="text-center align-middle">PPn</th>
                 <th class="text-center align-middle">PPh</th>
+                <th class="text-center align-middle">PPh<br>Disimpan</th>
                 <th class="text-center align-middle">STATUS</th>
                 <th class="text-center align-middle">ACT</th>
             </tr>
@@ -63,6 +64,12 @@
                 <td class="text-center align-middle">
                     {{-- checked icon if ppn == 1 --}}
                     @if ($d->pph == 1)
+                    <i class="fa fa-check"></i>
+                    @endif
+                </td>
+                <td class="text-center align-middle">
+                    {{-- checked icon if ppn == 1 --}}
+                    @if ($d->pph_badan == 1)
                     <i class="fa fa-check"></i>
                     @endif
                 </td>
