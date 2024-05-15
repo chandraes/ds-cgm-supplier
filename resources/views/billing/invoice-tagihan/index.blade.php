@@ -45,7 +45,8 @@
                     <th class="text-center align-middle">Estimasi Pembayaran</th>
                     <th class="text-center align-middle">Nilai DPP</th>
                     <th class="text-center align-middle">PPn</th>
-                    <th class="text-center align-middle">PPh</th>
+                    <th class="text-center align-middle">PPh<br>Dipotong</th>
+                    <th class="text-center align-middle">PPh<br>Disimpan</th>
                     <th class="text-center align-middle">Total Tagihan</th>
                     <th class="text-center align-middle">Balance</th>
                     <th class="text-center align-middle">Sisa Tagihan</th>
@@ -55,6 +56,11 @@
                     <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>
+            @php
+                $pph = 0;
+                $pph_badan = 0;
+                $total_tagihan = 0;
+            @endphp
             <tbody>
                 @foreach ($data as $d)
                 <tr>
@@ -71,10 +77,40 @@
                         {{$d->nf_nilai_ppn}}
                     </td>
                     <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 0)
                         {{$d->nf_nilai_pph}}
+                        @php
+                             $pph += $d->nilai_pph;
+                        @endphp
+
+                        @else
+                        0
+                        @endif
                     </td>
                     <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 1)
+                        {{$d->nf_nilai_pph}}
+                        @php
+                             $pph_badan += $d->nilai_pph;
+                        @endphp
+                        @else
+                        0
+                        @endif
+                    </td>
+                    <td class="text-end align-middle">
+                        @if ($d->project->pph_badan == 1)
+                        @php
+                        $total = $d->total_tagihan+$d->nilai_pph;
+                        $total_tagihan += $total;
+                        @endphp
+                        {{number_format($d->total_tagihan+$d->nilai_pph, 0, ',', '.')}}
+                        @else
                         {{$d->nf_total_tagihan}}
+                        @php
+                        $total_tagihan += $d->total_tagihan;
+                        @endphp
+                        @endif
+
                     </td>
                     <td class="align-middle">
                         <div class="text-end">
@@ -159,8 +195,9 @@
                     <th class="text-center align-middle" colspan="4">Grand Total</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('nilai_ppn'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('nilai_pph'), 0, ',', '.')}}</th>
-                    <th class="text-end align-middle">{{number_format($data->sum('total_tagihan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($pph_badan, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($total_tagihan, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('dibayar'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('sisa_tagihan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('ppn_masukan'), 0, ',', '.')}}</th>
