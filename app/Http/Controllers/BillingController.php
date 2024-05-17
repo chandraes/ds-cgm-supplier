@@ -16,6 +16,7 @@ class BillingController extends Controller
     {
         $nt = InvoiceTagihan::where('cutoff', 0)->where('finished', 0)->count();
         $it = InvoiceTagihan::where('cutoff', 1)->where('finished', 0)->count();
+        $pph = InvoiceTagihan::where('finished', 1)->where('pph_badan', 0)->count();
 
         $ip = InvoiceTagihan::where('cutoff', 1)
                             ->where('ppn', 0)
@@ -31,6 +32,7 @@ class BillingController extends Controller
             'it' => $it,
             'np' => $np,
             'ip' => $ip,
+            'pph' => $pph,
         ]);
     }
 
@@ -122,5 +124,18 @@ class BillingController extends Controller
 
         return redirect()->back()->with($store['status'], $store['message']);
 
+    }
+
+    public function pph_disimpan()
+    {
+        $data = InvoiceTagihan::with(['project'])->whereHas('project', function ($q) {
+                        $q->where('pph_badan', 1);
+                    })
+                    ->where('pph_badan', 0)
+                    ->get();
+
+        return view('billing.pph-disimpan.index', [
+            'data' => $data,
+        ]);
     }
 }

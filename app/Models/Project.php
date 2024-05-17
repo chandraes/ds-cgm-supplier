@@ -100,6 +100,7 @@ class Project extends Model
             $ppn = ($store->ppn == 1) ? $store->nilai * 0.11 : 0;
             $pph = ($store->pph == 1) ? $store->nilai * 0.02 : 0;
             $sisa_tagihan = $store->nilai + $ppn - $pph;
+            $pph_badan = ($store->pph_badan == 1) ? 0 : 1;
 
             $invoice = InvoiceTagihan::create([
                 'customer_id' => $data['customer_id'],
@@ -109,6 +110,7 @@ class Project extends Model
                 'nilai_pph' => $pph,
                 'sisa_tagihan' => $sisa_tagihan,
                 'dibayar' => 0,
+                'pph_badan' => $pph_badan,
             ]);
 
             DB::commit();
@@ -151,6 +153,7 @@ class Project extends Model
             $ppn = ($updatedProject->ppn == 1) ? $updatedProject->nilai * 0.11 : 0;
             $pph = ($updatedProject->pph == 1) ? $updatedProject->nilai * 0.02 : 0;
             $sisa_tagihan = $updatedProject->nilai + $ppn - $pph;
+            $pph_badan = ($updatedProject->pph_badan == 1) ? 0 : 1;
 
             $invoice = InvoiceTagihan::where('project_id', $id)->first();
 
@@ -158,7 +161,8 @@ class Project extends Model
                 'nilai_tagihan' => $data['nilai'],
                 'nilai_ppn' => $ppn,
                 'nilai_pph' => $pph,
-                'sisa_tagihan' => $sisa_tagihan - $invoice->dibayar
+                'sisa_tagihan' => $sisa_tagihan - $invoice->dibayar,
+                'pph_badan' => $pph_badan,
             ]);
 
         }

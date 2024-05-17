@@ -123,9 +123,6 @@ Route::group(['middleware' => ['auth']], function() {
                 Route::get('/detail-deviden/{investor}', [App\Http\Controllers\RekapController::class, 'rekap_investor_detail_deviden'])->name('rekap.kas-investor.detail-deviden');
             });
 
-
-
-
         });
     });
 
@@ -183,6 +180,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::prefix('ppn-susulan')->group(function() {
                 Route::get('/', [App\Http\Controllers\BillingController::class, 'ppn_masuk_susulan'])->name('ppn-susulan');
                 Route::post('/store', [App\Http\Controllers\BillingController::class, 'ppn_masuk_susulan_store'])->name('ppn-susulan.store');
+            });
+
+            Route::prefix('pph-disimpan')->group(function(){
+                Route::get('/', [App\Http\Controllers\BillingController::class, 'pph_disimpan'])->name('pph-disimpan');
             });
 
         });

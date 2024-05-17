@@ -65,12 +65,12 @@
                 <h3>INVOICE</h3>
             </a>
         </div>
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        {{-- <div class="col-lg-3 mt-3 mb-3 text-center">
             <a href="{{route('rekap.invoice-pph')}}" class="text-decoration-none">
                 <img src="{{asset('images/pajak.svg')}}" alt="" width="80">
                 <h3>INVOICE PPH</h3>
             </a>
-        </div>
+        </div> --}}
         <div class="col-lg-3 mt-3 mb-3 text-center">
             <a href="{{route('rekap.pph-badan')}}" class="text-decoration-none">
                 <img src="{{asset('images/pajak-tahunan.svg')}}" alt="" width="80">
