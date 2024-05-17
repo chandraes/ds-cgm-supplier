@@ -203,7 +203,7 @@ class KasProject extends Model
                     "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
-        $this->sendWa($group, $pesan);
+        // $this->sendWa($group, $pesan);
 
         $result = [
             'status' => 'success',
@@ -365,7 +365,7 @@ class KasProject extends Model
         }
 
 
-        $this->sendWa($group, $pesan);
+        // $this->sendWa($group, $pesan);
 
         $result = [
             'status' => 'success',
@@ -467,7 +467,7 @@ class KasProject extends Model
                         "Rp. ".number_format($profit, 0, ',', '.')."\n\n".
                         "Terima kasih 🙏🙏🙏\n";
 
-            $this->sendWa($group, $pesan);
+            // $this->sendWa($group, $pesan);
 
             $result = [
                 'status' => 'success',
