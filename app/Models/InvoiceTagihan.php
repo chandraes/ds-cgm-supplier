@@ -440,7 +440,7 @@ class InvoiceTagihan extends Model
         }
 
         foreach ($pesan as $p) {
-            // $this->sendWa($p);
+            $this->sendWa($p);
             usleep(100000);
         }
 
@@ -790,7 +790,7 @@ class InvoiceTagihan extends Model
             ];
         }
 
-        // $this->sendWa($pesan);
+        $this->sendWa($pesan);
 
         return $result;
 

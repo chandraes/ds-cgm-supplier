@@ -152,7 +152,7 @@ class KasBesar extends Model
 
         $tujuan = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
 
-        // $this->sendWa($tujuan, $pesan);
+        $this->sendWa($tujuan, $pesan);
 
         return $result;
     }
@@ -217,7 +217,7 @@ class KasBesar extends Model
 
         $tujuan = GroupWa::where('untuk', 'kas-besar')->first()->nama_group;
 
-        // $this->sendWa($tujuan, $pesan);
+        $this->sendWa($tujuan, $pesan);
 
         return $result;
     }
@@ -417,7 +417,7 @@ class KasBesar extends Model
 
         foreach($pesan as $p)
         {
-            // $this->sendWa($tujuan, $p);
+            $this->sendWa($tujuan, $p);
         }
 
         return $result;
@@ -554,7 +554,7 @@ class KasBesar extends Model
 
         foreach($pesan as $p)
         {
-            // $this->sendWa($tujuan, $p);
+            $this->sendWa($tujuan, $p);
         }
 
         return [
