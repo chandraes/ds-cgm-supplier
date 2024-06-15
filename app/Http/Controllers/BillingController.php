@@ -132,6 +132,7 @@ class BillingController extends Controller
                         $q->where('pph_badan', 1);
                     })
                     ->where('pph_badan', 0)
+                    ->where('finished', 1)
                     ->get();
 
         return view('billing.pph-disimpan.index', [

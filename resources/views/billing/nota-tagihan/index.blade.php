@@ -307,7 +307,6 @@
                 "searching": true,
                 "scrollCollapse": true,
                 "scrollY": "500px",
-                "scrollX": "100%",
 
             });
 
