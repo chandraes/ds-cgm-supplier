@@ -203,7 +203,7 @@
                                         @csrf
                                         <div class="modal-body">
                                             <div class="col-md-12 mb-3">
-                                                <label for="estimasi_pembayaran" class="form-label">Estimasi Pembayaran</label>
+                                                <label for="estimasi_pembayaran" class="form-label">Estimasi Tanggal Pembayaran</label>
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>
                                                     <input type="text" class="form-control" name="estimasi_pembayaran" id="estimasi_pembayaran-{{$d->id}}" required>
