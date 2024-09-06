@@ -28,8 +28,8 @@
                 <tr class="text-center">
                     <td><a href="{{route('home')}}"><img src="{{asset('images/dashboard.svg')}}" alt="dashboard"
                                 width="30"> Dashboard</a></td>
-                    <td><a href="{{route('billing')}}"><img src="{{asset('images/billing.svg')}}" alt="dokumen"
-                                width="30"> Billing</a></td>
+                                <td><a href="{{route('pajak.index')}}"><img src="{{asset('images/pajak-menu.svg')}}" alt="dokumen"
+                                    width="30"> Pajak</a></td>
 
                 </tr>
             </table>

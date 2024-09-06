@@ -61,6 +61,12 @@
                 <h4 class="mt-3">FORM GANTI RUGI</h4>
             </a>
         </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h4 class="mt-3">FORM CSR</h4>
+            </a>
+        </div>
     </div>
     <hr>
     <br>
@@ -129,37 +135,6 @@
                 <h4 class="mt-3">INVOICE TAGIHAN @if($it != 0) <span class="text-danger">({{$it}})</span> @endif</h4>
             </a>
         </div>
-    </div>
-    <hr>
-    <br>
-    <div class="row justify-content-left">
-        <h4 class="mt-3">PAJAK</h4>
-
-        <div class="col-md-2 text-center mt-5">
-            <a href="{{route('nota-ppn-masukan')}}" class="text-decoration-none">
-                <img src="{{asset('images/form-ppn.svg')}}" alt="" width="70">
-                <h4 class="mt-3">NOTA PPn MASUKAN @if($np != 0) <span class="text-danger">({{$np}})</span> @endif</h4>
-            </a>
-        </div>
-
-        <div class="col-md-2 text-center mt-5">
-            <a href="{{route('invoice-ppn')}}" class="text-decoration-none">
-                <img src="{{asset('images/taxes.svg')}}" alt="" width="70">
-                <h4 class="mt-3">INVOICE PPN @if($ip != 0) <span class="text-danger">({{$ip}})</span> @endif</h4>
-            </a>
-        </div>
-        <div class="col-md-2 text-center mt-5">
-            <a href="{{route('ppn-susulan')}}" class="text-decoration-none">
-                <img src="{{asset('images/ppn-susulan.svg')}}" alt="" width="70">
-                <h4 class="mt-3">PPN MASUKAN SUSULAN</h4>
-            </a>
-        </div>
-        <div class="col-md-2 text-center mt-5">
-            <a href="{{route('pph-disimpan')}}" class="text-decoration-none">
-                <img src="{{asset('images/pajak.svg')}}" alt="" width="70">
-                <h4 class="mt-3">PPh DISIMPAN @if($pph != 0) <span class="text-danger">({{$pph}})</span> @endif</h4>
-            </a>
-        </div>
         <div class="col-md-2 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none">
                 <img src="{{asset('images/dashboard.svg')}}" alt="" width="70">
@@ -167,6 +142,7 @@
             </a>
         </div>
     </div>
+    <hr>
 </div>
 @endsection
 @push('js')

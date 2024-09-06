@@ -74,7 +74,7 @@
         </div>
         <div class="d-grid gap-3 mt-3">
             <button class="btn btn-success" type="submit" id="btnSubmit">Simpan</button>
-            <a href="{{route('billing')}}" class="btn btn-secondary" type="button">Batal</a>
+            <a href="{{route('pajak.index')}}" class="btn btn-secondary" type="button">Batal</a>
         </div>
     </form>
 </div>
