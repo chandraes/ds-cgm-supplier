@@ -64,7 +64,7 @@
         <div class="col-md-2 text-center mt-5">
             <a href="#" class="text-decoration-none">
                 <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
-                <h4 class="mt-3">FORM CSR</h4>
+                <h4 class="mt-3">FORM CSR<br>(TIDAK TERTENTU)</h4>
             </a>
         </div>
     </div>
@@ -132,7 +132,7 @@
         <div class="col-md-2 text-center mt-5">
             <a href="{{route('invoice-tagihan')}}" class="text-decoration-none">
                 <img src="{{asset('images/invoice-tagihan.svg')}}" alt="" width="70">
-                <h4 class="mt-3">INVOICE TAGIHAN @if($it != 0) <span class="text-danger">({{$it}})</span> @endif</h4>
+                <h4 class="mt-3">INVOICE CUSTOMER @if($it != 0) <span class="text-danger">({{$it}})</span> @endif</h4>
             </a>
         </div>
         <div class="col-md-2 text-center mt-5">

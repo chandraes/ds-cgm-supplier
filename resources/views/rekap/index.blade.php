@@ -1,33 +1,101 @@
 @extends('layouts.app')
 @section('content')
-
 <div class="container text-center">
-    <h1>REKAP</h1>
+    <h1><u>REKAP</u></h1>
 </div>
 <div class="container mt-5">
     <div class="row justify-content-left">
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        <h4 class="mt-3">UMUM</h4>
+        <div class="col-md-2 text-center mt-5">
             <a href="{{route('rekap.kas-besar')}}" class="text-decoration-none">
-                <img src="{{asset('images/kas-besar.svg')}}" alt="" width="80">
-                <h3>KAS BESAR</h3>
+                <img src="{{asset('images/kas-besar.svg')}}" alt="" width="70">
+                <h5 class="mt-3">KAS BESAR</h5>
             </a>
         </div>
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">NOTA VOID TRANSAKSI</h5>
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-left">
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">DEPOSIT</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">DIVIDEN</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">KASBON</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">LAIN-LAIN</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">GANTI RUGI</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">CSR<br>(TIDAK TERTENTU)</h5>
+            </a>
+        </div>
+
+
+    </div>
+    <hr>
+    <br>
+    <div class="row justify-content-left">
+        <h4 class="mt-3">COST OPERATIONAL</h4>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">OPERATIONAL</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
             <a href="{{route('rekap.kas-kecil')}}" class="text-decoration-none">
-                <img src="{{asset('images/kas-kecil.svg')}}" alt="" width="80">
-                <h3>KAS KECIL</h3>
+                <img src="{{asset('images/kas-kecil.svg')}}" alt="" width="70">
+                <h5 class="mt-3">KAS KECIL</h5>
             </a>
         </div>
-        <div class="col-lg-3 mt-3 mb-3 text-center">
-            <a href="{{route('rekap.kas-investor')}}" class="text-decoration-none">
-                <img src="{{asset('images/kas-investor.svg')}}" alt="" width="80">
-                <h3>KAS INVESTOR</h3>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">GAJI</h5>
             </a>
         </div>
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">BUNGA INVESTOR</h5>
+            </a>
+        </div>
+    </div>
+    <hr>
+    <br>
+    <div class="row justify-content-left">
+        <h4 class="mt-3">TRANSAKSI</h4>
+        <div class="col-md-2 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#kasSupplier">
-                <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="80">
-                <h3>KAS PROJECT</h3>
+                <img src="{{asset('images/kas-supplier.svg')}}" alt="" width="70">
+                <h5 class="mt-3">KAS PROJECT</h5>
             </a>
             <div class="modal fade" id="kasSupplier" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
                 role="dialog" aria-labelledby="kasSupplierTitle" aria-hidden="true">
@@ -58,32 +126,50 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-left mt-3">
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+    <hr>
+    <br>
+    <div class="row justify-content-left">
+        <h4 class="mt-3">INVOICE</h4>
+        <div class="col-md-2 text-center mt-5">
             <a href="{{route('rekap.invoice')}}" class="text-decoration-none">
-                <img src="{{asset('images/rekap-invoice.svg')}}" alt="" width="80">
-                <h3>INVOICE</h3>
+                <img src="{{asset('images/invoice-tagihan.svg')}}" alt="" width="70">
+                <h5 class="mt-3">INVOICE CUSTOMER</h5>
             </a>
         </div>
-        {{-- <div class="col-lg-3 mt-3 mb-3 text-center">
+        {{-- <div class="col-md-2 text-center mt-5">
             <a href="{{route('rekap.invoice-pph')}}" class="text-decoration-none">
-                <img src="{{asset('images/pajak.svg')}}" alt="" width="80">
-                <h3>INVOICE PPH</h3>
+                <img src="{{asset('images/pajak.svg')}}" alt="" width="70">
+                <h5 class="mt-3">INVOICE PPH</h5>
             </a>
         </div> --}}
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        {{-- <div class="col-md-2 text-center mt-5">
             <a href="{{route('rekap.pph-badan')}}" class="text-decoration-none">
-                <img src="{{asset('images/pajak-tahunan.svg')}}" alt="" width="80">
-                <h3>PPH BADAN</h3>
+                <img src="{{asset('images/pajak-tahunan.svg')}}" alt="" width="70">
+                <h5 class="mt-3">PPH BADAN</h5>
+            </a>
+        </div> --}}
+
+    </div>
+    <hr>
+    <br>
+    <div class="row justify-content-left">
+        <h4 class="mt-3">DATA LAMA</h4>
+
+        <div class="col-md-2 text-center mt-5">
+            <a href="{{route('rekap.kas-investor')}}" class="text-decoration-none">
+                <img src="{{asset('images/kas-investor.svg')}}" alt="" width="70">
+                <h5 class="mt-3">KAS INVESTOR</h5>
             </a>
         </div>
-        <div class="col-lg-3 mt-3 mb-3 text-center">
+        <div class="col-md-2 text-center mt-5">
             <a href="{{route('home')}}" class="text-decoration-none">
-                <img src="{{asset('images/dashboard.svg')}}" alt="" width="80">
-                <h3>DASHBOARD</h3>
+                <img src="{{asset('images/dashboard.svg')}}" alt="" width="70">
+                <h5 class="mt-3">DASHBOARD</h5>
             </a>
         </div>
     </div>
+    <hr>
+    <br>
 </div>
 @endsection
 @push('css')
