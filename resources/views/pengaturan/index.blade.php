@@ -1,27 +1,27 @@
 @extends('layouts.app')
-
 @section('content')
 <div class="container text-center">
-    <h1>PENGATURAN</h1>
+    <h1><u>PENGATURAN</u></h1>
 </div>
 <div class="container mt-5">
     <div class="row justify-content-left">
-        <div class="col-lg-3 col-md-4 text-center mt-3">
+        <h2 class="mt-2">PENGGUNA</h2>
+        <div class="col-md-3 text-center mt-5">
             <a href="{{route('pengaturan.akun')}}" class="text-decoration-none">
-                <img src="{{asset('images/pengguna.svg')}}" alt="" width="80">
-                <h4 class="mt-2">AKUN</h4>
+                <img src="{{asset('images/pengguna.svg')}}" alt="" width="70">
+                <h5 class="mt-3">AKUN</h5>
             </a>
         </div>
-        <div class="col-lg-3 col-md-4 text-center mt-3">
+        <div class="col-md-3 text-center mt-5">
             <a href="{{route('pengaturan.wa')}}" class="text-decoration-none">
-                <img src="{{asset('images/wa.svg')}}" alt="" width="80">
-                <h4 class="mt-2">GROUP WHATSAPP</h4>
+                <img src="{{asset('images/wa.svg')}}" alt="" width="70">
+                <h5 class="mt-3">GROUP WHATSAPP</h5>
             </a>
         </div>
-        <div class="col-lg-3 col-md-4 text-center mt-3">
+        <div class="col-md-3 text-center mt-5">
             <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#passwordKonfirmasi">
-                <img src="{{asset('images/password.svg')}}" alt="" width="80">
-                <h4 class="mt-2">PASSWORD KONFIRMASI</h4>
+                <img src="{{asset('images/password.svg')}}" alt="" width="70">
+                <h5 class="mt-3">PASSWORD KONFIRMASI</h5>
             </a>
             <div class="modal fade" id="passwordKonfirmasi" tabindex="-1" data-bs-backdrop="static"
                 data-bs-keyboard="false" role="dialog" aria-labelledby="pkTitle" aria-hidden="true">
@@ -55,19 +55,35 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-4 text-center mb-5 mt-3">
-        <a href="{{route('histori-pesan')}}" class="text-decoration-none">
-            <img src="{{asset('images/histori.svg')}}" alt="" width="80">
-            <h4 class="mt-2">HISTORI PESAN WA</h4>
-        </a>
+    <hr>
+    <br>
+    <div class="row justify-content-left">
+        <h2 class="mt-2">OTHERS</h2>
+        <div class="col-md-3 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">APLIKASI</h5>
+            </a>
+        </div>
+        <div class="col-md-3 text-center mt-5">
+            <a href="#" class="text-decoration-none">
+                <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
+                <h5 class="mt-3">BATASAN</h5>
+            </a>
+        </div>
+       <div class="col-md-3 text-center mt-5">
+            <a href="{{route('histori-pesan')}}" class="text-decoration-none">
+                <img src="{{asset('images/histori.svg')}}" alt="" width="70">
+                <h5 class="mt-3">HISTORI PESAN WHATSAPP</h5>
+            </a>
+        </div>
+        <div class="col-md-3 text-center mt-5">
+            <a href="{{route('home')}}" class="text-decoration-none">
+                <img src="{{asset('images/dashboard.svg')}}" alt="" width="70">
+                <h5 class="mt-3">DASHBOARD</h5>
+            </a>
+        </div>
     </div>
-    <div class="col-lg-3 col-md-4 text-center mt-3">
-        <a href="{{route('home')}}" class="text-decoration-none">
-            <img src="{{asset('images/dashboard.svg')}}" alt="" width="80">
-            <h4 class="mt-2">DASHBOARD</h4>
-        </a>
-    </div>
-</div>
 </div>
 @endsection
 @push('js')
