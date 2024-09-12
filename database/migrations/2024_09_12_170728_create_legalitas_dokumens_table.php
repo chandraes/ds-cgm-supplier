@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('legalitas_dokumens', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('legalitas_kategori_id')->constrained()->cascadeOnDelete();
+            $table->string('nama');
+            $table->text('file');
+            $table->date('tanggal_expired')->nullable();
             $table->timestamps();
         });
     }
