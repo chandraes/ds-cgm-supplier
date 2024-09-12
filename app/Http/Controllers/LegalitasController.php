@@ -13,7 +13,15 @@ class LegalitasController extends Controller
     public function index()
     {
         $kategori = LegalitasKategori::all();
-        $dokumen = LegalitasDokumen::get()->groupBy('legalitas_kategori_id');
+        $count = LegalitasDokumen::count();
+
+        if($count > 0)
+        {
+            $dokumen = LegalitasDokumen::orderBy('legalitas_kategori_id')->get()->groupBy('legalitas_kategori_id');
+        } else {
+            $dokumen = LegalitasDokumen::get()->groupBy('legalitas_kategori_id');
+        }
+
 
         return view('legalitas.index', [
             'kategori' => $kategori,
