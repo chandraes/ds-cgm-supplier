@@ -511,7 +511,7 @@ class InvoiceTagihan extends Model
             'no_rek' => $rekening->no_rek,
             'nama_rek' => $rekening->nama_rek,
             'bank' => $rekening->bank,
-            'saldo' => $kb->saldoTerakhir() + $data['nominal'],
+            'saldo' => $kb->saldoTerakhir() + $data['nominal'] + $invoice->nilai_pph,
             'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
         ]);
 
