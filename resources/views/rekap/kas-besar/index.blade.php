@@ -14,11 +14,12 @@
                 <tr class="text-center">
                     <td><a href="{{route('home')}}"><img src="{{asset('images/dashboard.svg')}}" alt="dashboard"
                                 width="30"> Dashboard</a></td>
-                    <td><a href="{{route('rekap')}}"><img src="{{asset('images/rekap.svg')}}" alt="dokumen"
-                                width="30"> REKAP</a></td>
+                    <td><a href="{{route('rekap')}}"><img src="{{asset('images/rekap.svg')}}" alt="dokumen" width="30">
+                            REKAP</a></td>
                     <td>
-                        <a href="{{route('rekap.kas-besar.print', ['bulan' => $bulan, 'tahun' => $tahun])}}" target="_blank"><img src="{{asset('images/print.svg')}}" alt="dokumen"
-                            width="30"> PRINT PDF</a>
+                        <a href="{{route('rekap.kas-besar.print', ['bulan' => $bulan, 'tahun' => $tahun])}}"
+                            target="_blank"><img src="{{asset('images/print.svg')}}" alt="dokumen" width="30"> PRINT
+                            PDF</a>
                     </td>
                 </tr>
             </table>
@@ -59,7 +60,8 @@
             </div>
             {{-- <div class="col-md-3 mb-3">
                 <label for="showPrint" class="form-label">&nbsp;</label>
-                <a href="{{route('rekap.kas-besar.preview', ['bulan' => $bulan, 'tahun' => $tahun])}}" target="_blank" class="btn btn-secondary form-control" id="btn-cari">Print Preview</a>
+                <a href="{{route('rekap.kas-besar.preview', ['bulan' => $bulan, 'tahun' => $tahun])}}" target="_blank"
+                    class="btn btn-secondary form-control" id="btn-cari">Print Preview</a>
             </div> --}}
         </div>
     </form>
@@ -68,29 +70,29 @@
     <div class="row mt-3">
         <table class="table table-hover table-bordered" id="rekapTable">
             <thead class=" table-success">
-            <tr>
-                <th class="text-center align-middle">Tanggal</th>
-                <th class="text-center align-middle">Uraian</th>
-                <th class="text-center align-middle">Project</th>
-                <th class="text-center align-middle">Deposit</th>
-                <th class="text-center align-middle">Kas Kecil</th>
-                <th class="text-center align-middle">Masuk</th>
-                <th class="text-center align-middle">Keluar</th>
-                <th class="text-center align-middle">Saldo</th>
-                <th class="text-center align-middle">Transfer Ke Rekening</th>
-                <th class="text-center align-middle">Bank</th>
-                <th class="text-center align-middle">Modal Investor</th>
-            </tr>
-            <tr class="table-warning">
-                <td colspan="6" class="text-center align-middle">Saldo Bulan
-                    {{$stringBulan}} {{$tahunSebelumnya}}</td>
-                <td></td>
-                <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_saldo : ''}}</td>
-                <td></td>
-                <td></td>
-                <td class="text-end align-middle">Rp. {{$dataSebelumnya ?
-                    number_format($dataSebelumnya->modal_investor_terakhir, 0,',','.') : ''}}</td>
-            </tr>
+                <tr>
+                    <th class="text-center align-middle">Tanggal</th>
+                    <th class="text-center align-middle">Uraian</th>
+                    <th class="text-center align-middle">Project</th>
+                    <th class="text-center align-middle">Deposit</th>
+                    <th class="text-center align-middle">Kas Kecil</th>
+                    <th class="text-center align-middle">Masuk</th>
+                    <th class="text-center align-middle">Keluar</th>
+                    <th class="text-center align-middle">Saldo</th>
+                    <th class="text-center align-middle">Transfer Ke Rekening</th>
+                    <th class="text-center align-middle">Bank</th>
+                    <th class="text-center align-middle">Modal Investor</th>
+                </tr>
+                <tr class="table-warning">
+                    <td colspan="6" class="text-center align-middle">Saldo Bulan
+                        {{$stringBulan}} {{$tahunSebelumnya}}</td>
+                    <td></td>
+                    <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_saldo : ''}}</td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-end align-middle">Rp. {{$dataSebelumnya ?
+                        number_format($dataSebelumnya->modal_investor_terakhir, 0,',','.') : ''}}</td>
+                </tr>
             </thead>
             <tbody>
                 @foreach ($data as $d)
@@ -98,9 +100,11 @@
                     <td class="text-center align-middle">{{$d->tanggal}}</td>
                     <td class="text-start align-middle">
                         @if ($d->invoice_tagihan_id)
-                        <a href="{{route('rekap.kas-besar.detail-tagihan', ['invoice' => $d->invoice_tagihan_id])}}">{{$d->uraian}}</a>
+                        <a
+                            href="{{route('rekap.kas-besar.detail-tagihan', ['invoice' => $d->invoice_tagihan_id])}}">{{$d->uraian}}</a>
                         @elseif($d->invoice_bayar_id)
-                        <a href="{{route('rekap.kas-besar.detail-bayar', ['invoice' => $d->invoice_bayar_id])}}">{{$d->uraian}}</a>
+                        <a
+                            href="{{route('rekap.kas-besar.detail-bayar', ['invoice' => $d->invoice_bayar_id])}}">{{$d->uraian}}</a>
                         @else
                         {{$d->uraian}}
                         @endif
@@ -109,8 +113,8 @@
                     <td class="text-start align-middle">
                         @if ($d->project)
                         <div class="text-center">
-                            <a href="#"  data-bs-toggle="modal"
-                            data-bs-target="#modalId{{$d->project->id}}">{{$d->project->kode_project}}</a>
+                            <a href="#" data-bs-toggle="modal"
+                                data-bs-target="#modalId{{$d->project->id}}">{{$d->project->kode_project}}</a>
                         </div>
                         @include('rekap.kas-besar.detail-project')
 
@@ -118,7 +122,7 @@
                     <td class="text-center align-middle">{{$d->kode_deposit}}</td>
                     <td class="text-center align-middle">{{$d->kode_kas_kecil}}</td>
                     <td class="text-end align-middle">{{$d->jenis === 1 ?
-                       $d->nf_nominal : ''}}
+                        $d->nf_nominal : ''}}
                     </td>
                     <td class="text-end align-middle text-danger">{{$d->jenis === 0 ?
                         $d->nf_nominal : ''}}
@@ -141,7 +145,9 @@
                     {{-- latest saldo --}}
                     <td class="text-end align-middle">
                         <strong>
-                            {{$data->last() ? $data->last()->nf_saldo : ''}}
+                            {{number_format($data->where('jenis',
+                            1)->sum('nominal') - $data->where('jenis',
+                            0)->sum('nominal') + ($dataSebelumnya ? $dataSebelumnya->saldo : 0), 0,',','.')}}
                         </strong>
                     </td>
                     <td></td>
@@ -164,7 +170,6 @@
 {{-- <script src="{{asset('assets/plugins/date-picker/date-picker.js')}}"></script> --}}
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
-
     $(document).ready(function() {
         $('#rekapTable').DataTable({
             "paging": false,
