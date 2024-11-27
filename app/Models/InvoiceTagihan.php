@@ -712,7 +712,7 @@ class InvoiceTagihan extends Model
     private function bagiRugiStore($data)
     {
         $kb = new KasBesar();
-
+        $rekening = Rekening::where('untuk', 'kas-besar')->first();
         if (!isset($data['project_id'])) {
             throw new \Exception('project_id is not set in $data');
         }
@@ -722,9 +722,9 @@ class InvoiceTagihan extends Model
             'nominal' => $data['nominal'],
             'jenis' => $data['jenis'],
             'uraian' => $data['uraian'],
-            'no_rek' => $data['no_rek'],
-            'nama_rek' => $data['nama_rek'],
-            'bank' => $data['bank'],
+            'no_rek' => $rekening->no_rek,
+            'nama_rek' => $rekening->nama_rek,
+            'bank' => $rekening->bank,
             'saldo' => $kb->saldoTerakhir() + $data['nominal'],
             'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
             'investor_modal_id' => $data['investor_modal_id']
