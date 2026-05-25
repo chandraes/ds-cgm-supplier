@@ -29,9 +29,11 @@ Route::group(['middleware' => ['auth']], function() {
         // Route::view('pengaturan', 'pengaturan.index')->name('pengaturan');
         Route::prefix('pengaturan')->group(function () {
             Route::get('/', [App\Http\Controllers\PengaturanController::class, 'index_view'])->name('pengaturan');
-            Route::get('/wa', [App\Http\Controllers\WaController::class, 'index'])->name('pengaturan.wa');
+
+            Route::get('/wa', [App\Http\Controllers\WaController::class, 'wa'])->name('pengaturan.wa');
             Route::get('/wa/get-wa-group', [App\Http\Controllers\WaController::class, 'get_group_wa'])->name('pengaturan.wa.get-group-wa');
-            Route::patch('/wa/{group_wa}/update', [App\Http\Controllers\WaController::class, 'update'])->name('pengaturan.wa.update');
+            Route::get('/wa/edit/{id}', [App\Http\Controllers\WaController::class, 'edit'])->name('pengaturan.wa.edit');
+            Route::patch('/wa/update/{id}', [App\Http\Controllers\WaController::class, 'update'])->name('pengaturan.wa.update');
 
             Route::get('/akun', [App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan.akun');
             Route::post('/akun/store', [App\Http\Controllers\PengaturanController::class, 'store'])->name('pengaturan.akun.store');
@@ -40,11 +42,11 @@ Route::group(['middleware' => ['auth']], function() {
 
             Route::post('/password-konfirmasi', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi'])->name('pengaturan.password-konfirmasi');
             Route::post('/password-konfirmasi/cek', [App\Http\Controllers\PengaturanController::class, 'password_konfirmasi_cek'])->name('pengaturan.password-konfirmasi-cek');
-        });
 
-        Route::get('/histori-pesan', [App\Http\Controllers\HistoriController::class, 'index'])->name('histori-pesan');
-        Route::post('/histori-pesan/resend/{pesanWa}', [App\Http\Controllers\HistoriController::class, 'resend'])->name('histori.resend');
-        Route::delete('/histori-pesan/delete-sended', [App\Http\Controllers\HistoriController::class, 'delete_sended'])->name('histori.delete-sended');
+            Route::get('/histori-pesan', [App\Http\Controllers\HistoriController::class, 'index'])->name('pengaturan.histori-pesan');
+            Route::post('/histori-pesan/resend/{pesanWa}', [App\Http\Controllers\HistoriController::class, 'resend'])->name('pengaturan.histori.resend');
+            Route::delete('/histori-pesan/delete-sended', [App\Http\Controllers\HistoriController::class, 'delete_sended'])->name('pengaturan.histori.delete-sended');
+        });
         // END ROUTE PENGATURAN
 
         Route::prefix('legalitas')->group(function(){
