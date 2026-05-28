@@ -41,6 +41,13 @@
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 mb-3">
+                            <label for="profit_simpan" class="form-label">Profit Disimpan (%)</label>
+                            <div class="input-group mb-3">
+                                <input type="number" class="form-control" name="profit_simpan" id="edit_profit_simpan" min="0" max="100" step="0.01" value="0" required>
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12 mb-3">
                             <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
                             <div class="input-group mb-3">
                                 <span class="input-group-text" id="basic-addon1"><i class="fa fa-calendar"></i></span>

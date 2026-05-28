@@ -18,7 +18,7 @@ class ProjectController extends Controller
         return view('db.project.index',
             [
                 'customers' => $customer,
-                'data' => $data
+                'data' => $data,
             ]
         );
     }
@@ -30,6 +30,7 @@ class ProjectController extends Controller
             'nama' => 'required',
             'nomor_kontrak' => 'required',
             'nilai' => 'required',
+            'profit_simpan' => 'nullable|numeric|min:0|max:100',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
             'ppn' => 'nullable',
@@ -39,6 +40,7 @@ class ProjectController extends Controller
         ]);
 
         $data['project_status_id'] = 1;
+        $data['profit_simpan'] = $request->filled('profit_simpan') ? (float) $request->input('profit_simpan') : 0;
         $data['ppn'] = $request->filled('ppn') ? 1 : 0;
         $data['pph'] = $request->filled('pph') ? 1 : 0;
         $data['pph_badan'] = $request->filled('pph_badan') ? 1 : 0;
@@ -60,6 +62,7 @@ class ProjectController extends Controller
             'customer_id' => 'required|exists:customers,id',
             'nama' => 'required',
             'nilai' => 'required',
+            'profit_simpan' => 'nullable|numeric|min:0|max:100',
             'nomor_kontrak' => 'required',
             'tanggal_mulai' => 'required',
             'jatuh_tempo' => 'required',
@@ -68,6 +71,7 @@ class ProjectController extends Controller
             'pph_badan' => 'nullable',
         ]);
 
+        $data['profit_simpan'] = $request->filled('profit_simpan') ? (float) $request->input('profit_simpan') : 0;
         $data['ppn'] = $request->filled('ppn') ? 1 : 0;
         $data['pph'] = $request->filled('pph') ? 1 : 0;
         $data['pph_badan'] = $request->filled('pph_badan') ? 1 : 0;
@@ -82,11 +86,12 @@ class ProjectController extends Controller
             Project::updateProject($project->id, $data);
             DB::commit();
 
-        return redirect()->route('db.project')
-            ->with('success', 'Project berhasil diupdate!');
+            return redirect()->route('db.project')
+                ->with('success', 'Project berhasil diupdate!');
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()->route('db.project')
                 ->with('error', $e->getMessage());
         }
@@ -97,7 +102,7 @@ class ProjectController extends Controller
     {
         $kas = KasProject::where('project_id', $project->id)->first();
 
-        if($kas) {
+        if ($kas) {
             return redirect()->route('db.project')
                 ->with('error', 'Project tidak bisa dihapus karena sudah ada transaksi!');
         }

@@ -35,6 +35,7 @@
                 <th class="text-center align-middle">NAMA PROJECT</th>
                 <th class="text-center align-middle">NO KONTRAK</th>
                 <th class="text-center align-middle">NILAI DPP</th>
+                <th class="text-center align-middle">PROFIT<br>DISIMPAN (%)</th>
                 <th class="text-center align-middle">TGL MULAI</th>
                 <th class="text-center align-middle">TGL JATUH TEMPO</th>
                 <th class="text-center align-middle">PPn</th>
@@ -53,6 +54,7 @@
                 <td class="text-center align-middle">{{$d->nama}}</td>
                 <td class="text-center align-middle">{{$d->nomor_kontrak}}</td>
                 <td class="text-end align-middle">{{$d->nf_nilai}}</td>
+                <td class="text-center align-middle">{{ number_format((float) $d->profit_simpan, 2, ',', '.') }}%</td>
                 <td class="text-center align-middle">{{$d->id_tanggal_mulai}}</td>
                 <td class="text-center align-middle">{{$d->id_jatuh_tempo}}</td>
                 <td class="text-center align-middle">
@@ -150,6 +152,7 @@
         document.getElementById('edit_nama').value = data.nama;
         document.getElementById('edit_customer_id').value = data.customer_id;
         document.getElementById('edit_nilai').value = data.nf_nilai;
+        document.getElementById('edit_profit_simpan').value = data.profit_simpan ?? 0;
         document.getElementById('edit_nomor_kontrak').value = data.nomor_kontrak;
         document.getElementById('edit_tanggal_mulai').value = data.id_tanggal_mulai;
         document.getElementById('edit_jatuh_tempo').value = data.id_jatuh_tempo;
@@ -169,6 +172,38 @@
         theme: 'bootstrap-5',
         width: '100%',
         dropdownParent: $('#createCustomer')
+    });
+
+    function clampProfitSimpan(input) {
+        if (!input) {
+            return;
+        }
+
+        const value = input.value;
+
+        if (value === '') {
+            return;
+        }
+
+        const numericValue = Number.parseFloat(value);
+
+        if (Number.isNaN(numericValue)) {
+            input.value = '';
+            return;
+        }
+
+        if (numericValue < 0) {
+            input.value = '0';
+            return;
+        }
+
+        if (numericValue > 100) {
+            input.value = '100';
+        }
+    }
+
+    $('#profit_simpan, #edit_profit_simpan').on('input blur', function () {
+        clampProfitSimpan(this);
     });
 
     $('#data').DataTable({

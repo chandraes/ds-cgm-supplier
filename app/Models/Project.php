@@ -23,6 +23,7 @@ class Project extends Model
     public function getTotalTagihanAttribute()
     {
         $total = $this->nilai + ($this->nilai_ppn) - ($this->nilai_pph);
+
         return $total;
     }
 
@@ -39,12 +40,13 @@ class Project extends Model
     public static function generateKode()
     {
         $kode = Project::max('kode') + 1;
+
         return $kode;
     }
 
     public function getKodeProjectAttribute()
     {
-        return 'P' . str_pad($this->kode, 2, '0', STR_PAD_LEFT);
+        return 'P'.str_pad($this->kode, 2, '0', STR_PAD_LEFT);
     }
 
     public function getNfNilaiAttribute()
@@ -82,9 +84,28 @@ class Project extends Model
         return Carbon::parse($this->jatuh_tempo)->format('d-m-Y');
     }
 
+    public static function normalizeDecimalValue($value): float
+    {
+        $value = trim((string) ($value ?? 0));
+
+        if ($value === '') {
+            return 0.0;
+        }
+
+        if (str_contains($value, ',')) {
+            $value = str_replace('.', '', $value);
+            $value = str_replace(',', '.', $value);
+        } else {
+            $value = str_replace(',', '.', $value);
+        }
+
+        return (float) $value;
+    }
+
     public static function createProject($data)
     {
         $data['nilai'] = str_replace('.', '', $data['nilai']);
+        $data['profit_simpan'] = self::normalizeDecimalValue($data['profit_simpan'] ?? 0);
         $date = Carbon::createFromFormat('d-m-Y', $data['tanggal_mulai']);
         $data['tanggal_mulai'] = $date->format('Y-m-d');
         $jatuhTempo = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo']);
@@ -139,6 +160,7 @@ class Project extends Model
     public static function updateProject($id, $data)
     {
         $data['nilai'] = str_replace('.', '', $data['nilai']);
+        $data['profit_simpan'] = self::normalizeDecimalValue($data['profit_simpan'] ?? 0);
         $data['tanggal_mulai'] = Carbon::createFromFormat('d-m-Y', $data['tanggal_mulai'])->format('Y-m-d');
         $data['jatuh_tempo'] = Carbon::createFromFormat('d-m-Y', $data['jatuh_tempo'])->format('Y-m-d');
 
