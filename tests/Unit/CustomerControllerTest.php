@@ -16,21 +16,21 @@ class CustomerControllerTest extends TestCase
     {
         $data = [
             'nama' => 'Test',
+            'npwp' => '123456789012345',
             'singkatan' => 'T',
             'cp' => 'Test CP',
             'no_wa' => '1234567890',
             'alamat' => 'Test Address',
-            'harga' => '1000',
         ];
 
         // Validate the data
         $validator = Validator::make($data, [
             'nama' => 'required',
+            'npwp' => 'required',
             'singkatan' => 'required',
             'cp' => 'required',
             'no_wa' => 'required',
             'alamat' => 'required',
-            'harga' => 'required',
         ]);
 
         if ($validator->fails()) {
