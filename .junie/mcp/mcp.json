@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/unsri-perpus/Library/Application Support/Herd/bin/php84",
+            "args": [
+                "/Users/unsri-perpus/Documents/Chandra/Kerjaan/dsgroup/ds-cgm-supplier/artisan",
+                "boost:mcp"
+            ]
+        }
+    }
+}
