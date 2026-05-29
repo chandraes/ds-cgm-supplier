@@ -53,6 +53,8 @@
                     <th class="text-center align-middle">PPn Masukan</th>
                     <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
+                    <th class="text-center align-middle">Profit Simpan</th>
+                    <th class="text-center align-middle">Profit Akhir</th>
                     <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>
@@ -64,9 +66,9 @@
             <tbody>
                 @foreach ($data as $d)
                 <tr>
-                    <td class="text-center align-middle"></td>
-                    <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
-                    <td class="text-start align-middle">{{$d->project->nama}}</td>
+                    <th class="text-center align-middle"></td>
+                    <th class="text-center align-middle">{{$d->customer->singkatan}}</td>
+                    <th class="text-start align-middle">{{$d->project->nama}}</td>
                     <td class="text-center align-middle">
                         {{$d->id_estimasi_pembayaran}}
                     </td>
@@ -133,6 +135,14 @@
                     <td class="text-end align-middle">
 
                         {{$d->nf_profit}}
+                    </td>
+                    <td class="text-end align-middle">
+
+                        {{$d->nf_profit_simpan}}
+                    </td>
+                     <td class="text-end align-middle">
+
+                        {{number_format($d->profit - $d->profit_simpan, 0, ',', '.')}}
                     </td>
                     <td class="text-center align-middle">
                         <!-- Modal trigger button -->
@@ -203,6 +213,8 @@
                     <th class="text-end align-middle">{{number_format($data->sum('ppn_masukan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('profit'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('profit_simpan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('profit')-$data->sum('profit_simpan'), 0, ',', '.')}}</th>
                     <th></th>
                 </tr>
             </tfoot>
@@ -226,6 +238,7 @@
                 "searching": true,
                 "scrollCollapse": true,
                 "scrollY": "500px",
+                "scrollX": true,
 
             });
 

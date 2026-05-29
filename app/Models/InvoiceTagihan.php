@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Services\StarSender;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class InvoiceTagihan extends Model
 {
@@ -15,8 +15,8 @@ class InvoiceTagihan extends Model
     protected $guarded = [];
 
     protected $appends = ['nf_nilai_tagihan', 'nf_dibayar', 'nf_sisa_tagihan', 'pengeluaran', 'profit', 'profit_akhir', 'nf_profit_akhir',
-                            'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran', 'nf_nilai_ppn', 'nf_nilai_pph',
-                            'ppn_masukan', 'nf_ppn_masukan', 'total_tagihan', 'nf_total_tagihan'];
+        'bulan_akhir', 'tahun_akhir', 'balance', 'nf_balance', 'id_estimasi_pembayaran', 'nf_nilai_ppn', 'nf_nilai_pph',
+         'ppn_masukan', 'nf_ppn_masukan', 'total_tagihan', 'nf_total_tagihan', 'nf_profit_simpan', 'profis_simpan'];
 
     public function getNfNilaiPphAttribute()
     {
@@ -37,6 +37,7 @@ class InvoiceTagihan extends Model
     {
         return Carbon::parse($this->estimasi_pembayaran)->format('d-m-Y');
     }
+
     public function kasProjects()
     {
         return $this->hasManyThrough(KasProject::class, Project::class, 'id', 'project_id', 'project_id', 'id');
@@ -51,6 +52,7 @@ class InvoiceTagihan extends Model
     {
         // sum all nominal from invoiceTagihanDetails
         $total = $this->invoiceTagihanDetails->sum('nominal');
+
         return $total;
     }
 
@@ -62,12 +64,14 @@ class InvoiceTagihan extends Model
     public function getBulanAkhirAttribute()
     {
         $bulan = $this->kasProjects->last() ? Carbon::parse($this->kasProjects->last()->create_at)->format('m') : date('m');
+
         return $bulan;
     }
 
     public function getTahunAkhirAttribute()
     {
         $tahun = $this->kasProjects->last() ? Carbon::parse($this->kasProjects->last()->create_at)->format('Y') : date('Y');
+
         return $tahun;
     }
 
@@ -75,18 +79,40 @@ class InvoiceTagihan extends Model
     {
         $latestKasProject = $this->kasProjects->last();
         $pengeluaran = $latestKasProject ? $latestKasProject->sisa : 0;
+
         return $pengeluaran;
+    }
+
+    public function getProfitSimpanAttribute()
+    {
+        $profitSimpan = (float) ($this->project->profit_simpan ?? 0);
+        $profitSimpan = $this->profit * ($profitSimpan / 100);
+        return $profitSimpan;
+    }
+
+    public function getNfProfitSimpanAttribute()
+    {
+        return number_format($this->profit_simpan, 0, ',', '.');
     }
 
     public function getProfitAttribute()
     {
-        $profit = ($this->nilai_tagihan-$this->nilai_pph) + $this->pengeluaran;
+        $profit = ($this->nilai_tagihan - $this->nilai_pph) + $this->pengeluaran;
+
         return $profit;
+    }
+
+    public function getTotalProfitAttribute()
+    {
+        $totalProfit = $this->profit - $this->profit_simpan;
+
+        return $totalProfit;
     }
 
     public function getPpnMasukanAttribute()
     {
         $ppn = $this->kasProjects->where('ppn_masuk', 1)->sum('nominal');
+
         return $ppn;
     }
 
@@ -110,6 +136,7 @@ class InvoiceTagihan extends Model
     public function getProfitAkhirAttribute()
     {
         $profit = ($this->nilai_tagihan - $this->nilai_pph) - $this->kasProjects()->where('jenis', 0)->sum('nominal');
+
         return $profit;
     }
 
@@ -162,32 +189,32 @@ class InvoiceTagihan extends Model
         try {
             $invoice->update([
                 'cutoff' => 1,
-                'estimasi_pembayaran' => $data['estimasi_pembayaran']
+                'estimasi_pembayaran' => $data['estimasi_pembayaran'],
             ]);
 
             $invoice->project->update([
-                'project_status_id' => 3
+                'project_status_id' => 3,
             ]);
 
             DB::commit();
 
             $result = [
                 'status' => 'success',
-                'message' => 'Cutoff berhasil diproses!'
+                'message' => 'Cutoff berhasil diproses!',
             ];
 
             return $result;
 
         } catch (\Throwable $th) {
 
-                DB::rollBack();
+            DB::rollBack();
 
-                $result = [
-                    'status' => 'error',
-                    'message' => $th->getMessage()
-                ];
+            $result = [
+                'status' => 'error',
+                'message' => $th->getMessage(),
+            ];
 
-                return $result;
+            return $result;
         }
 
     }
@@ -195,7 +222,7 @@ class InvoiceTagihan extends Model
     public function cicilan($invoice_id, $data)
     {
 
-        $kb = new KasBesar();
+        $kb = new KasBesar;
         $invoice = InvoiceTagihan::find($invoice_id);
 
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
@@ -209,13 +236,13 @@ class InvoiceTagihan extends Model
         DB::beginTransaction();
 
         $invoice->update([
-                            'dibayar' => $invoice->dibayar + $data['nominal'],
-                            'sisa_tagihan' => $invoice->sisa_tagihan - $data['nominal']
-                        ]);
+            'dibayar' => $invoice->dibayar + $data['nominal'],
+            'sisa_tagihan' => $invoice->sisa_tagihan - $data['nominal'],
+        ]);
 
         $invoice->invoiceTagihanDetails()->create([
             'uraian' => $data['uraian'],
-            'nominal' => $data['nominal']
+            'nominal' => $data['nominal'],
         ]);
 
         $store = $kb->create([
@@ -227,7 +254,7 @@ class InvoiceTagihan extends Model
             'nama_rek' => $data['nama_rek'],
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() + $data['nominal'],
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
         ]);
 
         DB::commit();
@@ -236,11 +263,11 @@ class InvoiceTagihan extends Model
 
     }
 
-    //cuma tuhan yang tau ini kenapa bisa berfungsi
+    // cuma tuhan yang tau ini kenapa bisa berfungsi
     // TODO: Bersihkan kode ini
     public function pelunasan($invoice_id)
     {
-        $db = new KasProject();
+        $db = new KasProject;
         $invoice = InvoiceTagihan::find($invoice_id);
 
         $data['nominal'] = $invoice->sisa_tagihan;
@@ -250,7 +277,7 @@ class InvoiceTagihan extends Model
 
         $sisa = $db->sisaTerakhir($invoice->project_id);
         $pengeluaranTotal = $sisa * -1;
-        $uraian = "Pengembalian Modal Invesotor ".$invoice->project->nama;
+        $uraian = 'Pengembalian Modal Invesotor '.$invoice->project->nama;
         $pesan = [];
 
         DB::beginTransaction();
@@ -267,28 +294,28 @@ class InvoiceTagihan extends Model
             $pesanPelunasan = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                 "*PEMBAYARAN INVOICE*\n".
                 "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                "Customer : *".$store->project->customer->singkatan."*\n".
-                "Project :  *".$store->project->nama."*\n\n".
-                "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                'Customer : *'.$store->project->customer->singkatan."*\n".
+                'Project :  *'.$store->project->nama."*\n\n".
+                'Nilai    :  *Rp. '.number_format($store->nominal, 0, ',', '.')."*\n\n".
                 "Ditransfer ke rek:\n\n".
-                "Bank      : ".$store->bank."\n".
-                "Nama    : ".$store->nama_rek."\n".
-                "No. Rek : ".$store->no_rek."\n\n".
+                'Bank      : '.$store->bank."\n".
+                'Nama    : '.$store->nama_rek."\n".
+                'No. Rek : '.$store->no_rek."\n\n".
                 "==========================\n".
-                "Customer : ".$store->project->customer->singkatan."\n".
-                "Tagihan : Rp. ".number_format($tst, 0, ',', '.')."\n\n".
+                'Customer : '.$store->project->customer->singkatan."\n".
+                'Tagihan : Rp. '.number_format($tst, 0, ',', '.')."\n\n".
                 "Sisa Saldo Kas Besar : \n".
-                "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($store->saldo, 0, ',', '.')."\n\n".
                 "Total Modal Investor : \n".
-                "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                 "Total Kas Project (Modal) : \n".
-                "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($sisa, 0, ',', '.')."\n\n".
                 "Sisa PPn Masukan : \n".
-                "Rp. ".number_format($invoice->ppn_masukan, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($invoice->ppn_masukan, 0, ',', '.')."\n\n".
                 "Profit Project : \n".
-                "Rp. ".number_format($invoice->profit, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($invoice->profit-$invoice->profit_simpan, 0, ',', '.')."\n\n".
                 "Invoice : \n".
-                "Rp. ".number_format($tsi, 0, ',', '.')."\n\n".
+                'Rp. '.number_format($tsi, 0, ',', '.')."\n\n".
                 "Terima kasih 🙏🙏🙏\n";
 
             // add $pesanPelunasan to $pesan array
@@ -307,17 +334,17 @@ class InvoiceTagihan extends Model
                     $pesanPph = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                             "*Form PPH*\n".
                             "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                            "Uraian  : ".$storePph->uraian."\n".
-                            "Nilai :  *Rp. ".number_format($storePph->nominal, 0, ',', '.')."*\n\n".
+                            'Uraian  : '.$storePph->uraian."\n".
+                            'Nilai :  *Rp. '.number_format($storePph->nominal, 0, ',', '.')."*\n\n".
                             "Ditransfer ke rek:\n\n".
-                            "Bank      : ".$storePph->bank."\n".
-                            "Nama    : ".$storePph->nama_rek."\n".
-                            "No. Rek : ".$storePph->no_rek."\n\n".
+                            'Bank      : '.$storePph->bank."\n".
+                            'Nama    : '.$storePph->nama_rek."\n".
+                            'No. Rek : '.$storePph->no_rek."\n\n".
                             "==========================\n".
                             "Sisa Saldo Kas Besar : \n".
-                            "Rp. ".number_format($storePph->saldo, 0, ',', '.')."\n\n".
+                            'Rp. '.number_format($storePph->saldo, 0, ',', '.')."\n\n".
                             "Total Modal Investor : \n".
-                            "Rp. ".number_format($storePph->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                            'Rp. '.number_format($storePph->modal_investor_terakhir, 0, ',', '.')."\n\n".
                             "Terima kasih 🙏🙏🙏\n";
 
                     array_push($pesan, $pesanPph);
@@ -325,34 +352,34 @@ class InvoiceTagihan extends Model
 
             }
 
-            //pengembalian rugi modal
+            // pengembalian rugi modal
 
             if ($invoice->profit < 0) {
 
                 $rugi = $this->bagiRugi($invoice);
 
                 foreach ($rugi as $r) {
-                    $pesanRugi = "";
+                    $pesanRugi = '';
 
                     $store2 = $this->bagiRugiStore($r);
 
-                    $pesanRugi =  "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
+                    $pesanRugi = "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n".
                         "*Form Bagi Rugi*\n".
                         "🔵🔵🔵🔵🔵🔵🔵🔵🔵\n\n".
-                        "Project : "."*".$store2->project->nama."*\n\n".
-                        "Uraian :  *".$store2->uraian."*\n".
-                        "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
+                        'Project : '.'*'.$store2->project->nama."*\n\n".
+                        'Uraian :  *'.$store2->uraian."*\n".
+                        'Nilai    :  *Rp. '.number_format($store2->nominal, 0, ',', '.')."*\n\n".
                         "Ditransfer ke rek:\n\n".
-                        "Bank      : ".$store2->bank."\n".
-                        "Nama    : ".$store2->nama_rek."\n".
-                        "No. Rek : ".$store2->no_rek."\n\n".
+                        'Bank      : '.$store2->bank."\n".
+                        'Nama    : '.$store2->nama_rek."\n".
+                        'No. Rek : '.$store2->no_rek."\n\n".
                         "==========================\n".
                         "Sisa Saldo Kas Besar : \n".
-                        "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store2->saldo, 0, ',', '.')."\n\n".
                         "Total Modal Investor : \n".
-                        "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
                         "Total Kas Project : \n".
-                        "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($sisa, 0, ',', '.')."\n\n".
                         "Terima kasih 🙏🙏🙏\n";
 
                     // add $pesanRugi to $pesan array
@@ -361,62 +388,30 @@ class InvoiceTagihan extends Model
 
             }
 
-            // withdraw pengeluaran project
-            // $withdraw = $this->withdrawPelunasan($sisa, $invoice->project_id);
-
-            // foreach ($withdraw as $w) {
-
-            //     $pesanWithdraw = '';
-
-            //     $store2 = $this->withdrawPelunasanStore($w);
-
-            //     $pesanWithdraw =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
-            //                         "*Form Withdraw Project*\n".
-            //                         "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-            //                         "Project : "."*".$store2->project->nama."*\n\n".
-            //                         "Uraian :  *".$store2->uraian."*\n".
-            //                         "Nilai    :  *Rp. ".number_format($store2->nominal, 0, ',', '.')."*\n\n".
-            //                         "Ditransfer ke rek:\n\n".
-            //                         "Bank      : ".$store2->bank."\n".
-            //                         "Nama    : ".$store2->nama_rek."\n".
-            //                         "No. Rek : ".$store2->no_rek."\n\n".
-            //                         "==========================\n".
-            //                         "Sisa Saldo Kas Besar : \n".
-            //                         "Rp. ".number_format($store2->saldo, 0, ',', '.')."\n\n".
-            //                         "Total Modal Investor : \n".
-            //                         "Rp. ".number_format($store2->modal_investor_terakhir, 0, ',', '.')."\n\n".
-            //                         "Total Kas Project : \n".
-            //                         "Rp. ".number_format($sisa, 0, ',', '.')."\n\n".
-            //                         "Terima kasih 🙏🙏🙏\n";
-
-            //     array_push($pesan, $pesanWithdraw);
-
-            // }
-
             // jika ada profit maka bagi deviden
             if ($invoice->profit > 0) {
 
                 $deviden = $this->devidenProject($invoice);
 
                 foreach ($deviden as $d) {
-                    $p = "";
+                    $p = '';
 
                     $store3 = $this->devidenStore($d);
 
                     $p = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                         "*Form Deviden Project*\n".
                         "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                        "Uraian  : ".$store3->uraian."\n".
-                        "Nilai :  *Rp. ".number_format($store3->nominal, 0, ',', '.')."*\n\n".
+                        'Uraian  : '.$store3->uraian."\n".
+                        'Nilai :  *Rp. '.number_format($store3->nominal, 0, ',', '.')."*\n\n".
                         "Ditransfer ke rek:\n\n".
-                        "Bank      : ".$store3->bank."\n".
-                        "Nama    : ".$store3->nama_rek."\n".
-                        "No. Rek : ".$store3->no_rek."\n\n".
+                        'Bank      : '.$store3->bank."\n".
+                        'Nama    : '.$store3->nama_rek."\n".
+                        'No. Rek : '.$store3->no_rek."\n\n".
                         "==========================\n".
                         "Sisa Saldo Kas Besar : \n".
-                        "Rp. ".number_format($store3->saldo, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store3->saldo, 0, ',', '.')."\n\n".
                         "Total Modal Investor : \n".
-                        "Rp. ".number_format($store3->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store3->modal_investor_terakhir, 0, ',', '.')."\n\n".
                         "Terima kasih 🙏🙏🙏\n";
 
                     array_push($pesan, $p);
@@ -424,29 +419,31 @@ class InvoiceTagihan extends Model
 
             }
 
-
             DB::commit();
-
 
         } catch (\Throwable $th) {
 
             DB::rollBack();
             $result = [
                 'status' => 0,
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
             ];
+
             return $result;
 
         }
 
+        $dbGroup = new GroupWa;
+        $group = $dbGroup->where('untuk', 'kas-besar')->first();
+
         foreach ($pesan as $p) {
-            $this->sendWa($p);
+            $dbGroup->sendWa($group->nama_group,$p);
             usleep(100000);
         }
 
         $result = [
             'status' => 1,
-            'message' => 'Pelunasan berhasil diproses!'
+            'message' => 'Pelunasan berhasil diproses!',
         ];
 
         return $result;
@@ -457,24 +454,24 @@ class InvoiceTagihan extends Model
         $invoice->update([
             'dibayar' => $invoice->dibayar + $data['nominal'],
             'sisa_tagihan' => $invoice->sisa_tagihan - $data['nominal'],
-            'finished' => 1
+            'finished' => 1,
         ]);
 
         $invoice->invoiceTagihanDetails()->create([
             'uraian' => $data['uraian'],
-            'nominal' => $data['nominal'] + $invoice->nilai_pph
+            'nominal' => $data['nominal'] + $invoice->nilai_pph,
         ]);
 
         Project::find($invoice->project_id)->update([
-            'project_status_id' => 2
+            'project_status_id' => 2,
         ]);
     }
 
     private function devidenStore($data)
     {
-        $kb = new KasBesar();
+        $kb = new KasBesar;
 
-        if (!isset($data['project_id'])) {
+        if (! isset($data['project_id'])) {
             throw new \Exception('project_id is not set in $data');
         }
 
@@ -488,7 +485,7 @@ class InvoiceTagihan extends Model
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() - $data['nominal'],
             'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
-            'investor_modal_id' => $data['investor_modal_id']
+            'investor_modal_id' => $data['investor_modal_id'],
         ]);
 
         return $store;
@@ -496,10 +493,10 @@ class InvoiceTagihan extends Model
 
     private function masukKasBesar($data, InvoiceTagihan $invoice)
     {
-        $kb = new KasBesar();
+        $kb = new KasBesar;
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
 
-        if (!isset($data['project_id'])) {
+        if (! isset($data['project_id'])) {
             throw new \Exception('project_id is not set in $data');
         }
 
@@ -512,16 +509,16 @@ class InvoiceTagihan extends Model
             'nama_rek' => $rekening->nama_rek,
             'bank' => $rekening->bank,
             'saldo' => $kb->saldoTerakhir() + $data['nominal'] + $invoice->nilai_pph,
-            'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
         ]);
 
         return $store;
 
     }
 
-    private function withdrawPelunasan($sisa,$project_id)
+    private function withdrawPelunasan($sisa, $project_id)
     {
-        if($sisa < 0) {
+        if ($sisa < 0) {
             $sisa = $sisa * -1;
         }
 
@@ -537,7 +534,7 @@ class InvoiceTagihan extends Model
                 'nominal' => $sisa * $i->persentase / 100,
                 'uraian' => 'Withdraw '.$i->nama,
                 'project_id' => $project_id,
-                'investor_modal_id' => $i->id
+                'investor_modal_id' => $i->id,
             ];
         }
         // make every nominal to exact same as profit
@@ -546,10 +543,10 @@ class InvoiceTagihan extends Model
             $total += $d['nominal'];
         }
 
-        if($total > $sisa) {
+        if ($total > $sisa) {
             $selisih = $total - $sisa;
             $data[0]['nominal'] -= $selisih;
-        } else if($total < $sisa) {
+        } elseif ($total < $sisa) {
             $selisih = $sisa - $total;
             $data[0]['nominal'] += $selisih;
         }
@@ -559,9 +556,9 @@ class InvoiceTagihan extends Model
 
     private function withdrawPelunasanStore($data)
     {
-        $kb = new KasBesar();
+        $kb = new KasBesar;
 
-        if (!isset($data['project_id'])) {
+        if (! isset($data['project_id'])) {
             throw new \Exception('project_id is not set in $data');
         }
 
@@ -575,7 +572,7 @@ class InvoiceTagihan extends Model
             'bank' => $data['bank'],
             'saldo' => $kb->saldoTerakhir() - $data['nominal'],
             'modal_investor_terakhir' => $kb->modalInvestorTerakhir() + $data['nominal'],
-            'investor_modal_id' => $data['investor_modal_id']
+            'investor_modal_id' => $data['investor_modal_id'],
         ]);
 
         $kb->kurangModal($data['nominal'], $data['investor_modal_id']);
@@ -602,14 +599,17 @@ class InvoiceTagihan extends Model
     {
         $rp = Rekening::where('untuk', 'pengelola')->first();
         $investorModal = InvestorModal::all();
-        $profit = $invoice->profit;
+
+        // 1. Pastikan nilai profit awal sudah dibulatkan ke Integer
+        $profit = round($invoice->profit - $invoice->profit_simpan, 0);
         $data = [];
         $investor = Investor::all();
         $totalProfitInvestor = 0;
         $totalProfitPengelola = 0;
 
         foreach ($investor as $i) {
-            $nominal = $profit * $i->persentase / 100;
+            // 2. Bulatkan hasil bagi profit per kategori investor (pengelola / investor)
+            $nominal = round($profit * $i->persentase / 100, 0);
 
             if ($i->nama == 'pengelola') {
                 $data[] = [
@@ -617,7 +617,7 @@ class InvoiceTagihan extends Model
                     'bank' => $rp->bank,
                     'nama_rek' => $rp->nama_rek,
                     'jenis' => 0,
-                    'nominal' => $nominal,
+                    'nominal' => $nominal, // Sudah Integer murni
                     'uraian' => 'Bagi Deviden '.$rp->untuk,
                     'project_id' => $invoice->project_id,
                     'investor_modal_id' => null,
@@ -628,44 +628,52 @@ class InvoiceTagihan extends Model
                 $totalProfitInvestor = $nominal;
                 foreach ($investorModal as $im) {
                     if ($im->persentase > 0) {
+                        // 3. Bulatkan hasil bagi profit untuk masing-masing sub-investor
+                        $nominalSubInvestor = round($nominal * $im->persentase / 100, 0);
+
                         $data[] = [
                             'no_rek' => $im->no_rek,
                             'bank' => $im->bank,
                             'nama_rek' => $im->nama_rek,
                             'jenis' => 0,
-                            'nominal' => $nominal * $im->persentase / 100,
+                            'nominal' => $nominalSubInvestor, // Sudah Integer murni
                             'uraian' => 'Bagi Deviden '.$im->nama,
                             'project_id' => $invoice->project_id,
-                            'investor_modal_id' => $im->id
+                            'investor_modal_id' => $im->id,
                         ];
                     }
                 }
             }
         }
 
-        $total = array_sum(array_column($data, 'nominal'));
-        if ($total > $profit) {
-            $data[0]['nominal'] -= $total - $profit;
-        } elseif ($total < $profit) {
-            $data[0]['nominal'] += $profit - $total;
+        // 4. Penambal selisih sekarang bekerja sempurna karena membandingkan sesama Integer
+        if (!empty($data)) {
+            $total = array_sum(array_column($data, 'nominal'));
+            if ($total > $profit) {
+                $data[0]['nominal'] -= ($total - $profit);
+            } elseif ($total < $profit) {
+                $data[0]['nominal'] += ($profit - $total);
+            }
         }
 
         return $data;
-
     }
 
     private function bagiRugi(InvoiceTagihan $invoice)
     {
         $rp = Rekening::where('untuk', 'pengelola')->first();
         $investorModal = InvestorModal::all();
-        $profit = $invoice->profit * -1;
+
+        // 1. Pastikan nilai kerugian awal sudah dibulatkan ke Integer
+        $profit = round(($invoice->profit - $invoice->profit_simpan) * -1, 0);
         $data = [];
         $investor = Investor::all();
         $totalProfitInvestor = 0;
         $totalProfitPengelola = 0;
 
         foreach ($investor as $i) {
-            $nominal = $profit * $i->persentase / 100;
+            // 2. Bulatkan hasil bagi rugi per kategori
+            $nominal = round($profit * $i->persentase / 100, 0);
 
             if ($i->nama == 'pengelola') {
                 $data[] = [
@@ -673,7 +681,7 @@ class InvoiceTagihan extends Model
                     'bank' => $rp->bank,
                     'nama_rek' => $rp->nama_rek,
                     'jenis' => 1,
-                    'nominal' => $nominal,
+                    'nominal' => $nominal, // Sudah Integer murni
                     'uraian' => 'Bagi Rugi '.$rp->untuk,
                     'project_id' => $invoice->project_id,
                     'investor_modal_id' => null,
@@ -684,26 +692,32 @@ class InvoiceTagihan extends Model
                 $totalProfitInvestor = $nominal;
                 foreach ($investorModal as $im) {
                     if ($im->persentase > 0) {
+                        // 3. Bulatkan hasil bagi rugi untuk masing-masing sub-investor
+                        $nominalSubInvestor = round($nominal * $im->persentase / 100, 0);
+
                         $data[] = [
                             'no_rek' => $im->no_rek,
                             'bank' => $im->bank,
                             'nama_rek' => $im->nama_rek,
                             'jenis' => 1,
-                            'nominal' => $nominal * $im->persentase / 100,
+                            'nominal' => $nominalSubInvestor, // Sudah Integer murni
                             'uraian' => 'Bagi Rugi '.$im->nama,
                             'project_id' => $invoice->project_id,
-                            'investor_modal_id' => $im->id
+                            'investor_modal_id' => $im->id,
                         ];
                     }
                 }
             }
         }
 
-        $total = array_sum(array_column($data, 'nominal'));
-        if ($total > $profit) {
-            $data[0]['nominal'] -= $total - $profit;
-        } elseif ($total < $profit) {
-            $data[0]['nominal'] += $profit - $total;
+        // 4. Penambal selisih bagi rugi
+        if (!empty($data)) {
+            $total = array_sum(array_column($data, 'nominal'));
+            if ($total > $profit) {
+                $data[0]['nominal'] -= ($total - $profit);
+            } elseif ($total < $profit) {
+                $data[0]['nominal'] += ($profit - $total);
+            }
         }
 
         return $data;
@@ -711,9 +725,9 @@ class InvoiceTagihan extends Model
 
     private function bagiRugiStore($data)
     {
-        $kb = new KasBesar();
+        $kb = new KasBesar;
         $rekening = Rekening::where('untuk', 'kas-besar')->first();
-        if (!isset($data['project_id'])) {
+        if (! isset($data['project_id'])) {
             throw new \Exception('project_id is not set in $data');
         }
 
@@ -727,7 +741,7 @@ class InvoiceTagihan extends Model
             'bank' => $rekening->bank,
             'saldo' => $kb->saldoTerakhir() + $data['nominal'],
             'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
-            'investor_modal_id' => $data['investor_modal_id']
+            'investor_modal_id' => $data['investor_modal_id'],
         ]);
 
         return $store;
@@ -735,7 +749,7 @@ class InvoiceTagihan extends Model
 
     public function invoice_ppn_bayar(InvoiceTagihan $invoice)
     {
-        $db = new KasBesar();
+        $db = new KasBesar;
 
         DB::beginTransaction();
 
@@ -750,43 +764,42 @@ class InvoiceTagihan extends Model
                 'nama_rek' => 'Negara',
                 'bank' => 'Negara',
                 'saldo' => $db->saldoTerakhir() - $invoice->nilai_ppn,
-                'modal_investor_terakhir' => $db->modalInvestorTerakhir()
+                'modal_investor_terakhir' => $db->modalInvestorTerakhir(),
             ]);
 
             $invoice->update([
-                'ppn' => 1
+                'ppn' => 1,
             ]);
 
             DB::commit();
 
-            $pesan =    "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
+            $pesan = "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n".
                         "*Form Pembayaran PPN*\n".
                         "🔴🔴🔴🔴🔴🔴🔴🔴🔴\n\n".
-                        "Customer :  *".$store->project->customer->nama."*\n".
-                        "Project :  *".$store->project->nama."*\n\n".
-                        "Nilai    :  *Rp. ".number_format($store->nominal, 0, ',', '.')."*\n\n".
+                        'Customer :  *'.$store->project->customer->nama."*\n".
+                        'Project :  *'.$store->project->nama."*\n\n".
+                        'Nilai    :  *Rp. '.number_format($store->nominal, 0, ',', '.')."*\n\n".
                         "Ditransfer ke rek:\n\n".
-                        "Bank      : ".$store->bank."\n".
-                        "Nama     : ".$store->nama_rek."\n".
-                        "No. Rek  : ".$store->no_rek."\n\n".
+                        'Bank      : '.$store->bank."\n".
+                        'Nama     : '.$store->nama_rek."\n".
+                        'No. Rek  : '.$store->no_rek."\n\n".
                         "==========================\n".
                         "Sisa Saldo Kas Besar : \n".
-                        "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store->saldo, 0, ',', '.')."\n\n".
                         "Total Modal Investor : \n".
-                        "Rp. ".number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
+                        'Rp. '.number_format($store->modal_investor_terakhir, 0, ',', '.')."\n\n".
                         "Terima kasih 🙏🙏🙏\n";
 
             $result = [
                 'status' => 'success',
-                'message' => 'Pembayaran PPN berhasil diproses!'
+                'message' => 'Pembayaran PPN berhasil diproses!',
             ];
-
 
         } catch (\Throwable $th) {
             DB::rollBack();
             $result = [
                 'status' => 'error',
-                'message' => $th->getMessage()
+                'message' => $th->getMessage(),
             ];
         }
 
@@ -799,33 +812,34 @@ class InvoiceTagihan extends Model
     public function sumSisaTagihan($customerId)
     {
         $total = InvoiceTagihan::where('cutoff', 0)->where('finished', 0)->where('customer_id', $customerId)->sum('sisa_tagihan');
+
         return $total;
     }
 
     public function sumSisaInvoice($customerId)
     {
         $total = InvoiceTagihan::where('cutoff', 1)->where('finished', 0)->where('customer_id', $customerId)->sum('sisa_tagihan');
+
         return $total;
     }
 
     private function keluarPph(InvoiceTagihan $invoice)
     {
         $nilai_pph = $invoice->nilai_pph;
-        $kb = new KasBesar();
-        $kp = new KasProject();
+        $kb = new KasBesar;
+        $kp = new KasProject;
 
         $store = $kb->create([
-                    'project_id' => $invoice->project_id,
-                    'nominal' => $nilai_pph,
-                    'jenis' => 0,
-                    'uraian' => 'Pembayaran PPH '.$invoice->project->nama,
-                    'no_rek' => 'EBILLING',
-                    'nama_rek' => 'PT CGM',
-                    'bank' => 'PAJAK',
-                    'saldo' => $kb->saldoTerakhir() - $nilai_pph,
-                    'modal_investor_terakhir' => $kb->modalInvestorTerakhir()
-                ]);
-
+            'project_id' => $invoice->project_id,
+            'nominal' => $nilai_pph,
+            'jenis' => 0,
+            'uraian' => 'Pembayaran PPH '.$invoice->project->nama,
+            'no_rek' => 'EBILLING',
+            'nama_rek' => 'PT CGM',
+            'bank' => 'PAJAK',
+            'saldo' => $kb->saldoTerakhir() - $nilai_pph,
+            'modal_investor_terakhir' => $kb->modalInvestorTerakhir(),
+        ]);
 
         $kp->create([
             'project_id' => $invoice->project_id,
@@ -846,7 +860,7 @@ class InvoiceTagihan extends Model
     {
         $nilai_pph = $invoice->nilai_pph;
 
-        $kp = new KasProject();
+        $kp = new KasProject;
 
         $kp->create([
             'project_id' => $invoice->project_id,
@@ -861,5 +875,4 @@ class InvoiceTagihan extends Model
 
         return true;
     }
-
 }

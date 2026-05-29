@@ -48,7 +48,8 @@
                     <th class="text-center align-middle">Total Kas Project<br>(Modal)</th>
                     <th class="text-center align-middle">PPh<br>Dipotong</th>
                     <th class="text-center align-middle">PPh<br>Disimpan</th>
-                    <th class="text-center align-middle">Profit</th>
+                    <th class="text-center align-middle">Total Profit</th>
+                    <th class="text-center align-middle">Profit Disimpan</th>
                 </tr>
             </thead>
             <tbody>
@@ -56,6 +57,7 @@
                 $modal = 0;
                 $pph = 0;
                 $pph_badan = 0;
+                $profit_simpan = 0;
                 @endphp
                 @foreach ($data as $d)
                 <tr>
@@ -107,6 +109,18 @@
                         @endphp
                         {{number_format($d->nilai_tagihan + $d->pengeluaran, 0, ',', '.')}}
                     </td>
+                    <td class="text-end align-middle">
+                        @php
+                            $profit_simpan += ($d->nilai_tagihan + $d->pengeluaran);
+                        @endphp
+                        @if ($d->project->profit_simpan > 0)
+                        {{number_format((($d->nilai_tagihan + $d->pengeluaran)*($d->project->profit_simpan / 100) ), 0, ',', '.')}}
+                        @else
+                        0
+                        @endif
+
+                    </td>
+                {{-- <butt
                 {{-- <button class="btn btn-primary">Test</button> --}}
                 </tr>
                 @endforeach
@@ -118,6 +132,7 @@
                     <th class="text-end align-middle">{{number_format($modal, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($pph, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($pph_badan, 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($profit, 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($profit, 0, ',', '.')}}</th>
                 </tr>
             </tfoot>
@@ -140,6 +155,7 @@
                 "searching": true,
                 "scrollCollapse": true,
                 "scrollY": "500px",
+                "saveState": true,
 
             });
 
