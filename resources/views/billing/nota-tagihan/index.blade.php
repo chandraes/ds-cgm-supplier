@@ -51,6 +51,8 @@
                     <th class="text-center align-middle">PPn Masukan</th>
                     <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
+                     <th class="text-center align-middle">Laba Ditahan</th>
+                    <th class="text-center align-middle">Profit Dibagikan</th>
                     <th class="text-center align-middle">DP / Termin</th>
                     <th class="text-center align-middle">ACT</th>
                 </tr>
@@ -130,7 +132,14 @@
 
                         {{$d->nf_profit}}
                     </td>
+                    <td class="text-end align-middle">
 
+                        {{$d->nf_profit_simpan}}
+                    </td>
+                     <td class="text-end align-middle">
+
+                        {{number_format($d->profit - $d->profit_simpan, 0, ',', '.')}}
+                    </td>
                     <td class="text-start align-middle">
                         <!-- Modal trigger button -->
                         <div class="text-center">
@@ -284,6 +293,8 @@
                     <th class="text-end align-middle">{{number_format($data->sum('ppn_masukan'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('pengeluaran'), 0, ',', '.')}}</th>
                     <th class="text-end align-middle">{{number_format($data->sum('profit'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('profit_simpan'), 0, ',', '.')}}</th>
+                    <th class="text-end align-middle">{{number_format($data->sum('profit')-$data->sum('profit_simpan'), 0, ',', '.')}}</th>
                     <th colspan="2"></th>
                 </tr>
             </tfoot>

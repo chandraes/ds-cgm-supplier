@@ -53,8 +53,8 @@
                     <th class="text-center align-middle">PPn Masukan</th>
                     <th class="text-center align-middle">Total Kas Project</th>
                     <th class="text-center align-middle">Profit</th>
-                    <th class="text-center align-middle">Profit Simpan</th>
-                    <th class="text-center align-middle">Profit Akhir</th>
+                    <th class="text-center align-middle">Laba Ditahan</th>
+                    <th class="text-center align-middle">Profit Dibagikan</th>
                     <th class="text-center align-middle">ACT</th>
                 </tr>
             </thead>

@@ -49,7 +49,7 @@
                     <th class="text-center align-middle">PPh<br>Dipotong</th>
                     <th class="text-center align-middle">PPh<br>Disimpan</th>
                     <th class="text-center align-middle">Total Profit</th>
-                    <th class="text-center align-middle">Profit Disimpan</th>
+                    <th class="text-center align-middle">Laba Disimpan</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,7 +64,7 @@
                     <td class="text-center align-middle"></td>
                     <td class="text-center align-middle">{{$d->customer->singkatan}}</td>
                     <td class="text-start align-middle">
-                        <a href="{{route('rekap.invoice.detail-project', ['project'=>$d->project->id])}}">
+                        <a href="{{route('rekap.kas-project', ['project'=>$d->project->id])}}">
                             {{$d->project->nama}}
                         </a>
                     </td>

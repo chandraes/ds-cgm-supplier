@@ -12,9 +12,9 @@ use App\Models\KasProject;
 use App\Models\PesanWa;
 use App\Models\Project;
 use App\Services\StarSender;
-use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class RekapController extends Controller
 {
@@ -31,7 +31,7 @@ class RekapController extends Controller
 
     public function kas_besar(Request $request)
     {
-        $kas = new KasBesar();
+        $kas = new KasBesar;
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
@@ -62,7 +62,7 @@ class RekapController extends Controller
 
     public function kas_besar_print(Request $request)
     {
-        $kas = new KasBesar();
+        $kas = new KasBesar;
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
@@ -77,7 +77,7 @@ class RekapController extends Controller
 
         $dataSebelumnya = $kas->kasBesarByMonth($bulanSebelumnya, $tahunSebelumnya);
 
-        $pdf = PDF::loadview('rekap.kas-besar.pdf', [
+        $pdf = Pdf::loadview('rekap.kas-besar.pdf', [
             'data' => $data,
             'dataSebelumnya' => $dataSebelumnya,
             'stringBulan' => $stringBulan,
@@ -94,71 +94,71 @@ class RekapController extends Controller
     {
         $project = Project::findOrFail($request->project);
 
-        $kas = new KasProject();
-
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
-        $dataTahun = $kas->dataTahun();
+        if ($request->ajax()) {
+            $query = KasProject::where('project_id', $project->id)->orderBy('created_at', 'asc');
 
-        $data = $kas->kasProject($project->id, $bulan, $tahun);
+            $page = $request->get('page', 1);
+            $length = $request->get('length', 50);
 
-        $bulanSebelumnya = $bulan - 1;
-        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+            $data = $query->paginate($length, ['*'], 'page', $page);
 
-        $dataSebelumnya = $kas->kasProjectByMonth($project->id, $bulanSebelumnya, $tahunSebelumnya);
+            $grandTotalMasuk = KasProject::where('project_id', $project->id)
+                ->where('jenis', 1)
+                ->sum('nominal');
+
+            $grandTotalKeluar = KasProject::where('project_id', $project->id)
+                ->where('jenis', 0)
+                ->sum('nominal');
+
+            $lastSisa = KasProject::where('project_id', $project->id)
+                ->orderBy('id', 'desc')
+                ->value('sisa') ?? 0;
+
+            return response()->json([
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'per_page' => $data->perPage(),
+                'total' => $data->total(),
+                'data' => $data->items(),
+                'grand_total_masuk' => $grandTotalMasuk,
+                'grand_total_keluar' => $grandTotalKeluar,
+                'last_sisa' => $lastSisa,
+            ]);
+        }
 
         return view('rekap.kas-project.index', [
-            'data' => $data,
             'project' => $project,
-            'dataTahun' => $dataTahun,
-            'dataSebelumnya' => $dataSebelumnya,
-            'stringBulan' => $stringBulan,
-            'tahun' => $tahun,
-            'tahunSebelumnya' => $tahunSebelumnya,
             'bulan' => $bulan,
-            'stringBulanNow' => $stringBulanNow,
+            'tahun' => $tahun,
         ]);
     }
 
     public function kas_project_print(Request $request)
     {
-        $kas = new KasProject();
+        $kas = new KasProject;
         $project = Project::findOrFail($request->project);
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
-        $data = $kas->kasProject($request->project,$bulan, $tahun);
+        $data = $kas->kasProjectAll($request->project);
 
-        $bulanSebelumnya = $bulan - 1;
-        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
-        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
-        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
-        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
-
-        $dataSebelumnya = $kas->kasProjectByMonth($request->project, $bulanSebelumnya, $tahunSebelumnya);
-
-        $pdf = PDF::loadview('rekap.kas-project.pdf', [
+        $pdf = Pdf::loadview('rekap.kas-project.pdf', [
             'data' => $data,
             'project' => $project,
-            'dataSebelumnya' => $dataSebelumnya,
-            'stringBulan' => $stringBulan,
-            'tahun' => $tahun,
-            'tahunSebelumnya' => $tahunSebelumnya,
             'bulan' => $bulan,
-            'stringBulanNow' => $stringBulanNow,
+            'tahun' => $tahun,
         ])->setPaper('a4', 'landscape');
 
-        return $pdf->stream('Rekap Kas Project '.$stringBulanNow.' '.$tahun.'.pdf');
+        return $pdf->stream('Rekap Kas Project Semua '.$tahun.'.pdf');
     }
 
     public function void_kas_project(KasProject $kasProject)
     {
-        $db = new KasProject();
+        $db = new KasProject;
         $store = $db->void_transaksi($kasProject);
 
         return redirect()->back()->with($store['status'], $store['message']);
@@ -172,7 +172,6 @@ class RekapController extends Controller
         $totalBerat = $data->sum('berat');
         $totalTagihan = $data->sum('total_tagihan');
 
-
         return view('rekap.kas-besar.detail-tagihan', [
             'data' => $data,
             'customer' => $customer,
@@ -182,10 +181,9 @@ class RekapController extends Controller
         ]);
     }
 
-
     public function kas_kecil(Request $request)
     {
-        $kas = new KasKecil();
+        $kas = new KasKecil;
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
@@ -216,7 +214,7 @@ class RekapController extends Controller
 
     public function kas_kecil_print(Request $request)
     {
-        $kas = new KasKecil();
+        $kas = new KasKecil;
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
@@ -233,7 +231,7 @@ class RekapController extends Controller
 
         $dataSebelumnya = $kas->kasKecilByMonth($bulanSebelumnya, $tahunSebelumnya);
 
-        $pdf = PDF::loadview('rekap.kas-kecil.pdf', [
+        $pdf = Pdf::loadview('rekap.kas-kecil.pdf', [
             'data' => $data,
             'dataSebelumnya' => $dataSebelumnya,
             'stringBulan' => $stringBulan,
@@ -248,24 +246,24 @@ class RekapController extends Controller
 
     public function void_kas_kecil(KasKecil $kas)
     {
-        $db = new KasKecil();
+        $db = new KasKecil;
 
         $store = $db->voidKasKecil($kas->id);
 
         $group = GroupWa::where('untuk', 'team')->first();
 
-        $pesan =    "==========================\n".
+        $pesan = "==========================\n".
                     "*Form Void Kas Kecil*\n".
                     "==========================\n\n".
-                    "Uraian: ".$store->uraian."\n\n".
-                    "Nilai : *Rp. ".number_format($store->nominal)."*\n\n".
+                    'Uraian: '.$store->uraian."\n\n".
+                    'Nilai : *Rp. '.number_format($store->nominal)."*\n\n".
                     "Ditransfer ke rek:\n\n".
-                    "Bank      : ".$store->bank."\n".
-                    "Nama    : ".$store->nama_rek."\n".
-                    "No. Rek : ".$store->no_rek."\n\n".
+                    'Bank      : '.$store->bank."\n".
+                    'Nama    : '.$store->nama_rek."\n".
+                    'No. Rek : '.$store->no_rek."\n\n".
                     "==========================\n".
                     "Sisa Saldo Kas Kecil : \n".
-                    "Rp. ".number_format($store->saldo, 0, ',', '.')."\n\n".
+                    'Rp. '.number_format($store->saldo, 0, ',', '.')."\n\n".
                     "Terima kasih 🙏🙏🙏\n";
 
         $send = new StarSender($group->nama_group, $pesan);
@@ -295,7 +293,7 @@ class RekapController extends Controller
     {
         $project = Project::findOrFail($request->project);
 
-        $kas = new KasProject();
+        $kas = new KasProject;
 
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
@@ -328,10 +326,10 @@ class RekapController extends Controller
     public function rekap_investor()
     {
         $data = InvestorModal::with(['kasBesar' => function ($query) {
-                    $query->selectRaw('investor_modal_id, SUM(CASE WHEN jenis = 0 THEN nominal ELSE -nominal END) as total')
-                        ->whereNull('modal_investor')
-                        ->groupBy('investor_modal_id');
-                }])->get();
+            $query->selectRaw('investor_modal_id, SUM(CASE WHEN jenis = 0 THEN nominal ELSE -nominal END) as total')
+                ->whereNull('modal_investor')
+                ->groupBy('investor_modal_id');
+        }])->get();
 
         return view('rekap.kas-investor.index', [
             'data' => $data,
@@ -369,11 +367,11 @@ class RekapController extends Controller
                     $total += $d->nominal;
                 } else {
                     $total -= $d->nominal;
-                    $d->nominal = '-' . $d->nominal; // Add "-" sign when jenis is 0
+                    $d->nominal = '-'.$d->nominal; // Add "-" sign when jenis is 0
                 }
 
                 if (empty($d->uraian)) {
-                    $d->uraian = "Deposit"; // Render kode_deposit when uraian is empty
+                    $d->uraian = 'Deposit'; // Render kode_deposit when uraian is empty
                 }
 
                 return $d;
@@ -420,10 +418,10 @@ class RekapController extends Controller
             $data->getCollection()->transform(function ($d) use (&$total) {
                 if ($d->jenis == 1) {
                     $total -= $d->nominal;
-                    $d->nominal = '-' . $d->nominal;
+                    $d->nominal = '-'.$d->nominal;
                 } else {
                     $total += $d->nominal;
-                     // Add "-" sign when jenis is 0
+                    // Add "-" sign when jenis is 0
                 }
 
                 $d->project_nama = $d->project->nama ?? '';
@@ -446,9 +444,9 @@ class RekapController extends Controller
     public function rekap_invoice_pph()
     {
         $data = InvoiceTagihan::with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
-                            ->whereHas('project', function($query){
-                                $query->where('pph', 1)->where('pph_badan', 0);
-                            })->where('finished', 1)->get();
+            ->whereHas('project', function ($query) {
+                $query->where('pph', 1)->where('pph_badan', 0);
+            })->where('finished', 1)->get();
 
         return view('rekap.invoice-pph.index', [
             'data' => $data,
@@ -457,21 +455,21 @@ class RekapController extends Controller
 
     public function pph_badan(Request $request)
     {
-        $db = new InvoiceTagihan();
+        $db = new InvoiceTagihan;
 
         $tahun = $request->tahun ?? date('Y');
 
         $dataTahun = $db->dataTahun();
 
         $data = $db->with(['invoiceTagihanDetails', 'customer', 'project', 'kasProjects'])
-                                ->whereHas('project', function($query) use ($tahun){
-                                    $query->where('pph_badan', 1)->whereYear('created_at', $tahun);
-                                })->where('finished', 1)->get();
+            ->whereHas('project', function ($query) use ($tahun) {
+                $query->where('pph_badan', 1)->whereYear('created_at', $tahun);
+            })->where('finished', 1)->get();
 
         return view('rekap.ppn-tahunan.index', [
             'data' => $data,
             'tahun' => $tahun,
-            'dataTahun' => $dataTahun
+            'dataTahun' => $dataTahun,
         ]);
 
     }

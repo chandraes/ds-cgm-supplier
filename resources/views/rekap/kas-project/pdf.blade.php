@@ -3,7 +3,7 @@
 <div class="container-fluid">
     <center>
         <h2>REKAP KAS PROJECT</h2>
-        <h2>{{$stringBulanNow}} {{$tahun}}</h2>
+        <h4>Semua Transaksi</h4>
     </center>
 </div>
 <div class="container-fluid table-responsive ml-3 text-pdf">
@@ -35,14 +35,6 @@
                 <th class="text-center align-middle table-pdf text-pdf">Sisa</th>
                 <th class="text-center align-middle table-pdf text-pdf">Transfer Ke Rekening</th>
                 <th class="text-center align-middle table-pdf text-pdf">Bank</th>
-            </tr>
-            <tr class="table-warning">
-                <td colspan="3" class="text-center align-middle table-pdf text-pdf">Sisa Bulan
-                    {{$stringBulan}} {{$tahunSebelumnya}}</td>
-                <td class="table-pdf text-pdf"></td>
-                <td class="text-end align-middle table-pdf text-pdf table-pdf text-pdf">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_sisa : ''}}</td>
-                <td class="table-pdf text-pdf"></td>
-                <td class="table-pdf text-pdf"></td>
             </tr>
             </thead>
             <tbody>

@@ -4,7 +4,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12 text-center">
             <h1><u>REKAP KAS PROJECT</u></h1>
-            <h1>{{$stringBulanNow}} {{$tahun}}</h1>
+            <h4>Semua Transaksi</h4>
         </div>
     </div>
     @include('swal')
@@ -24,42 +24,6 @@
             </table>
         </div>
     </div>
-</div>
-<div class="container-fluid mt-5">
-    <form action="{{route('rekap.kas-project')}}" method="get">
-        <div class="row">
-            <input type="hidden" name="project" value="{{$project->id}}">
-            <div class="col-md-3 mb-3">
-                <label for="bulan" class="form-label">Bulan</label>
-                <select class="form-select" name="bulan" id="bulan">
-                    <option value="1" {{$bulan=='01' ? 'selected' : '' }}>Januari</option>
-                    <option value="2" {{$bulan=='02' ? 'selected' : '' }}>Februari</option>
-                    <option value="3" {{$bulan=='03' ? 'selected' : '' }}>Maret</option>
-                    <option value="4" {{$bulan=='04' ? 'selected' : '' }}>April</option>
-                    <option value="5" {{$bulan=='05' ? 'selected' : '' }}>Mei</option>
-                    <option value="6" {{$bulan=='06' ? 'selected' : '' }}>Juni</option>
-                    <option value="7" {{$bulan=='07' ? 'selected' : '' }}>Juli</option>
-                    <option value="8" {{$bulan=='08' ? 'selected' : '' }}>Agustus</option>
-                    <option value="9" {{$bulan=='09' ? 'selected' : '' }}>September</option>
-                    <option value="10" {{$bulan=='10' ? 'selected' : '' }}>Oktober</option>
-                    <option value="11" {{$bulan=='11' ? 'selected' : '' }}>November</option>
-                    <option value="12" {{$bulan=='12' ? 'selected' : '' }}>Desember</option>
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="tahun" class="form-label">Tahun</label>
-                <select class="form-select" name="tahun" id="tahun">
-                    @foreach ($dataTahun as $d)
-                    <option value="{{$d->tahun}}" {{$d->tahun == $tahun ? 'selected' : ''}}>{{$d->tahun}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-3 mb-3">
-                <label for="tahun" class="form-label">&nbsp;</label>
-                <button type="submit" class="btn btn-primary form-control" id="btn-cari">Tampilkan</button>
-            </div>
-        </div>
-    </form>
 </div>
 <div class="container-fluid table-responsive ml-3">
     <div class="row mx-5">
@@ -120,82 +84,23 @@
                 <th class="text-center align-middle">Sisa</th>
                 <th class="text-center align-middle">Transfer Ke Rekening</th>
                 <th class="text-center align-middle">Bank</th>
-                <th class="text-center align-middle">ACT</th>
-            </tr>
-            <tr class="table-warning">
-                <td colspan="3" class="text-center align-middle">Sisa
-                    {{$stringBulan}} {{$tahunSebelumnya}}</td>
-                <td></td>
-                <td class="text-end align-middle">Rp. {{$dataSebelumnya ? $dataSebelumnya->nf_sisa : ''}}</td>
-                <td></td>
-                <td></td>
-                <td></td>
+                @if ($project->project_status_id != 2)
+                    <th class="text-center align-middle">ACT</th>
+                @endif
             </tr>
             </thead>
-            <tbody>
-                @foreach ($data as $d)
-                <tr>
-                    <td class="text-center align-middle">{{$d->tanggal}}</td>
-                    <td class="text-start align-middle">
-                        {{$d->uraian}}
-                    </td>
-                    <td class="text-end align-middle">{{$d->jenis === 1 ?
-                       $d->nf_nominal : ''}}
-                    </td>
-                    <td class="text-end align-middle text-danger">{{$d->jenis === 0 ?
-                        $d->nf_nominal : ''}}
-                    </td>
-                    <td class="text-end align-middle">{{$d->nf_sisa}}</td>
-                    <td class="text-center align-middle">{{$d->nama_rek}}</td>
-                    <td class="text-center align-middle">{{$d->bank}}</td>
-                    <td class="text-center align-middle">
-                        @if ($d->void == 0)
-                        <form action="{{route('rekap.kas-project.void', ['kasProject'=> $d])}}" method="post"
-                            id="void-{{$d->id}}">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">Void</button>
-                        </form>
-                        @endif
-                    </td>
-                </tr>
-                <script>
-
-                    $('#void-{{$d->id}}').submit(function(e){
-                        e.preventDefault();
-                        Swal.fire({
-                            title: 'Apakah anda yakin?',
-                            text: "Uraian: Void {{$d->uraian}}",
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#6c757d',
-                            confirmButtonText: 'Ya, simpan!'
-                            }).then((result) => {
-                            if (result.isConfirmed) {
-                                $('#spinner').show();
-                                this.submit();
-                            }
-                        })
-                    });
-                </script>
-                @endforeach
-            </tbody>
+            <tbody></tbody>
             <tfoot>
                 <tr>
                     <td class="text-center align-middle" colspan="2"><strong>GRAND TOTAL</strong></td>
-                    <td class="text-end align-middle"><strong>{{number_format($data->where('jenis',
-                            1)->sum('nominal'), 0, ',', '.')}}</strong></td>
-                    <td class="text-end align-middle text-danger"><strong>{{number_format($data->where('jenis',
-                            0)->sum('nominal'), 0, ',', '.')}}</strong></td>
-                    {{-- latest saldo --}}
-                    <td class="text-end align-middle">
-                        <strong>
-                            {{$data->last() ? number_format($data->last()->sisa, 0, ',', '.') : ''}}
-                        </strong>
-                    </td>
+                    <td class="text-end align-middle"><strong id="grand-masuk"></strong></td>
+                    <td class="text-end align-middle text-danger"><strong id="grand-keluar"></strong></td>
+                    <td class="text-end align-middle"><strong id="last-sisa"></strong></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    @if ($project->project_status_id != 2)
+                        <td></td>
+                    @endif
                 </tr>
             </tfoot>
         </table>
@@ -209,22 +114,130 @@
 <script src="{{asset('assets/plugins/date-picker/date-picker.js')}}"></script>
 <script src="{{asset('assets/js/dt5.min.js')}}"></script>
 <script>
-
     $(document).ready(function() {
-        $('#rekapTable').DataTable({
-            "paging": false,
-            "ordering": false,
-            "searching": false,
-            "scrollCollapse": true,
-            "scrollY": "550px",
-            "fixedColumns": {
-                "leftColumns": 4,
-                "rightColumns": 2
-            },
+        const ajaxUrl = '{{ route('rekap.kas-project', ['project' => $project->id]) }}';
+        const csrfToken = '{{ csrf_token() }}';
+        const voidRouteTemplate = '{{ route('rekap.kas-project.void', ['kasProject' => '__ID__']) }}';
+        const pageSize = 50;
+        const hasVoidColumn = {{ $project->project_status_id != 2 ? 'true' : 'false' }};
 
+        let currentPage = 0;
+        let lastPage = 1;
+        let isLoading = false;
+
+        const columns = [
+            { data: 'tanggal', className: 'text-center align-middle' },
+            { data: 'uraian', className: 'text-start align-middle' },
+            {
+                data: null,
+                className: 'text-end align-middle',
+                render: function(data) {
+                    return data.jenis === 1 ? data.nf_nominal : '';
+                }
+            },
+            {
+                data: null,
+                className: 'text-end align-middle',
+                render: function(data) {
+                    return data.jenis === 0 ? '<span class="text-danger">' + data.nf_nominal + '</span>' : '';
+                }
+            },
+            { data: 'nf_sisa', className: 'text-end align-middle' },
+            { data: 'nama_rek', className: 'text-center align-middle' },
+            { data: 'bank', className: 'text-center align-middle' }
+        ];
+
+        if (hasVoidColumn) {
+            columns.push({
+                data: 'id',
+                orderable: false,
+                searchable: false,
+                className: 'text-center align-middle',
+                render: function(data, type, row) {
+                    if (row.void === 0) {
+                        const url = voidRouteTemplate.replace('__ID__', data);
+                        return '<form action="' + url + '" method="POST" class="void-form" data-id="' + data + '">' +
+                            '<input type="hidden" name="_token" value="' + csrfToken + '">' +
+                            '<button type="submit" class="btn btn-danger btn-sm">Void</button>' +
+                            '</form>';
+                    }
+                    return '';
+                }
+            });
+        }
+
+        const table = $('#rekapTable').DataTable({
+            paging: false,
+            ordering: false,
+            searching: false,
+            scrollCollapse: true,
+            scrollY: '550px',
+            deferRender: true,
+            autoWidth: false,
+            columns: columns
         });
 
-    });
+        function formatNumber(value) {
+            return new Intl.NumberFormat('id-ID').format(value || 0);
+        }
 
+        function updateFooter(totals) {
+            $('#grand-masuk').text(formatNumber(totals.grand_total_masuk));
+            $('#grand-keluar').text(formatNumber(totals.grand_total_keluar));
+            $('#last-sisa').text(formatNumber(totals.last_sisa));
+        }
+
+        function loadPage(page) {
+            if (isLoading || page > lastPage) {
+                return;
+            }
+
+            isLoading = true;
+
+            $.getJSON(ajaxUrl, {
+                page: page,
+                length: pageSize,
+            }, function(response) {
+                currentPage = response.current_page;
+                lastPage = response.last_page;
+
+                if (currentPage === 1) {
+                    updateFooter(response);
+                }
+
+                table.rows.add(response.data).draw(false);
+            })
+            .always(function() {
+                isLoading = false;
+            });
+        }
+
+        $('#rekapTable tbody').on('submit', '.void-form', function(e) {
+            e.preventDefault();
+            const form = this;
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: 'Uraian: Void',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, simpan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        $('#rekapTable').closest('.dataTables_wrapper').find('.dataTables_scrollBody').on('scroll', function() {
+            const scrollBody = this;
+            if (scrollBody.scrollTop + scrollBody.clientHeight >= scrollBody.scrollHeight - 10) {
+                loadPage(currentPage + 1);
+            }
+        });
+
+        loadPage(1);
+    });
 </script>
 @endpush
