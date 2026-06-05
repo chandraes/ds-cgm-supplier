@@ -130,6 +130,7 @@
                         {{$d->nf_ppn_masukan}}
                     </td>
                     <td class="text-end align-middle">
+                         <a href="{{route('rekap.kas-project', ['project' => $d->project->id])}}" class="text-decoration-none">
                         {{$d->nf_pengeluaran}}
                     </td>
                     <td class="text-end align-middle">
