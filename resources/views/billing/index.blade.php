@@ -54,6 +54,33 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-2 text-center mt-5">
+            <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#modalLabaSimpan">
+                <img src="{{asset('images/laba-simpan.svg')}}" alt="" width="70">
+                <h4 class="mt-3">FORM LABA DISIMPAN</h4>
+            </a>
+            <div class="modal fade" id="modalLabaSimpan" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+                role="dialog" aria-labelledby="modalLabaSimpanTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLabaSimpanTitle">Form Laba Simpan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <select class="form-select" name="selectLabaSimpan" id="selectLabaSimpan">
+                                <option value="masuk">Dana Masuk</option>
+                                <option value="keluar">Dana Keluar</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-primary" onclick="funLabaSimpan()">Lanjutkan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         @endif
         <div class="col-md-2 text-center mt-5">
             <a href="#" class="text-decoration-none">
@@ -164,6 +191,15 @@
             window.location.href = "{{route('form-lain.masuk')}}";
         }else if(selectLain == 'keluar'){
             window.location.href = "{{route('form-lain.keluar')}}";
+        }
+    }
+
+    function funLabaSimpan(){
+        var selectLabaSimpan = document.getElementById('selectLabaSimpan').value;
+        if(selectLabaSimpan == 'masuk'){
+            window.location.href = "{{route('form-laba-simpan.masuk')}}";
+        }else if(selectLabaSimpan == 'keluar'){
+            window.location.href = "{{route('form-laba-simpan.keluar')}}";
         }
     }
 

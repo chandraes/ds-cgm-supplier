@@ -9,6 +9,7 @@ use App\Models\InvoiceTagihan;
 use App\Models\KasBesar;
 use App\Models\KasKecil;
 use App\Models\KasProject;
+use App\Models\LabaSimpan;
 use App\Models\PesanWa;
 use App\Models\Project;
 use App\Services\StarSender;
@@ -88,6 +89,36 @@ class RekapController extends Controller
         ])->setPaper('a4', 'landscape');
 
         return $pdf->stream('Rekap Kas Besar '.$stringBulanNow.' '.$tahun.'.pdf');
+    }
+
+    public function laba_simpan(Request $request)
+    {
+        $saldo = new LabaSimpan;
+
+        $bulan = $request->bulan ?? date('m');
+        $tahun = $request->tahun ?? date('Y');
+
+        $dataTahun = $saldo->dataTahun();
+        $data = $saldo->labaSimpan($bulan, $tahun);
+
+        $bulanSebelumnya = $bulan - 1;
+        $bulanSebelumnya = $bulanSebelumnya == 0 ? 12 : $bulanSebelumnya;
+        $tahunSebelumnya = $bulanSebelumnya == 12 ? $tahun - 1 : $tahun;
+        $stringBulan = Carbon::createFromDate($tahun, $bulanSebelumnya)->locale('id')->monthName;
+        $stringBulanNow = Carbon::createFromDate($tahun, $bulan)->locale('id')->monthName;
+
+        $dataSebelumnya = $saldo->labaSimpanByMonth($bulanSebelumnya, $tahunSebelumnya);
+
+        return view('rekap.laba-simpan.index', [
+            'data' => $data,
+            'dataTahun' => $dataTahun,
+            'dataSebelumnya' => $dataSebelumnya,
+            'stringBulan' => $stringBulan,
+            'tahun' => $tahun,
+            'tahunSebelumnya' => $tahunSebelumnya,
+            'bulan' => $bulan,
+            'stringBulanNow' => $stringBulanNow,
+        ]);
     }
 
     public function kas_project(Request $request)

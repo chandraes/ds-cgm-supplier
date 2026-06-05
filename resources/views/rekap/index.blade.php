@@ -13,6 +13,12 @@
             </a>
         </div>
         <div class="col-md-2 text-center mt-5">
+            <a href="{{route('rekap.laba-simpan')}}" class="text-decoration-none">
+                <img src="{{asset('images/laba-simpan.svg')}}" alt="" width="70">
+                <h5 class="mt-3">LABA DISIMPAN</h5>
+            </a>
+        </div>
+        <div class="col-md-2 text-center mt-5">
             <a href="#" class="text-decoration-none">
                 <img src="{{asset('images/kosong.svg')}}" alt="" width="70">
                 <h5 class="mt-3">NOTA VOID TRANSAKSI</h5>
