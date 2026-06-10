@@ -417,13 +417,19 @@ class InvoiceTagihan extends Model
                     array_push($pesan, $p);
                 }
 
-                LabaSimpan::create([
-                    'uraian' => 'Laba Simpan - '.$invoice->project->nama,
-                    'nominal' => $invoice->profit_simpan,
-                    'saldo' => LabaSimpan::orderBy('id', 'desc')->first()->saldo + $invoice->profit_simpan,
-                    'jenis' => 'in',
-                    'invoice_tagihan_id' => $invoice->id,
-                ]);
+                if ($invoice->profit_simpan > 0) {
+                    $saldoLaba = LabaSimpan::orderBy('id', 'desc')->first()->saldo ?? 0;
+
+                    LabaSimpan::create([
+                        'uraian' => 'Laba Simpan - '.$invoice->project->nama,
+                        'nominal' => $invoice->profit_simpan,
+                        'saldo' => $saldoLaba + $invoice->profit_simpan,
+                        'jenis' => 'in',
+                        'invoice_tagihan_id' => $invoice->id,
+                    ]);
+                }
+
+
 
             }
 
